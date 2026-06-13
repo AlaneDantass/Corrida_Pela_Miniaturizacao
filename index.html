@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Corrida pela Miniaturização — Computer Evolution</title>
+  
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Fundir computadores em diferentes gerações para progredir de enormes armários a vácuo até a nanotecnologia e computação quântica.">
+  <meta name="keywords" content="jogo clicker, fusão de itens, história da computação, computadores retro, computação quântica, ENIAC, smartphone">
+  
+  <!-- CSS Stylesheets -->
+  <link rel="stylesheet" href="css/themes.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/ui.css">
+</head>
+<body class="era-1">
+
+  <!-- Retro CRT Scanline Effect -->
+  <div class="scanlines"></div>
+
+  <!-- Background PCB Canvas -->
+  <canvas id="circuit-bg"></canvas>
+
+  <!-- Game Header -->
+  <header>
+    <h1>🖥️ CORRIDA PELA <span>MINIATURIZAÇÃO</span></h1>
+    
+    <!-- Top Bar Controls -->
+    <div class="top-controls">
+      <!-- Music Indicator -->
+      <div class="music-indicator" id="music-indicator">
+        <div class="music-bars">
+          <div class="music-bar"></div>
+          <div class="music-bar"></div>
+          <div class="music-bar"></div>
+          <div class="music-bar"></div>
+        </div>
+        <span>BGM</span>
+      </div>
+
+      <!-- Mute Button -->
+      <button class="btn-control" id="btn-mute" title="Mutar/Desmutar Som" aria-label="Mutar/Desmutar Som">
+        <!-- Sound On Icon -->
+        <svg class="sound-on" viewBox="0 0 24 24" width="24" height="24">
+          <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+        </svg>
+        <!-- Sound Off Icon -->
+        <svg class="sound-off" viewBox="0 0 24 24" width="24" height="24" style="display: none;">
+          <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.21.05-.42.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>
+        </svg>
+      </button>
+
+      <!-- Reset Game Button -->
+      <button class="btn-control" id="btn-reset" title="Reiniciar Progresso" aria-label="Reiniciar Progresso">
+        <svg viewBox="0 0 24 24" width="24" height="24">
+          <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Game Body Layout -->
+  <main class="game-container">
+    
+    <!-- Sidebar Controls -->
+    <section class="sidebar">
+      
+      <!-- Current Research Cycle stats -->
+      <article class="panel float-ui">
+        <h2 class="panel-title">Estação de Pesquisa</h2>
+        <div class="stats-container">
+          <div class="stat-row">
+            <span class="stat-label">Ciclos Acumulados:</span>
+            <span class="stat-value currency-text" id="currency-value">0</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-label">Geração Passiva:</span>
+            <span class="stat-value small currency-text"><span id="cps-value">0</span> ⚡/s</span>
+          </div>
+        </div>
+        
+        <!-- Active Click Button -->
+        <button class="btn-research" id="btn-research">
+          <span>REALIZAR PESQUISA</span>
+          <span class="click-power">+<span id="click-power-value">1</span> ⚡ por clique</span>
+        </button>
+      </article>
+
+      <!-- Buy Computer Section -->
+      <article class="panel">
+        <h2 class="panel-title">Fábrica de Hardware</h2>
+        
+        <button class="btn-buy" id="btn-buy" disabled>
+          <span>COMPRAR ENIAC L1</span>
+          <span class="buy-subtext">Custo: <span id="buy-cost-value">10</span> ⚡</span>
+        </button>
+
+        <div class="slots-indicator">
+          <span>Grade Utilizada:</span>
+          <span><span id="slots-used">0</span> / <span id="slots-max">12</span></span>
+        </div>
+      </article>
+
+      <!-- Timeline of Eras -->
+      <article class="panel" style="flex: 1;">
+        <h2 class="panel-title">Eras da Miniaturização</h2>
+        <div class="timeline-list" id="timeline-list">
+          <!-- Populated by Timeline.js -->
+        </div>
+      </article>
+      
+    </section>
+
+    <!-- Canvas Grid Area -->
+    <section class="game-board-container crt-flicker-screen">
+      <canvas id="game-canvas"></canvas>
+    </section>
+
+  </main>
+
+  <!-- ================= MODALS OVERLAYS ================= -->
+
+  <!-- 1. Educational Card Modal -->
+  <div class="modal-overlay fade-in" id="modal-era">
+    <div class="modal-card zoom-in-modal" role="dialog" aria-modal="true" aria-labelledby="era-title">
+      <div class="modal-header">
+        <div class="modal-subtitle">Nova Era Desbloqueada</div>
+        <h2 class="modal-title" id="era-title">ENIAC</h2>
+      </div>
+      <div class="modal-body">
+        <div class="modal-visual-wrapper">
+          <canvas class="modal-canvas-preview"></canvas>
+        </div>
+        <p class="modal-text-content">
+          <!-- Injected by EraCard.js -->
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-modal-action">PROSSEGUIR</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Offline Earnings Modal -->
+  <div class="modal-overlay fade-in" id="modal-offline">
+    <div class="modal-card zoom-in-modal" role="dialog" aria-modal="true" aria-labelledby="offline-title">
+      <div class="modal-header">
+        <div class="modal-subtitle">Relatório Científico</div>
+        <h2 class="modal-title" id="offline-title">Pesquisa Offline Concluída</h2>
+      </div>
+      <div class="modal-body" style="text-align: center;">
+        <p>Enquanto seus laboratórios estavam inativos por:</p>
+        <p class="currency-text offline-time" style="font-size: 1.4rem; margin: 0.5rem 0;"></p>
+        <p>Seus computadores de grid geraram:</p>
+        <p class="currency-text offline-earnings" style="font-size: 2.2rem; font-weight: 900; margin: 0.5rem 0;"></p>
+        <p>Ciclos de Pesquisa ⚡ acumulados e adicionados ao saldo.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-modal-action">COLETAR CRÉDITOS</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Victory Modal -->
+  <div class="modal-overlay fade-in" id="modal-victory">
+    <div class="modal-card zoom-in-modal" role="dialog" aria-modal="true" aria-labelledby="victory-title">
+      <div class="modal-header">
+        <div class="modal-subtitle" style="color: #00E5FF; text-shadow: 0 0 10px rgba(0,229,255,0.4);">Objetivo Cumprido</div>
+        <h2 class="modal-title" id="victory-title" style="color: #fff; text-shadow: 0 0 15px rgba(255,255,255,0.5);">Singularidade Atingida!</h2>
+      </div>
+      <div class="modal-body">
+        <p style="text-align: center;">Parabéns! Você viajou pela história da computação, miniaturizando o poder de processamento de gabinetes de 30 toneladas para nano-qubits quânticos.</p>
+        
+        <div class="victory-stats-grid">
+          <div class="victory-stat-item">
+            <div class="victory-stat-lbl">Tempo de Corrida</div>
+            <div class="victory-stat-val victory-stat-time">0m 0s</div>
+          </div>
+          <div class="victory-stat-item">
+            <div class="victory-stat-lbl">Ciclos Produzidos</div>
+            <div class="victory-stat-val victory-stat-total-coins">0</div>
+          </div>
+        </div>
+
+        <div class="victory-stat-item" style="width: 100%; margin-bottom: 0.5rem;">
+          <div class="victory-stat-lbl">Bônus de Prestígio Permanente Ativo</div>
+          <div class="victory-stat-val victory-stat-prestige" style="color: #66BB6A;">+0%</div>
+        </div>
+
+        <p style="text-align: center; font-size: 0.85rem; color: #9AA0A6;">Deseja reiniciar a pesquisa para obter o bônus de prestígio de <strong>+50% na geração de Ciclos</strong> ou continuar aprimorando seu grid no modo sandbox?</p>
+      </div>
+      <div class="modal-footer victory-actions">
+        <button class="btn-modal-secondary" id="btn-sandbox">MODO SANDBOX</button>
+        <button class="btn-modal-action" id="btn-prestige" style="flex: 1.5;">PRESTIGIAR (+50% SPD)</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Entry Script -->
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

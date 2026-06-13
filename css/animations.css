@@ -1,0 +1,249 @@
+/* 🎬 css/animations.css */
+
+/* Scanlines Effect Overlay */
+.scanlines {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    rgba(18, 16, 16, 0) 50%, 
+    rgba(0, 0, 0, 0.08) 50%
+  );
+  background-size: 100% 4px;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+/* Flicker animation for retro screen look */
+@keyframes crt-flicker {
+  0% { opacity: 0.985; }
+  50% { opacity: 0.995; }
+  100% { opacity: 0.985; }
+}
+
+.crt-flicker-screen {
+  animation: crt-flicker 0.15s infinite;
+}
+
+/* Pulsing neon glow */
+@keyframes neon-pulse {
+  0% {
+    box-shadow: 0 0 10px var(--glow-color), inset 0 0 5px var(--glow-color);
+    border-color: var(--border-color);
+  }
+  50% {
+    box-shadow: 0 0 25px var(--glow-color-strong), inset 0 0 12px var(--glow-color-strong);
+    border-color: var(--accent-primary);
+  }
+  100% {
+    box-shadow: 0 0 10px var(--glow-color), inset 0 0 5px var(--glow-color);
+    border-color: var(--border-color);
+  }
+}
+
+.pulse-glow {
+  animation: neon-pulse 2s infinite ease-in-out;
+}
+
+/* Button hover pulse */
+@keyframes button-hover-glow {
+  0% {
+    box-shadow: 0 0 12px var(--accent-primary);
+  }
+  50% {
+    box-shadow: 0 0 30px var(--accent-secondary), 0 0 60px var(--glow-color);
+  }
+  100% {
+    box-shadow: 0 0 12px var(--accent-primary);
+  }
+}
+
+.button-glow-active {
+  animation: button-hover-glow 1.5s infinite ease-in-out;
+}
+
+/* Shake/wobble for error / invalid merge */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
+}
+
+.shake {
+  animation: shake 0.4s ease-in-out;
+}
+
+/* Modal and card entries */
+@keyframes zoom-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.85);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+.zoom-in-modal {
+  animation: zoom-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.fade-in {
+  animation: fade-in 0.3s ease-out forwards;
+}
+
+/* Text terminal typewriter effect simulation or blinking cursor */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.cursor-blink::after {
+  content: ' _';
+  animation: blink 1s step-start infinite;
+  color: var(--accent-primary);
+}
+
+/* Rotation for loading or particle effects */
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.rotate-infinite {
+  animation: rotate 10s linear infinite;
+}
+
+/* Float animation for HUD cards */
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-5px); }
+  100% { transform: translateY(0px); }
+}
+
+.float-ui {
+  animation: float 4s ease-in-out infinite;
+}
+
+/* ═══════════════════════════════════════════ */
+/*  ✨ ENHANCED ANIMATIONS                    */
+/* ═══════════════════════════════════════════ */
+
+/* Gradient shimmer for buttons */
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.shimmer-bg {
+  background-size: 200% 200%;
+  animation: gradient-shift 3s ease infinite;
+}
+
+/* Coin counter pop animation */
+@keyframes coin-pop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+.coin-pop {
+  animation: coin-pop 0.3s ease-out;
+}
+
+/* Slide-in from bottom for panels */
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.slide-up {
+  animation: slide-up 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+/* Glow border animation for game board */
+@keyframes border-glow-cycle {
+  0% {
+    border-color: var(--border-color);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3), 0 0 15px var(--glow-color);
+  }
+  50% {
+    border-color: var(--accent-primary);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3), 0 0 30px var(--glow-color-strong);
+  }
+  100% {
+    border-color: var(--border-color);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3), 0 0 15px var(--glow-color);
+  }
+}
+
+.game-board-container {
+  animation: border-glow-cycle 4s ease-in-out infinite;
+}
+
+/* Research button ripple effect */
+@keyframes ripple {
+  0% {
+    transform: scale(0);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+.btn-research::after {
+  content: '';
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  background: var(--accent-primary);
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.btn-research:active::after {
+  animation: ripple 0.6s ease-out;
+}
+
+/* Pulse ring for buy button when affordable */
+@keyframes pulse-ring {
+  0% {
+    box-shadow: 0 0 0 0 var(--glow-color-strong);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(0, 0, 0, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+  }
+}
+
+.btn-buy:not(:disabled) {
+  animation: pulse-ring 2s infinite, gradient-shift 3s ease infinite;
+  background-size: 200% 200%;
+  background-image: linear-gradient(
+    135deg,
+    var(--accent-primary) 0%,
+    var(--accent-secondary) 50%,
+    var(--accent-primary) 100%
+  );
+}

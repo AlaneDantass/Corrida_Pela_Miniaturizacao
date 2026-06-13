@@ -1,0 +1,90 @@
+/* 🎨 css/themes.css */
+:root {
+  /* Default Theme (Era 1 Base) */
+  --accent-primary: #FFB74D;
+  --accent-secondary: #FF8A65;
+  --bg-primary: #0B0D17;
+  --bg-panel: rgba(20, 24, 40, 0.75);
+  --bg-panel-solid: #141828;
+  --text-primary: #E8EAED;
+  --text-secondary: #9AA0A6;
+  --glow-color: rgba(255, 183, 77, 0.25);
+  --glow-color-strong: rgba(255, 183, 77, 0.5);
+  --border-color: rgba(255, 183, 77, 0.2);
+  --card-overlay: rgba(11, 13, 23, 0.95);
+  
+  /* Transition timings */
+  --transition-speed: 1.5s;
+}
+
+/* Transitions for root elements when body classes change */
+body {
+  transition: background-color var(--transition-speed) ease,
+              color var(--transition-speed) ease;
+}
+
+/* Era 1: Válvulas (Âmbar) */
+body.era-1 {
+  --accent-primary: #FFB74D;
+  --accent-secondary: #FF8A65;
+  --bg-primary: #0B0D17;
+  --bg-panel: rgba(20, 24, 40, 0.75);
+  --glow-color: rgba(255, 183, 77, 0.25);
+  --glow-color-strong: rgba(255, 183, 77, 0.5);
+  --border-color: rgba(255, 183, 77, 0.2);
+}
+
+/* Era 2: Transistores (Azul claro) */
+body.era-2 {
+  --accent-primary: #4FC3F7;
+  --accent-secondary: #29B6F6;
+  --bg-primary: #0A1628;
+  --bg-panel: rgba(16, 28, 48, 0.75);
+  --glow-color: rgba(79, 195, 247, 0.25);
+  --glow-color-strong: rgba(79, 195, 247, 0.5);
+  --border-color: rgba(79, 195, 247, 0.2);
+}
+
+/* Era 3: Circuitos Integrados (Verde) */
+body.era-3 {
+  --accent-primary: #66BB6A;
+  --accent-secondary: #43A047;
+  --bg-primary: #0B1A0F;
+  --bg-panel: rgba(16, 32, 22, 0.75);
+  --glow-color: rgba(102, 187, 106, 0.25);
+  --glow-color-strong: rgba(102, 187, 106, 0.5);
+  --border-color: rgba(102, 187, 106, 0.2);
+}
+
+/* Era 4: Microprocessadores (Roxo) */
+body.era-4 {
+  --accent-primary: #AB47BC;
+  --accent-secondary: #8E24AA;
+  --bg-primary: #140B1E;
+  --bg-panel: rgba(28, 16, 40, 0.75);
+  --glow-color: rgba(171, 71, 188, 0.25);
+  --glow-color-strong: rgba(171, 71, 188, 0.5);
+  --border-color: rgba(171, 71, 188, 0.2);
+}
+
+/* Era 5: Smartphones/IoT (Vermelho Coral) */
+body.era-5 {
+  --accent-primary: #EF5350;
+  --accent-secondary: #E53935;
+  --bg-primary: #1A0B0B;
+  --bg-panel: rgba(36, 16, 16, 0.75);
+  --glow-color: rgba(239, 83, 80, 0.25);
+  --glow-color-strong: rgba(239, 83, 80, 0.5);
+  --border-color: rgba(239, 83, 80, 0.2);
+}
+
+/* Era 6: Quântico (Cyan brilhante) */
+body.era-6 {
+  --accent-primary: #00E5FF;
+  --accent-secondary: #18FFFF;
+  --bg-primary: #060E1A;
+  --bg-panel: rgba(10, 26, 42, 0.75);
+  --glow-color: rgba(0, 229, 255, 0.25);
+  --glow-color-strong: rgba(0, 229, 255, 0.5);
+  --border-color: rgba(0, 229, 255, 0.2);
+}
