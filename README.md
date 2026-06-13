@@ -2,6 +2,7 @@
 
 Um jogo de simulação estilo clicker/fusão (**Cow Evolution**) ambientado na história evolutiva dos computadores e microprocessadores. Comece fundindo enormes gabinetes a vácuo na década de 1940 e avance as eras tecnológicas até atingir os nano-chips quânticos e a singularidade tecnológica.
 
+https://alanedantass.github.io/Corrida_Pela_Miniaturizacao/
 ## 🚀 Como Executar o Jogo
 
 O projeto foi construído sem dependências externas (zero-dependency). Para jogar:
