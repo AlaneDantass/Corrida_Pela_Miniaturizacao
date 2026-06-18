@@ -50,6 +50,9 @@ O projeto foi construído sem dependências externas (zero-dependency). Para jog
   - `js/ui/`: Sincroniza dados com o DOM (HUD, timeline e modais).
   - `js/input/`: Captura e normaliza interações do mouse e eventos touch (mobile).
 
+## 🤝 Contribuição e Colaboração
+Para entender as regras de nomenclatura de branches, convenções de commits, e como colaborar com o time neste repositório de forma profissional, leia o nosso [Guia de Contribuição (CONTRIBUTING.md)](CONTRIBUTING.md).
+
 ---
 
 ## ⚡ Licença
