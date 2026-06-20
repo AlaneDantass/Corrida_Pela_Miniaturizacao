@@ -42,14 +42,22 @@ class Particle {
     ctx.save();
     ctx.globalAlpha = this.alpha;
     
-    if (this.glow) {
-      ctx.shadowBlur = 12;
-      ctx.shadowColor = this.color;
-    }
-
     const scale = this.getScale();
 
     if (this.type === 'spark') {
+      if (this.glow) {
+        // Draw soft glow rings instead of expensive shadowBlur
+        const baseColor = this.color.startsWith('rgba') ? this.color : this.color;
+        ctx.fillStyle = baseColor.startsWith('#') ? `${baseColor}15` : 'rgba(255,255,255,0.08)';
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size * scale * 2.5, 0, Math.PI * 2);
+        ctx.fill();
+        
+        ctx.fillStyle = baseColor.startsWith('#') ? `${baseColor}35` : 'rgba(255,255,255,0.2)';
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size * scale * 1.6, 0, Math.PI * 2);
+        ctx.fill();
+      }
       ctx.fillStyle = this.color;
       ctx.beginPath();
       ctx.arc(this.x, this.y, this.size * scale, 0, Math.PI * 2);
@@ -66,11 +74,23 @@ class Particle {
       ctx.strokeText(this.text, this.x, this.y);
       ctx.fillText(this.text, this.x, this.y);
     } else if (this.type === 'star') {
+      if (this.glow) {
+        const baseColor = this.color.startsWith('rgba') ? this.color : this.color;
+        ctx.fillStyle = baseColor.startsWith('#') ? `${baseColor}20` : 'rgba(255,255,255,0.12)';
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.rotation);
+        this.drawStar(ctx, 0, 0, 5, this.size * scale * 1.8, this.size * scale * 0.4 * 1.8);
+        ctx.fill();
+        ctx.restore();
+      }
+      ctx.save();
       ctx.translate(this.x, this.y);
       ctx.rotate(this.rotation);
       ctx.fillStyle = this.color;
       this.drawStar(ctx, 0, 0, 5, this.size * scale, this.size * scale * 0.4);
       ctx.fill();
+      ctx.restore();
     } else if (this.type === 'ring') {
       ctx.strokeStyle = this.color;
       ctx.lineWidth = 2 * this.alpha;

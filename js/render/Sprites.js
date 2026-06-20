@@ -106,14 +106,17 @@ export class Sprites {
         const blinkVal = Math.sin(time * Math.PI * blinkFreq) * 0.5 + 0.5;
         
         if (blinkVal > 0.3) {
-          ctx.save();
-          ctx.shadowBlur = 10;
-          ctx.shadowColor = "#FF8A65";
+          // Draw outer soft glow halo
+          ctx.fillStyle = `rgba(255, 138, 101, ${blinkVal * 0.25})`;
+          ctx.beginPath();
+          ctx.arc(tx, ty - 3, 7, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Draw inner bright bulb
           ctx.fillStyle = `rgba(255, 138, 101, ${blinkVal})`;
           ctx.beginPath();
           ctx.arc(tx, ty - 3, 3, 0, Math.PI * 2);
           ctx.fill();
-          ctx.restore();
         }
       }
     }
@@ -511,23 +514,29 @@ export class Sprites {
       return {x: x1, y: y2};
     });
 
-    // Draw cube lines
-    ctx.strokeStyle = "rgba(0, 229, 255, 0.75)";
-    ctx.lineWidth = 1.5;
-    ctx.shadowBlur = 10;
-    ctx.shadowColor = "#00E5FF";
-
+    // Draw cube lines using dual-stroke paths (no slow shadowBlur)
     const drawLine = (i, j) => {
-      ctx.beginPath();
       ctx.moveTo(projected[i].x, projected[i].y);
       ctx.lineTo(projected[j].x, projected[j].y);
-      ctx.stroke();
     };
 
-    // Connections
+    // 1. Draw outer soft glow halo lines
+    ctx.strokeStyle = "rgba(0, 229, 255, 0.18)";
+    ctx.lineWidth = 4.5;
+    ctx.beginPath();
     drawLine(0, 1); drawLine(1, 2); drawLine(2, 3); drawLine(3, 0); // back face
     drawLine(4, 5); drawLine(5, 6); drawLine(6, 7); drawLine(7, 4); // front face
     drawLine(0, 4); drawLine(1, 5); drawLine(2, 6); drawLine(3, 7); // interconnects
+    ctx.stroke();
+
+    // 2. Draw inner bright wireframe lines
+    ctx.strokeStyle = "rgba(0, 229, 255, 0.85)";
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    drawLine(0, 1); drawLine(1, 2); drawLine(2, 3); drawLine(3, 0); // back face
+    drawLine(4, 5); drawLine(5, 6); drawLine(6, 7); drawLine(7, 4); // front face
+    drawLine(0, 4); drawLine(1, 5); drawLine(2, 6); drawLine(3, 7); // interconnects
+    ctx.stroke();
 
     // Center quantum core (highly glowing core)
     const coreGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, half * 0.8);
