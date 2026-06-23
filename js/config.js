@@ -11,12 +11,22 @@ export const OFFLINE_EARNINGS_CAP_HOURS = 24;
 export const ERAS_DATA = [
   {
     level: 1,
-    name: "Válvulas (ENIAC)",
-    period: "1940–1956",
-    coinsPerSecond: 1,
-    spriteSize: 0.85, // preenchimento relativo do slot
-    title: "ENIAC — O Gigante Eletrônico",
-    description: "O primeiro computador eletrônico de propósito geral pesava <strong>30 toneladas</strong> e ocupava uma sala inteira! Usava cerca de <strong>18.000 válvulas a vácuo</strong> — tubos de vidro que controlavam a corrente elétrica. Queimavam frequentemente e consumiam energia suficiente para abastecer um bairro. Mas foi o início de tudo.",
+    name: "Máquinas Mecânicas",
+    period: "Séc. XVII–XIX",
+    itemN1: "Engrenagens",
+    itemN2: "Calculadora de Pascal",
+    itemN3: "Máquina Analítica",
+    description: "A Máquina Analítica de Charles Babbage é considerada o primeiro projeto de um computador mecânico de uso geral. Tinha entrada por cartões perfurados, uma unidade de processamento ('moinho') e memória ('depósito'), conceitos usados nos computadores modernos.",
+    quiz: {
+      question: "Quem projetou a Máquina Analítica, considerada o primeiro design conceitual de um computador mecânico de uso geral?",
+      options: [
+        "Alan Turing",
+        "Charles Babbage",
+        "Bill Gates",
+        "Blaise Pascal"
+      ],
+      correct: 1 // Charles Babbage
+    },
     themeClass: "era-1",
     color: "#FFB74D",
     secColor: "#FF8A65",
@@ -24,12 +34,22 @@ export const ERAS_DATA = [
   },
   {
     level: 2,
-    name: "Transistores",
-    period: "1956–1963",
-    coinsPerSecond: 3,
-    spriteSize: 0.70,
-    title: "A Revolução do Silício",
-    description: "Os <strong>transistores</strong> substituíram as válvulas: eram <strong>100× menores</strong>, não esquentavam tanto e raramente queimavam. Um único transistor fazia o trabalho de uma válvula, mas cabia na ponta do dedo. Linguagens como Fortran e COBOL surgiram nesta era, facilitando a programação.",
+    name: "Computadores Eletrônicos",
+    period: "1930–1950",
+    itemN1: "Válvula a Vácuo",
+    itemN2: "Painel de Distribuição",
+    itemN3: "Mainframe Transistorizado",
+    description: "Os mainframes transistorizados marcaram a substituição das grandes válvulas por transistores de silício. Isso permitiu computadores centenas de vezes menores, mais rápidos e eficientes energeticamente, impulsionando a computação científica.",
+    quiz: {
+      question: "Qual componente eletrônico que controlava o fluxo de eletricidade em vácuo caracterizou os computadores da primeira geração como o ENIAC?",
+      options: [
+        "Transistor",
+        "Válvula a Vácuo",
+        "Resistor",
+        "Circuito Integrado"
+      ],
+      correct: 1 // Válvula a Vácuo
+    },
     themeClass: "era-2",
     color: "#4FC3F7",
     secColor: "#29B6F6",
@@ -38,11 +58,21 @@ export const ERAS_DATA = [
   {
     level: 3,
     name: "Circuitos Integrados",
-    period: "1964–1971",
-    coinsPerSecond: 10,
-    spriteSize: 0.58,
-    title: "Milhares em um Chip",
-    description: "Jack Kilby e Robert Noyce tiveram a mesma ideia: colocar vários transistores numa única pastilha de silício. Nascia o <strong>circuito integrado (CI)</strong>. Um chip do tamanho de uma unha podia conter milhares de transistores. Os computadores encolheram de salas para armários.",
+    period: "1960–1970",
+    itemN1: "Circuito Integrado",
+    itemN2: "Placa Lógica de Silício",
+    itemN3: "Computador de Navegação Apollo",
+    description: "O AGC (Apollo Guidance Computer) foi uma das primeiras aplicações de circuitos integrados da história. Instalado a bordo das naves Apollo, controlava a navegação e a orientação em tempo real, viabilizando o pouso do homem na Lua.",
+    quiz: {
+      question: "O Computador de Navegação Apollo (AGC) foi um dos pioneiros no uso de circuitos integrados. Qual foi o principal objetivo de sua missão histórica?",
+      options: [
+        "Prever o clima terrestre",
+        "Guiar as naves espaciais para pousar o homem na Lua",
+        "Simular testes nucleares",
+        "Conectar a primeira rede mundial de computadores"
+      ],
+      correct: 1 // Guiar as naves espaciais para pousar o homem na Lua
+    },
     themeClass: "era-3",
     color: "#66BB6A",
     secColor: "#43A047",
@@ -50,12 +80,22 @@ export const ERAS_DATA = [
   },
   {
     level: 4,
-    name: "Microprocessadores (PC)",
-    period: "1971–2000",
-    coinsPerSecond: 30,
-    spriteSize: 0.48,
-    title: "O Computador Pessoal",
-    description: "O Intel 4004 (1971) colocou toda a CPU num único chip — o <strong>microprocessador</strong>. Isso permitiu criar computadores que cabiam numa mesa. O IBM PC (1981) e o Macintosh (1984) levaram a computação para dentro das casas. A Lei de Moore previa: a cada 2 anos, o dobro de transistores no mesmo espaço.",
+    name: "Revolução do Microprocessador",
+    period: "1970–1990",
+    itemN1: "Intel 4004",
+    itemN2: "Placa-Mãe Antiga",
+    itemN3: "IBM PC",
+    description: "O IBM PC (Personal Computer) de 1981 padronizou a arquitetura dos computadores pessoais com sua estrutura aberta. Popularizou o uso de computadores em escritórios e residências e impulsionou a indústria de softwares modernos.",
+    quiz: {
+      question: "Qual foi o primeiro microprocessador comercial em um único chip, lançado pela Intel in 1971?",
+      options: [
+        "Intel 4004",
+        "Intel 8086",
+        "Intel Pentium",
+        "Zilog Z80"
+      ],
+      correct: 0 // Intel 4004
+    },
     themeClass: "era-4",
     color: "#AB47BC",
     secColor: "#8E24AA",
@@ -63,12 +103,22 @@ export const ERAS_DATA = [
   },
   {
     level: 5,
-    name: "Smartphones / IoT",
-    period: "2000–2020",
-    coinsPerSecond: 100,
-    spriteSize: 0.38,
-    title: "O Computador no Bolso",
-    description: "Seu smartphone tem mais poder de processamento que todos os computadores da NASA usados para levar o homem à Lua — e cabe no bolso. Bilhões de transistores em chips menores que uma moeda. A <strong>Internet das Coisas (IoT)</strong> conectou geladeiras, relógios e até lâmpadas.",
+    name: "Computação Pessoal Portátil",
+    period: "1990–2010",
+    itemN1: "Componentes Compactos",
+    itemN2: "Telefone Celular",
+    itemN3: "Primeiro Smartphone",
+    description: "A fusão de telefones celulares, assistentes pessoais (PDAs) e conexão constante à Internet resultou nos primeiros smartphones. Eles colocaram o poder de supercomputadores antigos direto na palma da mão e nos bolsos da sociedade.",
+    quiz: {
+      question: "O conceito de smartphone uniu telefone, assistente digital e internet. Qual foi um dos primeiros modelos comerciais a incorporar essas funções nos anos 90?",
+      options: [
+        "IBM Simon",
+        "Nokia 3310",
+        "Blackberry Bold",
+        "Motorola StarTAC"
+      ],
+      correct: 0 // IBM Simon
+    },
     themeClass: "era-5",
     color: "#EF5350",
     secColor: "#E53935",
@@ -76,12 +126,22 @@ export const ERAS_DATA = [
   },
   {
     level: 6,
-    name: "Computação Quântica",
-    period: "2020+",
-    coinsPerSecond: 500,
-    spriteSize: 0.28,
-    title: "Além do Silício",
-    description: "Qubits em vez de bits. Superposição em vez de 0 e 1. A <strong>computação quântica</strong> promete resolver em minutos problemas que supercomputadores levariam milhares de anos. Ainda experimental, mas representa o próximo salto — onde os átomos são os novos transistores.",
+    name: "Computação Ubíqua e Futuro",
+    period: "2010+",
+    itemN1: "SoC Avançado",
+    itemN2: "Células Lógicas Quânticas",
+    itemN3: "Computador Quântico",
+    description: "Diferente de bits binários (0 e 1), computadores quânticos usam qubits que aproveitam propriedades da mecânica quântica, como superposição e emaranhamento, para processar dados em velocidades massivas, abrindo novas fronteiras na ciência.",
+    quiz: {
+      question: "Qual é a unidade fundamental de informação usada na computação quântica, que pode existir em múltiplos estados simultaneamente?",
+      options: [
+        "Bit",
+        "Byte",
+        "Qubit",
+        "Transistor"
+      ],
+      correct: 2 // Qubit
+    },
     themeClass: "era-6",
     color: "#00E5FF",
     secColor: "#18FFFF",

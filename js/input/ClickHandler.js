@@ -70,7 +70,7 @@ export class ClickHandler {
       const rx = centerX + (Math.random() - 0.5) * 120;
       const ry = centerY + (Math.random() - 0.5) * 120;
       
-      this.particleSystem.addFloatingText(rx, ry, `+${clickVal} ⚡`, era.color);
+      this.particleSystem.addFloatingText(rx, ry, `+${clickVal} PP`, era.color);
     }
 
     if (this.callbacks.onStateChange) {
@@ -100,9 +100,9 @@ export class ClickHandler {
           audio.playBuy();
 
           // Particle spawn on bought slot
-          const era = getEra(1);
+          const era = getEra(this.state.maxEraUnlocked);
           this.particleSystem.addSparks(coords.centerX, coords.centerY, era.color, 15);
-          this.particleSystem.addFloatingText(coords.centerX, coords.centerY - 20, `-${cost} ⚡`, '#EF5350');
+          this.particleSystem.addFloatingText(coords.centerX, coords.centerY - 20, `-${cost} PP`, '#EF5350');
 
           if (this.callbacks.onBuy) {
             this.callbacks.onBuy();

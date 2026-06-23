@@ -81,8 +81,8 @@ export class HUD {
       const subtextEl = this.btnBuy.querySelector('.buy-subtext');
       
       if (mainText) {
-        const era = getEra(1);
-        mainText.textContent = `COMPRAR ${era.name.split('(')[0].trim()} L1`;
+        const era = getEra(maxEraUnlocked);
+        mainText.textContent = `COMPRAR ${era.itemN1} (N1)`;
       }
 
       if (subtextEl) {
@@ -90,11 +90,11 @@ export class HUD {
           subtextEl.innerHTML = '⚠️ GRADE CHEIA';
           subtextEl.style.color = '#EF5350';
         } else if (!canAfford) {
-          subtextEl.innerHTML = `Custo: <span id="buy-cost-value">${this.formatNumber(buyCost)}</span> ⚡`;
+          subtextEl.innerHTML = `Custo: <span id="buy-cost-value">${this.formatNumber(buyCost)}</span> PP`;
           subtextEl.style.color = '#757575';
           this.buyCostEl = document.getElementById('buy-cost-value');
         } else {
-          subtextEl.innerHTML = `Custo: <span id="buy-cost-value">${this.formatNumber(buyCost)}</span> ⚡`;
+          subtextEl.innerHTML = `Custo: <span id="buy-cost-value">${this.formatNumber(buyCost)}</span> PP`;
           subtextEl.style.color = '';
           this.buyCostEl = document.getElementById('buy-cost-value');
         }

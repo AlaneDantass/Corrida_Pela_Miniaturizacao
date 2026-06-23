@@ -68,7 +68,7 @@ export class EraCard {
       ctx.fill();
 
       // Draw sprite in center
-      Sprites.draw(ctx, level, 60, 60, 90, 0); // static draw with time = 0
+      Sprites.draw(ctx, level, 3, 60, 60, 90, 0); // static draw with time = 0
     }
 
     // Display overlay

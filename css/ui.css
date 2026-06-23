@@ -582,3 +582,316 @@
     width: 95%;
   }
 }
+
+/* Quiz Option Buttons */
+.btn-quiz-option {
+  width: 100%;
+  padding: 0.9rem 1.2rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.btn-quiz-option:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 15px var(--glow-color);
+  transform: translateX(4px);
+}
+
+.btn-quiz-option.correct {
+  background: rgba(76, 175, 80, 0.15) !important;
+  border-color: #4CAF50 !important;
+  color: #81C784 !important;
+  box-shadow: 0 0 15px rgba(76, 175, 80, 0.3) !important;
+}
+
+.btn-quiz-option.incorrect {
+  background: rgba(244, 67, 54, 0.15) !important;
+  border-color: #F44336 !important;
+  color: #E57373 !important;
+  box-shadow: 0 0 15px rgba(244, 67, 54, 0.3) !important;
+}
+
+.btn-quiz-option.shake {
+  animation: shake 0.4s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-8px); }
+  40%, 80% { transform: translateX(8px); }
+}
+
+/* 🎓 Tutorial Narrative - Amelia Vance Overlay Styles (Victorian/Steampunk Aesthetic) */
+.tutorial-overlay {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100vw;
+  background: transparent; /* Sem fundo escuro por padrão — só o card aparece */
+  z-index: 9990;
+  display: none; /* Hidden by default */
+  justify-content: center;
+  align-items: flex-end;
+  padding-bottom: 5vh;
+  pointer-events: none;
+}
+
+/* Escurece toda a tela APENAS quando o jogo está travado (stage 3) */
+body.tutorial-locked .tutorial-overlay {
+  top: 0;
+  height: 100vh;
+  background: rgba(18, 12, 9, 0.65);
+}
+
+.tutorial-card {
+  width: 90%;
+  max-width: 700px;
+  background: rgba(43, 27, 23, 0.96); /* Dark brown */
+  border: 3px double #CD7F32; /* Double bronze border */
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), inset 0 0 15px rgba(205, 127, 50, 0.2);
+  padding: 1.5rem;
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  position: relative;
+  border-color: #D4AF37; /* Gold/Brass border */
+  color: #F5EBE6; /* Creamy text */
+  pointer-events: auto; /* Re-enable clicks for the dialog and buttons inside it */
+  z-index: 10002; /* Above panel lift (10000) and highlight (10001) */
+}
+
+/* Lock controls ONLY during stages where locks:true (class tutorial-locked) */
+body.tutorial-locked button:not(.tutorial-highlight):not(.btn-tutorial-next):not(.btn-tutorial-skip) {
+  pointer-events: none !important;
+  opacity: 0.45 !important;
+  cursor: not-allowed !important;
+  filter: grayscale(0.4);
+}
+
+/* Canvas drag-drop locked only in tutorial-locked mode */
+body.tutorial-locked canvas:not(.tutorial-highlight) {
+  pointer-events: none !important;
+}
+
+/* Amelia Vance Avatar */
+.tutorial-avatar-wrapper {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%; /* circular avatar space */
+  background: #5D4037; /* Victorian warm brown background */
+  border: 2px solid #D4AF37; /* Gold/Brass border */
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem; /* Large emoji size */
+  user-select: none;
+}
+
+.tutorial-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.tutorial-speaker {
+  font-family: 'Orbitron', monospace;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #D4AF37; /* Gold/Brass */
+  text-shadow: 0 0 6px rgba(212, 175, 55, 0.4);
+  letter-spacing: 1px;
+}
+
+.tutorial-text {
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: #EFEBE9;
+  font-weight: 300;
+  margin: 0;
+  min-height: 2.8rem;
+}
+
+.tutorial-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.8rem;
+  margin-top: 0.4rem;
+}
+
+.btn-tutorial-next {
+  background: transparent;
+  border: 1px solid #CD7F32;
+  color: #D4AF37;
+  font-family: 'Orbitron', monospace;
+  font-weight: bold;
+  font-size: 0.85rem;
+  padding: 6px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  animation: btn-blink-tutorial 1.2s infinite alternate;
+  text-decoration: none;
+  box-shadow: 0 0 5px rgba(205, 127, 50, 0.2);
+}
+
+.btn-tutorial-next:hover {
+  background: #D4AF37;
+  color: #2B1B17;
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+  animation-play-state: paused;
+}
+
+/* Botão Pular Narração — discreto, à esquerda */
+.btn-tutorial-skip {
+  background: transparent;
+  border: none;
+  color: #6D5E4A;
+  font-size: 0.72rem;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 3px;
+  transition: color 0.2s ease;
+  text-decoration: none;
+  order: -1; /* fica à esquerda do Próximo */
+}
+
+.btn-tutorial-skip:hover {
+  color: #CD7F32;
+}
+
+@keyframes btn-blink-tutorial {
+  0% {
+    opacity: 0.5;
+    box-shadow: 0 0 2px rgba(212, 175, 55, 0.2);
+  }
+  100% {
+    opacity: 1;
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.6);
+  }
+}
+
+/* Highlight focused tutorial elements */
+.tutorial-highlight {
+  position: relative !important;
+  z-index: 10001 !important;
+  pointer-events: auto !important;
+  border: 2px solid #D4AF37 !important;
+  box-shadow: 0 0 0 5px rgba(212, 175, 55, 0.35), 0 0 35px rgba(212, 175, 55, 0.8) !important;
+  animation: tutorial-pulse 1.5s infinite ease-in-out !important;
+  border-radius: inherit !important;
+}
+
+@keyframes tutorial-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.3), 0 0 20px rgba(212, 175, 55, 0.5) !important;
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(212, 175, 55, 0.5), 0 0 50px rgba(212, 175, 55, 0.9) !important;
+  }
+}
+
+/* Panel containing the highlighted element: lifted above the dark overlay backdrop */
+.tutorial-panel-lift {
+  position: relative !important;
+  z-index: 10000 !important;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), 0 0 30px rgba(212, 175, 55, 0.25) !important;
+  border-color: rgba(212, 175, 55, 0.6) !important;
+}
+
+/* 🗃️ Component Gallery (Galeria de Componentes) */
+.gallery-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  flex: 1;
+  justify-content: space-around;
+  padding: 0.5rem 0;
+}
+
+.gallery-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.2rem;
+  text-align: center;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+  position: relative;
+}
+
+.gallery-item:hover {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 20px var(--glow-color), inset 0 0 15px rgba(255, 255, 255, 0.02);
+  transform: translateY(-2px);
+}
+
+.gallery-level {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--accent-primary);
+  letter-spacing: 1.5px;
+  margin-bottom: 0.8rem;
+  text-shadow: 0 0 8px var(--glow-color-strong);
+  text-transform: uppercase;
+}
+
+.gallery-preview {
+  width: 70px;
+  height: 70px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px dashed var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.8rem;
+  font-size: 2.2rem;
+  transition: transform 0.3s ease;
+  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.3);
+}
+
+.gallery-item:hover .gallery-preview {
+  transform: scale(1.05) rotate(5deg);
+  border-style: solid;
+  border-color: var(--accent-primary);
+}
+
+.gallery-name {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* Divisor estético entre os itens */
+.gallery-item-header-divider {
+  width: 40px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-color), transparent);
+  margin: 0.2rem auto 0.8rem auto;
+}
+
+
+

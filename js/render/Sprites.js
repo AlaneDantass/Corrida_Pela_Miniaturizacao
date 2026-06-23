@@ -2,43 +2,56 @@
 
 export class Sprites {
   /**
-   * Draws a computer sprite of a specific level at a given coordinate.
+   * Draws an item sprite of a specific era and level at a given coordinate.
    * @param {CanvasRenderingContext2D} ctx - Canvas context
-   * @param {number} level - Computer level (1 to 6)
+   * @param {number} eraLevel - Active Era level (1 to 6)
+   * @param {number} itemLevel - Item level within the era (1 to 3)
    * @param {number} x - Center X coordinate
    * @param {number} y - Center Y coordinate
    * @param {number} size - Square bounding size
    * @param {number} time - Current game elapsed time in seconds (for animation)
    */
-  static draw(ctx, level, x, y, size, time) {
+  static draw(ctx, eraLevel, itemLevel, x, y, size, time) {
     ctx.save();
     
     // Set shadow configs for glow
     ctx.shadowBlur = 0;
     ctx.shadowColor = "transparent";
 
-    switch(level) {
-      case 1:
-        this.drawEniac(ctx, x, y, size, time);
+    switch(eraLevel) {
+      case 1: // Máquinas Mecânicas
+        if (itemLevel === 1) this.drawGear(ctx, x, y, size, time);
+        else if (itemLevel === 2) this.drawPascaline(ctx, x, y, size, time);
+        else this.drawAnalyticalEngine(ctx, x, y, size, time);
         break;
-      case 2:
-        this.drawMainframe(ctx, x, y, size, time);
+      case 2: // Computadores Eletrônicos
+        if (itemLevel === 1) this.drawVacuumTube(ctx, x, y, size, time);
+        else if (itemLevel === 2) this.drawValvePanel(ctx, x, y, size, time);
+        else this.drawMainframe(ctx, x, y, size, time);
         break;
-      case 3:
-        this.drawCI(ctx, x, y, size, time);
+      case 3: // Circuitos Integrados
+        if (itemLevel === 1) this.drawICChip(ctx, x, y, size, time);
+        else if (itemLevel === 2) this.drawLogicBoard(ctx, x, y, size, time);
+        else this.drawApolloGuidance(ctx, x, y, size, time);
         break;
-      case 4:
-        this.drawClassicPC(ctx, x, y, size, time);
+      case 4: // Revolução do Microprocessador
+        if (itemLevel === 1) this.drawIntel4004(ctx, x, y, size, time);
+        else if (itemLevel === 2) this.drawMotherboard(ctx, x, y, size, time);
+        else this.drawClassicPC(ctx, x, y, size, time);
         break;
-      case 5:
-        this.drawSmartphone(ctx, x, y, size, time);
+      case 5: // Computação Pessoal Portátil
+        if (itemLevel === 1) this.drawCompactComponents(ctx, x, y, size, time);
+        else if (itemLevel === 2) this.drawBrickPhone(ctx, x, y, size, time);
+        else this.drawSmartphone(ctx, x, y, size, time);
         break;
-      case 6:
-        this.drawQuantum(ctx, x, y, size, time);
+      case 6: // Computação Ubíqua e Futuro
+        if (itemLevel === 1) this.drawSoC(ctx, x, y, size, time);
+        else if (itemLevel === 2) this.drawQuantumCells(ctx, x, y, size, time);
+        else this.drawQuantum(ctx, x, y, size, time);
         break;
       default:
         // Fallback: draw a generic chip
-        this.drawGeneric(ctx, x, y, size, level);
+        this.drawGeneric(ctx, x, y, size, itemLevel);
     }
     
     ctx.restore();
@@ -582,5 +595,723 @@ export class Sprites {
     ctx.lineTo(x, y + radius.tl);
     ctx.quadraticCurveTo(x, y, x + radius.tl, y);
     ctx.closePath();
+  }
+
+  // --- ERA 1: Máquinas Mecânicas ---
+  
+  // N1: Engrenagens
+  static drawGear(ctx, x, y, size, time) {
+    const rOuter = size * 0.4;
+    const rInner = size * 0.15;
+    const teeth = 8;
+    
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(time * 2.0); // Spin!
+    
+    // Draw Teeth
+    ctx.fillStyle = "#FFB74D"; // Brass
+    ctx.strokeStyle = "#E65100";
+    ctx.lineWidth = 2;
+    
+    for (let i = 0; i < teeth; i++) {
+      ctx.rotate((Math.PI * 2) / teeth);
+      ctx.beginPath();
+      ctx.rect(-size * 0.08, -rOuter - size * 0.06, size * 0.16, size * 0.12);
+      ctx.fill();
+      ctx.stroke();
+    }
+    
+    // Outer circle
+    ctx.beginPath();
+    ctx.arc(0, 0, rOuter, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    
+    // Inner hole
+    ctx.fillStyle = "#0B0D17"; // Grid bg color
+    ctx.beginPath();
+    ctx.arc(0, 0, rInner, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    
+    ctx.restore();
+  }
+
+  // N2: Calculadora de Pascal
+  static drawPascaline(ctx, x, y, size, time) {
+    const w = size * 0.9;
+    const h = size * 0.55;
+    const left = x - w / 2;
+    const top = y - h / 2;
+
+    // Wooden body
+    ctx.fillStyle = "#8D6E63";
+    ctx.strokeStyle = "#4E342E";
+    ctx.lineWidth = 3;
+    this.roundRect(ctx, left, top, w, h, 6);
+    ctx.fill();
+    ctx.stroke();
+
+    // Brass metal top plate
+    ctx.fillStyle = "#FFE082";
+    ctx.strokeStyle = "#FFB300";
+    ctx.lineWidth = 1.5;
+    ctx.fillRect(left + 6, top + 6, w - 12, h - 12);
+    ctx.strokeRect(left + 6, top + 6, w - 12, h - 12);
+
+    // 4 spinning gears/dials
+    const dialCount = 4;
+    const gap = (w - 20) / (dialCount + 1);
+    for (let i = 0; i < dialCount; i++) {
+      const dx = left + 10 + (i + 1) * gap;
+      const dy = y;
+      
+      // Dial wheel
+      ctx.save();
+      ctx.translate(dx, dy);
+      ctx.rotate(time * 1.2 * (i % 2 === 0 ? 1 : -1));
+      
+      ctx.fillStyle = "#FFB300";
+      ctx.strokeStyle = "#FF6F00";
+      ctx.lineWidth = 1;
+      
+      ctx.beginPath();
+      ctx.arc(0, 0, size * 0.12, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      // spokes
+      ctx.beginPath();
+      for (let j = 0; j < 6; j++) {
+        ctx.rotate(Math.PI / 3);
+        ctx.moveTo(0, 0);
+        ctx.lineTo(size * 0.12, 0);
+      }
+      ctx.stroke();
+      ctx.restore();
+    }
+  }
+
+  // N3: Máquina Analítica (Steampunk gear machine)
+  static drawAnalyticalEngine(ctx, x, y, size, time) {
+    const w = size * 0.9;
+    const h = size * 0.9;
+    const left = x - w / 2;
+    const top = y - h / 2;
+
+    // Heavy cast iron framing
+    ctx.fillStyle = "#455A64";
+    ctx.strokeStyle = "#37474F";
+    ctx.lineWidth = 3;
+    this.roundRect(ctx, left, top, w, h, 8);
+    ctx.fill();
+    ctx.stroke();
+
+    // Brass core
+    ctx.fillStyle = "#FFB300";
+    ctx.fillRect(left + 10, top + 10, w - 20, h - 20);
+
+    // Drawing interlocking gears
+    ctx.save();
+    // Gear A
+    ctx.translate(x - w * 0.22, y - h * 0.22);
+    ctx.rotate(time * 1.5);
+    this.drawGearShape(ctx, size * 0.22, 10, "#FFD54F");
+    ctx.restore();
+
+    ctx.save();
+    // Gear B (interlocking)
+    ctx.translate(x + w * 0.22, y - h * 0.22);
+    ctx.rotate(-time * 1.5 + 0.2);
+    this.drawGearShape(ctx, size * 0.22, 10, "#FFD54F");
+    ctx.restore();
+
+    ctx.save();
+    // Gear C (middle large)
+    ctx.translate(x, y + h * 0.15);
+    ctx.rotate(time * 0.8);
+    this.drawGearShape(ctx, size * 0.32, 12, "#FFE082");
+    ctx.restore();
+
+    // Punch cards hanging out of the slots
+    ctx.fillStyle = "#D7CCC8";
+    ctx.strokeStyle = "#8D6E63";
+    ctx.lineWidth = 1;
+    ctx.fillRect(left + w * 0.15, top + h * 0.72, w * 0.7, h * 0.18);
+    ctx.strokeRect(left + w * 0.15, top + h * 0.72, w * 0.7, h * 0.18);
+
+    // Punch card holes
+    ctx.fillStyle = "#3E2723";
+    for (let c = 0; c < 5; c++) {
+      for (let r = 0; r < 2; r++) {
+        if ((c + r) % 2 === 0) {
+          ctx.fillRect(left + w * 0.25 + c * 10, top + h * 0.76 + r * 6, 4, 3);
+        }
+      }
+    }
+  }
+
+  // Gear drawing helper
+  static drawGearShape(ctx, radius, teeth, color) {
+    ctx.fillStyle = color;
+    ctx.strokeStyle = "rgba(0,0,0,0.25)";
+    ctx.lineWidth = 1;
+    
+    for (let i = 0; i < teeth; i++) {
+      ctx.rotate((Math.PI * 2) / teeth);
+      ctx.beginPath();
+      ctx.rect(-radius * 0.16, -radius - radius * 0.15, radius * 0.32, radius * 0.3);
+      ctx.fill();
+      ctx.stroke();
+    }
+    
+    ctx.beginPath();
+    ctx.arc(0, 0, radius, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = "rgba(0,0,0,0.4)";
+    ctx.beginPath();
+    ctx.arc(0, 0, radius * 0.25, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // --- ERA 2: Computadores Eletrônicos ---
+
+  // N1: Válvula a Vácuo (Vacuum Tube)
+  static drawVacuumTube(ctx, x, y, size, time) {
+    ctx.save();
+    // Base connector
+    ctx.fillStyle = "#37474F";
+    ctx.strokeStyle = "#263238";
+    ctx.lineWidth = 2;
+    ctx.fillRect(x - size * 0.2, y + size * 0.25, size * 0.4, size * 0.15);
+    ctx.strokeRect(x - size * 0.2, y + size * 0.25, size * 0.4, size * 0.15);
+
+    // Pins
+    ctx.fillStyle = "#CFD8DC";
+    ctx.fillRect(x - size * 0.1, y + size * 0.4, size * 0.05, size * 0.08);
+    ctx.fillRect(x + size * 0.05, y + size * 0.4, size * 0.05, size * 0.08);
+
+    // Glass bulb outline
+    ctx.fillStyle = "rgba(255, 255, 255, 0.05)";
+    ctx.strokeStyle = "#ECEFF1";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(x, y - size * 0.05, size * 0.25, Math.PI, 0, false);
+    ctx.lineTo(x + size * 0.25, y + size * 0.25);
+    ctx.lineTo(x - size * 0.25, y + size * 0.25);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // Glowing Filament (animated pulse)
+    const glowVal = Math.sin(time * 5.0) * 0.3 + 0.7;
+    ctx.strokeStyle = `rgba(255, 87, 34, ${glowVal})`;
+    ctx.shadowBlur = 15;
+    ctx.shadowColor = "#FF5722";
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(x - size * 0.06, y + size * 0.25);
+    ctx.lineTo(x - size * 0.06, y - size * 0.08);
+    ctx.lineTo(x, y - size * 0.16);
+    ctx.lineTo(x + size * 0.06, y - size * 0.08);
+    ctx.lineTo(x + size * 0.06, y + size * 0.25);
+    ctx.stroke();
+
+    ctx.restore();
+  }
+
+  // N2: Painel de Distribuição (Panel of 4 blinking valves)
+  static drawValvePanel(ctx, x, y, size, time) {
+    const w = size * 0.9;
+    const h = size * 0.9;
+    const left = x - w / 2;
+    const top = y - h / 2;
+
+    // Cabinet backing
+    ctx.fillStyle = "#2D323E";
+    ctx.strokeStyle = "#4D5361";
+    ctx.lineWidth = 2.5;
+    this.roundRect(ctx, left, top, w, h, 6);
+    ctx.fill();
+    ctx.stroke();
+
+    // Dark inset
+    ctx.fillStyle = "#11141A";
+    ctx.fillRect(left + 6, top + 6, w - 12, h - 12);
+
+    // 4 mini vacuum tubes in grid
+    const cols = 2;
+    const rows = 2;
+    const gapX = (w - 12) / cols;
+    const gapY = (h - 12) / rows;
+
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        const tx = left + 6 + c * gapX + gapX / 2;
+        const ty = top + 6 + r * gapY + gapY / 2;
+        
+        // Render small vacuum tube
+        this.drawVacuumTube(ctx, tx, ty - 6, size * 0.48, time + (r * 2 + c) * 0.5);
+      }
+    }
+  }
+
+  // --- ERA 3: Circuitos Integrados ---
+
+  // N1: Circuito Integrado (IC Chip DIP)
+  static drawICChip(ctx, x, y, size, time) {
+    const w = size * 0.8;
+    const h = size * 0.45;
+    const left = x - w / 2;
+    const top = y - h / 2;
+
+    ctx.save();
+    // Metal pins on the sides
+    ctx.fillStyle = "#CFD8DC";
+    const pinsCount = 6;
+    const pinGap = w / (pinsCount + 1);
+
+    for (let i = 0; i < pinsCount; i++) {
+      const px = left + (i + 1) * pinGap;
+      // Top pins
+      ctx.fillRect(px - size * 0.03, top - size * 0.08, size * 0.06, size * 0.09);
+      // Bottom pins
+      ctx.fillRect(px - size * 0.03, top + h - 0.01, size * 0.06, size * 0.09);
+    }
+
+    // Black main body
+    ctx.fillStyle = "#263238";
+    ctx.strokeStyle = "#455A64";
+    ctx.lineWidth = 2.5;
+    this.roundRect(ctx, left, top, w, h, 4);
+    ctx.fill();
+    ctx.stroke();
+
+    // Center indentation notch (DIP indicator)
+    ctx.fillStyle = "#37474F";
+    ctx.beginPath();
+    ctx.arc(left, y, size * 0.08, -Math.PI / 2, Math.PI / 2);
+    ctx.fill();
+
+    // Golden dot pin 1 marker
+    ctx.fillStyle = "#FFD54F";
+    ctx.beginPath();
+    ctx.arc(left + pinGap, top + h - size * 0.08, size * 0.03, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Subtle laser etching text
+    ctx.fillStyle = "rgba(255,255,255,0.18)";
+    ctx.font = `bold ${Math.floor(size * 0.08)}px monospace`;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("TI-7400", x, y);
+
+    ctx.restore();
+  }
+
+  // N2: Placa Lógica de Silício
+  static drawLogicBoard(ctx, x, y, size, time) {
+    const w = size * 0.9;
+    const h = size * 0.9;
+    const left = x - w / 2;
+    const top = y - h / 2;
+
+    // Green PCB
+    ctx.fillStyle = "#1B5E20";
+    ctx.strokeStyle = "#2E7D32";
+    ctx.lineWidth = 3;
+    this.roundRect(ctx, left, top, w, h, 6);
+    ctx.fill();
+    ctx.stroke();
+
+    // Draw tracks (circuit copper lines)
+    ctx.strokeStyle = "rgba(255,235,59,0.3)";
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(left + 15, top + 15);
+    ctx.lineTo(left + w - 15, top + 15);
+    ctx.lineTo(left + w - 15, y - 5);
+    ctx.lineTo(x, y - 5);
+    ctx.lineTo(x, top + h - 15);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(left + 15, top + h - 15);
+    ctx.lineTo(left + 15, y + 10);
+    ctx.lineTo(left + w - 15, y + 10);
+    ctx.stroke();
+
+    // Draw capacitors (small circles)
+    ctx.fillStyle = "#4FC3F7"; // light blue caps
+    ctx.beginPath();
+    ctx.arc(left + 25, top + 25, size * 0.06, 0, Math.PI * 2);
+    ctx.arc(left + w - 25, top + h - 25, size * 0.06, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Resistors
+    ctx.fillStyle = "#A1887F";
+    ctx.fillRect(left + 18, y - 16, w * 0.15, h * 0.05);
+
+    // Draw two logic IC chips
+    this.drawICChip(ctx, x, y - size * 0.15, size * 0.52, time);
+    this.drawICChip(ctx, x, y + size * 0.22, size * 0.52, time);
+  }
+
+  // N3: Apollo Guidance Computer Console (DSKY console interface)
+  static drawApolloGuidance(ctx, x, y, size, time) {
+    const w = size * 0.9;
+    const h = size * 0.9;
+    const left = x - w / 2;
+    const top = y - h / 2;
+
+    // Metal gray chassis
+    ctx.fillStyle = "#B0BEC5";
+    ctx.strokeStyle = "#78909C";
+    ctx.lineWidth = 3;
+    this.roundRect(ctx, left, top, w, h, 6);
+    ctx.fill();
+    ctx.stroke();
+
+    // Top Segment Display Screen
+    ctx.fillStyle = "#101010";
+    ctx.fillRect(left + 8, top + 8, w - 16, h * 0.45);
+
+    // DSKY labels and status indicators
+    ctx.fillStyle = "#FFB300"; // orange digit colors
+    ctx.font = `bold ${Math.floor(size * 0.09)}px 'Orbitron', monospace`;
+    ctx.textAlign = "right";
+    
+    // Status text (Comp Activity, Program, Verb, Noun)
+    ctx.fillStyle = "#4CAF50";
+    ctx.fillRect(left + 14, top + 14, 12, 12); // Comp act light blinking
+    
+    const active = Math.sin(time * 6.0) > 0;
+    if (active) {
+      ctx.fillStyle = "rgba(76, 175, 80, 0.4)";
+      ctx.fillRect(left + 14, top + 14, 12, 12);
+    }
+    
+    ctx.fillStyle = "#FFB300";
+    ctx.fillText("PROG   06", left + w - 16, top + 26);
+    ctx.fillText("VERB   37", left + w - 16, top + 52);
+    ctx.fillText("NOUN   88", left + w - 16, top + 78);
+
+    // Keyboard keys grid (at the bottom)
+    const keyRows = 3;
+    const keyCols = 4;
+    const kw = (w - 24) / keyCols;
+    const kh = (h * 0.42) / keyRows;
+
+    for (let r = 0; r < keyRows; r++) {
+      for (let c = 0; c < keyCols; c++) {
+        const kx = left + 12 + c * kw;
+        const ky = top + h * 0.5 + r * kh;
+        
+        ctx.fillStyle = "#37474F";
+        ctx.fillRect(kx + 2, ky + 2, kw - 4, kh - 4);
+        
+        // white keycap letters
+        ctx.fillStyle = "#FFF";
+        ctx.font = `bold ${Math.floor(size * 0.05)}px sans-serif`;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        
+        let label = "KEY";
+        if (r === 0 && c === 0) label = "VERB";
+        else if (r === 0 && c === 1) label = "NOUN";
+        else if (r === 0 && c === 2) label = "CLR";
+        else if (r === 0 && c === 3) label = "PRO";
+        else if (r === 2 && c === 3) label = "ENTR";
+        else label = `${(r * keyCols + c) % 10}`;
+
+        ctx.fillText(label, kx + kw / 2, ky + kh / 2);
+      }
+    }
+  }
+
+  // --- ERA 4: Revolução do Microprocessador ---
+
+  // N1: Intel 4004 (Dual-in-line gold-cap microprocessor)
+  static drawIntel4004(ctx, x, y, size, time) {
+    const w = size * 0.85;
+    const h = size * 0.42;
+    const left = x - w / 2;
+    const top = y - h / 2;
+
+    ctx.save();
+    // Silver pins
+    ctx.fillStyle = "#B0BEC5";
+    const pinsCount = 8;
+    const pinGap = w / (pinsCount + 1);
+
+    for (let i = 0; i < pinsCount; i++) {
+      const px = left + (i + 1) * pinGap;
+      ctx.fillRect(px - size * 0.02, top - size * 0.07, size * 0.04, size * 0.08);
+      ctx.fillRect(px - size * 0.02, top + h - 0.01, size * 0.04, size * 0.08);
+    }
+
+    // Grey ceramic body
+    ctx.fillStyle = "#CFD8DC";
+    ctx.strokeStyle = "#90A4AE";
+    ctx.lineWidth = 2;
+    this.roundRect(ctx, left, top, w, h, 3);
+    ctx.fill();
+    ctx.stroke();
+
+    // Center Gold cap/die
+    ctx.fillStyle = "#FFD54F";
+    ctx.strokeStyle = "#FFB300";
+    ctx.lineWidth = 1.5;
+    ctx.fillRect(x - w * 0.2, top + h * 0.15, w * 0.4, h * 0.7);
+    ctx.strokeRect(x - w * 0.2, top + h * 0.15, w * 0.4, h * 0.7);
+
+    // Intel logo-like text etching
+    ctx.fillStyle = "#0D47A1";
+    ctx.font = `italic bold ${Math.floor(size * 0.06)}px sans-serif`;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("intel 4004", x, y);
+
+    ctx.restore();
+  }
+
+  // N2: Placa-Mãe Antiga
+  static drawMotherboard(ctx, x, y, size, time) {
+    const w = size * 0.9;
+    const h = size * 0.9;
+    const left = x - w / 2;
+    const top = y - h / 2;
+
+    // Cyan/Dark blue PCB board
+    ctx.fillStyle = "#006064";
+    ctx.strokeStyle = "#004d40";
+    ctx.lineWidth = 3;
+    this.roundRect(ctx, left, top, w, h, 6);
+    ctx.fill();
+    ctx.stroke();
+
+    // Draw copper tracks
+    ctx.strokeStyle = "rgba(255,255,255,0.15)";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    for (let i = 0; i < 4; i++) {
+      ctx.moveTo(left + 15 + i * 8, top + 15);
+      ctx.lineTo(left + 15 + i * 8, top + h - 15);
+    }
+    ctx.stroke();
+
+    // Socket for CPU (white grid)
+    ctx.fillStyle = "#ECEFF1";
+    ctx.fillRect(left + 15, y - size * 0.25, size * 0.4, size * 0.4);
+
+    // Ram Slots (long slots on the side)
+    ctx.fillStyle = "#000";
+    ctx.fillRect(left + w - 24, top + 15, 6, h - 30);
+    ctx.fillRect(left + w - 14, top + 15, 6, h - 30);
+    
+    // Ram sticks
+    ctx.fillStyle = "#2E7D32";
+    ctx.fillRect(left + w - 23, top + 25, 4, h - 50);
+    ctx.fillRect(left + w - 13, top + 25, 4, h - 50);
+
+    // CPU chip in socket (the 4004)
+    this.drawIntel4004(ctx, left + 15 + size * 0.2, y - size * 0.05, size * 0.38, time);
+  }
+
+  // --- ERA 5: Computação Pessoal Portátil ---
+
+  // N1: Componentes Compactos (SMD components and small sensor chip)
+  static drawCompactComponents(ctx, x, y, size, time) {
+    const w = size * 0.8;
+    const h = size * 0.8;
+    const left = x - w / 2;
+    const top = y - h / 2;
+
+    // Tiny blue system board
+    ctx.fillStyle = "#1565C0";
+    ctx.strokeStyle = "#0D47A1";
+    ctx.lineWidth = 2;
+    this.roundRect(ctx, left, top, w, h, 4);
+    ctx.fill();
+    ctx.stroke();
+
+    // Draw little surface mount chips
+    // Chip A
+    ctx.fillStyle = "#000";
+    ctx.fillRect(left + 8, top + 8, w * 0.35, h * 0.35);
+    ctx.fillStyle = "#ECEFF1";
+    ctx.fillRect(left + 10, top + 10, 4, 4); // pin 1 marker
+
+    // Chip B (flat package)
+    ctx.fillStyle = "#37474F";
+    ctx.fillRect(left + w - 26, top + h - 26, 18, 18);
+
+    // Silver capacitors
+    ctx.fillStyle = "#B0BEC5";
+    ctx.fillRect(left + w * 0.6, top + 12, 10, 6);
+    ctx.fillStyle = "#D7CCC8"; // tantalum brown cap
+    ctx.fillRect(left + 12, top + h * 0.6, 12, 8);
+  }
+
+  // N2: Celular Tijolão (Retro brick phone)
+  static drawBrickPhone(ctx, x, y, size, time) {
+    const w = size * 0.45;
+    const h = size * 0.95;
+    const left = x - w / 2;
+    const top = y - h / 2;
+
+    ctx.save();
+    // Antenna
+    ctx.fillStyle = "#000";
+    ctx.fillRect(left + 8, top - size * 0.2, 4, size * 0.2);
+
+    // Phone plastic body
+    ctx.fillStyle = "#37474F";
+    ctx.strokeStyle = "#263238";
+    ctx.lineWidth = 2.5;
+    this.roundRect(ctx, left, top, w, h, 8);
+    ctx.fill();
+    ctx.stroke();
+
+    // Small LCD screen bezel
+    ctx.fillStyle = "#CFD8DC";
+    ctx.fillRect(left + 4, top + 8, w - 8, h * 0.2);
+
+    // Screen text (Green background)
+    ctx.fillStyle = "#9CCC65";
+    ctx.fillRect(left + 6, top + 10, w - 12, h * 0.2 - 4);
+    
+    // Small pixel text representation
+    ctx.fillStyle = "#1B5E20";
+    ctx.fillRect(left + 10, top + 16, w - 20, 2);
+    ctx.fillRect(left + 10, top + 21, w - 24, 2);
+
+    // Keypad keys grid
+    const keyRows = 4;
+    const keyCols = 3;
+    const kw = (w - 12) / keyCols;
+    const kh = (h * 0.5) / keyRows;
+
+    for (let r = 0; r < keyRows; r++) {
+      for (let c = 0; c < keyCols; c++) {
+        const kx = left + 6 + c * kw;
+        const ky = top + h * 0.35 + r * kh;
+        
+        ctx.fillStyle = "#B0BEC5";
+        ctx.fillRect(kx + 1, ky + 1, kw - 2, kh - 2);
+      }
+    }
+
+    ctx.restore();
+  }
+
+  // --- ERA 6: Computação Ubíqua e Futuro ---
+
+  // N1: SoC Avançado (Glowing mobile system-on-chip)
+  static drawSoC(ctx, x, y, size, time) {
+    const w = size * 0.85;
+    const h = size * 0.85;
+    const left = x - w / 2;
+    const top = y - h / 2;
+
+    ctx.save();
+    // Metal base
+    ctx.fillStyle = "#212121";
+    ctx.strokeStyle = "#424242";
+    ctx.lineWidth = 2;
+    this.roundRect(ctx, left, top, w, h, 6);
+    ctx.fill();
+    ctx.stroke();
+
+    // Center metallic lid
+    ctx.fillStyle = "#2D3033";
+    this.roundRect(ctx, left + 8, top + 8, w - 16, h - 16, 4);
+    ctx.fill();
+
+    // Glowing laser tracks (representing futuristic high-speed buses)
+    const intensity = Math.sin(time * 6.0) * 0.25 + 0.75;
+    ctx.strokeStyle = `rgba(0, 229, 255, ${intensity})`;
+    ctx.shadowBlur = 10;
+    ctx.shadowColor = "#00E5FF";
+    ctx.lineWidth = 1.5;
+
+    // Draw symmetric glowing circuit design
+    ctx.beginPath();
+    ctx.moveTo(left + 16, top + 16);
+    ctx.lineTo(x, y);
+    ctx.lineTo(left + w - 16, top + 16);
+    ctx.moveTo(left + 16, top + h - 16);
+    ctx.lineTo(x, y);
+    ctx.lineTo(left + w - 16, top + h - 16);
+    ctx.stroke();
+
+    // Center silicon die core
+    ctx.fillStyle = "#1A1D20";
+    ctx.shadowBlur = 0; // reset shadow for core fill
+    ctx.fillRect(x - 12, y - 12, 24, 24);
+
+    ctx.fillStyle = "#00E5FF";
+    ctx.font = `bold ${Math.floor(size * 0.07)}px 'Orbitron', monospace`;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("BIONIC", x, y);
+
+    ctx.restore();
+  }
+
+  // N2: Células Lógicas Quânticas (Quantum entanglement nodes)
+  static drawQuantumCells(ctx, x, y, size, time) {
+    const r = size * 0.35;
+
+    ctx.save();
+    // Draw background energy field (glowing pulses)
+    const innerGlow = ctx.createRadialGradient(x, y, 0, x, y, r * 1.5);
+    innerGlow.addColorStop(0, "rgba(24, 255, 255, 0.15)");
+    innerGlow.addColorStop(1, "rgba(0,0,0,0)");
+    ctx.fillStyle = innerGlow;
+    ctx.beginPath();
+    ctx.arc(x, y, r * 1.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Nodes coordinate list
+    const nodes = [
+      { dx: -r * 0.8, dy: -r * 0.6 },
+      { dx: r * 0.8, dy: -r * 0.5 },
+      { dx: -r * 0.3, dy: r * 0.7 },
+      { dx: r * 0.5, dy: r * 0.8 },
+      { dx: 0, dy: -r * 0.1 }
+    ];
+
+    // Draw connection waves/lines
+    ctx.strokeStyle = "rgba(0, 229, 255, 0.35)";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    for (let i = 0; i < nodes.length; i++) {
+      for (let j = i + 1; j < nodes.length; j++) {
+        ctx.moveTo(x + nodes[i].dx, y + nodes[i].dy);
+        ctx.lineTo(x + nodes[j].dx, y + nodes[j].dy);
+      }
+    }
+    ctx.stroke();
+
+    // Draw glowing nodes (orbiting / vibrating slightly)
+    nodes.forEach((node, idx) => {
+      const vibX = Math.sin(time * 4.0 + idx) * 3;
+      const vibY = Math.cos(time * 3.5 + idx) * 3;
+      const nx = x + node.dx + vibX;
+      const ny = y + node.dy + vibY;
+
+      ctx.fillStyle = idx === 4 ? "#FFF" : "#00E5FF";
+      ctx.shadowBlur = 12;
+      ctx.shadowColor = "#00E5FF";
+      ctx.beginPath();
+      ctx.arc(nx, ny, idx === 4 ? 4.5 : 3.5, 0, Math.PI * 2);
+      ctx.fill();
+    });
+
+    ctx.restore();
   }
 }

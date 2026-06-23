@@ -74,10 +74,10 @@ header h1 span {
 .game-container {
   flex: 1;
   display: grid;
-  grid-template-columns: 350px 1fr;
+  grid-template-columns: 350px 1fr 350px;
   gap: 1.5rem;
   padding: 1.5rem;
-  max-width: 1400px;
+  max-width: 1600px;
   width: 100%;
   margin: 0 auto;
   align-items: stretch;
@@ -153,11 +153,24 @@ header h1 span {
 }
 
 /* Responsive Rules */
+@media (max-width: 1200px) {
+  .game-container {
+    grid-template-columns: 300px 1fr;
+    max-width: 1100px;
+  }
+  .sidebar-right {
+    display: none !important;
+  }
+}
+
 @media (max-width: 1024px) {
   .game-container {
     grid-template-columns: 300px 1fr;
     padding: 1rem;
     gap: 1rem;
+  }
+  .sidebar-right {
+    display: none !important;
   }
 }
 
@@ -182,6 +195,10 @@ header h1 span {
   
   .sidebar {
     order: 2;
+  }
+  
+  .sidebar-right {
+    display: none !important;
   }
   
   .game-board-container {

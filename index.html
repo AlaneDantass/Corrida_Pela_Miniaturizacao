@@ -1,20 +1,24 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Corrida pela Miniaturização — Computer Evolution</title>
-  
+
   <!-- SEO Meta Tags -->
-  <meta name="description" content="Fundir computadores em diferentes gerações para progredir de enormes armários a vácuo até a nanotecnologia e computação quântica.">
-  <meta name="keywords" content="jogo clicker, fusão de itens, história da computação, computadores retro, computação quântica, ENIAC, smartphone">
-  
+  <meta name="description"
+    content="Fundir computadores em diferentes gerações para progredir de enormes armários a vácuo até a nanotecnologia e computação quântica.">
+  <meta name="keywords"
+    content="jogo clicker, fusão de itens, história da computação, computadores retro, computação quântica, ENIAC, smartphone">
+
   <!-- CSS Stylesheets -->
   <link rel="stylesheet" href="css/themes.css">
   <link rel="stylesheet" href="css/animations.css">
   <link rel="stylesheet" href="css/main.css">
   <link rel="stylesheet" href="css/ui.css">
 </head>
+
 <body class="era-1">
 
   <!-- Retro CRT Scanline Effect -->
@@ -26,7 +30,7 @@
   <!-- Game Header -->
   <header>
     <h1>🖥️ CORRIDA PELA <span>MINIATURIZAÇÃO</span></h1>
-    
+
     <!-- Top Bar Controls -->
     <div class="top-controls">
       <!-- Music Indicator -->
@@ -44,18 +48,21 @@
       <button class="btn-control" id="btn-mute" title="Mutar/Desmutar Som" aria-label="Mutar/Desmutar Som">
         <!-- Sound On Icon -->
         <svg class="sound-on" viewBox="0 0 24 24" width="24" height="24">
-          <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+          <path
+            d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" />
         </svg>
         <!-- Sound Off Icon -->
         <svg class="sound-off" viewBox="0 0 24 24" width="24" height="24" style="display: none;">
-          <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.21.05-.42.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>
+          <path
+            d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.21.05-.42.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z" />
         </svg>
       </button>
 
       <!-- Reset Game Button -->
       <button class="btn-control" id="btn-reset" title="Reiniciar Progresso" aria-label="Reiniciar Progresso">
         <svg viewBox="0 0 24 24" width="24" height="24">
-          <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
+          <path
+            d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" />
         </svg>
       </button>
     </div>
@@ -63,38 +70,38 @@
 
   <!-- Game Body Layout -->
   <main class="game-container">
-    
+
     <!-- Sidebar Controls -->
     <section class="sidebar">
-      
+
       <!-- Current Research Cycle stats -->
       <article class="panel float-ui">
         <h2 class="panel-title">Estação de Pesquisa</h2>
         <div class="stats-container">
           <div class="stat-row">
-            <span class="stat-label">Ciclos Acumulados:</span>
+            <span class="stat-label">Pontos de Pesquisa (PP):</span>
             <span class="stat-value currency-text" id="currency-value">0</span>
           </div>
           <div class="stat-row">
             <span class="stat-label">Geração Passiva:</span>
-            <span class="stat-value small currency-text"><span id="cps-value">0</span> ⚡/s</span>
+            <span class="stat-value small currency-text"><span id="cps-value">0</span> PP/s</span>
           </div>
         </div>
-        
+
         <!-- Active Click Button -->
         <button class="btn-research" id="btn-research">
           <span>REALIZAR PESQUISA</span>
-          <span class="click-power">+<span id="click-power-value">1</span> ⚡ por clique</span>
+          <span class="click-power">+<span id="click-power-value">1</span> PP por clique</span>
         </button>
       </article>
 
       <!-- Buy Computer Section -->
       <article class="panel">
         <h2 class="panel-title">Fábrica de Hardware</h2>
-        
+
         <button class="btn-buy" id="btn-buy" disabled>
           <span>COMPRAR ENIAC L1</span>
-          <span class="buy-subtext">Custo: <span id="buy-cost-value">10</span> ⚡</span>
+          <span class="buy-subtext">Custo: <span id="buy-cost-value">10</span> PP</span>
         </button>
 
         <div class="slots-indicator">
@@ -110,12 +117,44 @@
           <!-- Populated by Timeline.js -->
         </div>
       </article>
-      
+
     </section>
 
     <!-- Canvas Grid Area -->
     <section class="game-board-container crt-flicker-screen">
       <canvas id="game-canvas"></canvas>
+    </section>
+
+    <!-- Sidebar Right: Component Gallery -->
+    <section class="sidebar sidebar-right">
+      <article class="panel" style="flex: 1; display: flex; flex-direction: column;">
+        <h2 class="panel-title">Galeria de Componentes</h2>
+        <div class="gallery-container">
+          <div class="gallery-item">
+            <div class="gallery-level">Nível 1</div>
+            <div class="gallery-preview">
+              <canvas class="gallery-preview-canvas" width="70" height="70"></canvas>
+            </div>
+            <div class="gallery-name">Peça N1</div>
+          </div>
+          <div class="gallery-item">
+            <div class="gallery-item-header-divider"></div>
+            <div class="gallery-level">Nível 2</div>
+            <div class="gallery-preview">
+              <canvas class="gallery-preview-canvas" width="70" height="70"></canvas>
+            </div>
+            <div class="gallery-name">Peça N2</div>
+          </div>
+          <div class="gallery-item">
+            <div class="gallery-item-header-divider"></div>
+            <div class="gallery-level">Nível 3</div>
+            <div class="gallery-preview">
+              <canvas class="gallery-preview-canvas" width="70" height="70"></canvas>
+            </div>
+            <div class="gallery-name">Peça N3</div>
+          </div>
+        </div>
+      </article>
     </section>
 
   </main>
@@ -155,7 +194,7 @@
         <p class="currency-text offline-time" style="font-size: 1.4rem; margin: 0.5rem 0;"></p>
         <p>Seus computadores de grid geraram:</p>
         <p class="currency-text offline-earnings" style="font-size: 2.2rem; font-weight: 900; margin: 0.5rem 0;"></p>
-        <p>Ciclos de Pesquisa ⚡ acumulados e adicionados ao saldo.</p>
+        <p>Pontos de Pesquisa (PP) acumulados e adicionados ao saldo.</p>
       </div>
       <div class="modal-footer">
         <button class="btn-modal-action">COLETAR CRÉDITOS</button>
@@ -167,19 +206,22 @@
   <div class="modal-overlay fade-in" id="modal-victory">
     <div class="modal-card zoom-in-modal" role="dialog" aria-modal="true" aria-labelledby="victory-title">
       <div class="modal-header">
-        <div class="modal-subtitle" style="color: #00E5FF; text-shadow: 0 0 10px rgba(0,229,255,0.4);">Objetivo Cumprido</div>
-        <h2 class="modal-title" id="victory-title" style="color: #fff; text-shadow: 0 0 15px rgba(255,255,255,0.5);">Singularidade Atingida!</h2>
+        <div class="modal-subtitle" style="color: #00E5FF; text-shadow: 0 0 10px rgba(0,229,255,0.4);">Objetivo Cumprido
+        </div>
+        <h2 class="modal-title" id="victory-title" style="color: #fff; text-shadow: 0 0 15px rgba(255,255,255,0.5);">
+          Singularidade Atingida!</h2>
       </div>
       <div class="modal-body">
-        <p style="text-align: center;">Parabéns! Você viajou pela história da computação, miniaturizando o poder de processamento de gabinetes de 30 toneladas para nano-qubits quânticos.</p>
-        
+        <p style="text-align: center;">Parabéns! Você viajou pela história da computação, miniaturizando o poder de
+          processamento de gabinetes de 30 toneladas para nano-qubits quânticos.</p>
+
         <div class="victory-stats-grid">
           <div class="victory-stat-item">
             <div class="victory-stat-lbl">Tempo de Corrida</div>
             <div class="victory-stat-val victory-stat-time">0m 0s</div>
           </div>
           <div class="victory-stat-item">
-            <div class="victory-stat-lbl">Ciclos Produzidos</div>
+            <div class="victory-stat-lbl">Pontos de Pesquisa Produzidos</div>
             <div class="victory-stat-val victory-stat-total-coins">0</div>
           </div>
         </div>
@@ -189,11 +231,70 @@
           <div class="victory-stat-val victory-stat-prestige" style="color: #66BB6A;">+0%</div>
         </div>
 
-        <p style="text-align: center; font-size: 0.85rem; color: #9AA0A6;">Deseja reiniciar a pesquisa para obter o bônus de prestígio de <strong>+50% na geração de Ciclos</strong> ou continuar aprimorando seu grid no modo sandbox?</p>
+        <p style="text-align: center; font-size: 0.85rem; color: #9AA0A6;">Deseja reiniciar a pesquisa para obter o
+          bônus de prestígio de <strong>+50% na geração de PP</strong> ou continuar aprimorando seu grid no modo
+          sandbox?</p>
       </div>
-      <div class="modal-footer victory-actions">
-        <button class="btn-modal-secondary" id="btn-sandbox">MODO SANDBOX</button>
-        <button class="btn-modal-action" id="btn-prestige" style="flex: 1.5;">PRESTIGIAR (+50% SPD)</button>
+      <div class="modal-footer victory-actions" style="flex-direction: column; gap: 0.8rem;">
+        <div style="display:flex; gap:0.8rem; width:100%;">
+          <button class="btn-modal-secondary" id="btn-sandbox">MODO SANDBOX</button>
+          <button class="btn-modal-action" id="btn-prestige" style="flex: 1.5;">PRESTIGIAR (+50% SPD)</button>
+        </div>
+        <label id="label-skip-narration" style="display:flex; align-items:center; gap:0.5rem; font-size:0.8rem; color:#9AA0A6; cursor:pointer; user-select:none;">
+          <input type="checkbox" id="chk-skip-narration" style="accent-color:#D4AF37; width:14px; height:14px;">
+          Não mostrar a narração da Amelia nos próximos jogos
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Quiz / Tech Limit Modal -->
+  <div class="modal-overlay fade-in" id="modal-quiz">
+    <div class="modal-card zoom-in-modal" role="dialog" aria-modal="true" aria-labelledby="quiz-title">
+      <div class="modal-header">
+        <div class="modal-subtitle" id="quiz-subtitle"
+          style="color: #FF5252; text-shadow: 0 0 10px rgba(255,82,82,0.4);">Limite Tecnológico Atingido</div>
+        <h2 class="modal-title" id="quiz-title" style="color: #fff;">Quiz de Transição</h2>
+      </div>
+      <div class="modal-body">
+        <!-- New Tech Announcement Box -->
+        <div id="quiz-tech-info"
+          style="border: 1px dashed var(--accent-primary); background: rgba(255, 255, 255, 0.02); border-radius: 10px; padding: 1.2rem; margin-bottom: 0.5rem; box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.01);">
+          <h3
+            style="margin-top: 0; color: var(--accent-primary); font-family: 'Orbitron', monospace; font-size: 1rem; text-shadow: 0 0 8px var(--glow-color);">
+            Tecnologia Descoberta: <span id="quiz-tech-name">Nome da Tecnologia</span></h3>
+          <p id="quiz-tech-desc"
+            style="margin: 0; font-size: 0.85rem; line-height: 1.5; color: var(--text-primary); font-weight: 300;"></p>
+        </div>
+
+        <p style="text-align: center; font-weight: 600; margin-bottom: 0.5rem; font-family: 'Orbitron', sans-serif; font-size: 0.95rem;"
+          id="quiz-question-text">Pergunta...</p>
+
+        <div id="quiz-options-container" style="display: flex; flex-direction: column; gap: 0.8rem; width: 100%;">
+          <!-- Dynamic Quiz Option Buttons -->
+        </div>
+
+        <p id="quiz-feedback-text"
+          style="text-align: center; color: #FF5252; font-weight: bold; display: none; margin: 0; font-size: 0.9rem; text-shadow: 0 0 8px rgba(255, 82, 82, 0.3);">
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. Narrative Tutorial Overlay (Amelia Vance) -->
+  <div class="tutorial-overlay" id="tutorial-overlay" style="display: none;">
+    <div class="tutorial-card" id="tutorial-card">
+      <!-- Left side: avatar-amelia placeholder with emoji -->
+      <div class="tutorial-avatar-wrapper" id="avatar-amelia">⚙️</div>
+      
+      <!-- Right side: Content with Name and dialogue text -->
+      <div class="tutorial-content">
+        <div class="tutorial-speaker">Amelia Vance</div>
+        <p class="tutorial-text" id="tutorial-text">Olá! Eu sou a Dra. Amelia Vance, orientadora de pesquisa. Vou guiar você em seus primeiros passos rumo à miniaturização da tecnologia.</p>
+        <div class="tutorial-actions">
+          <button class="btn-tutorial-next" id="btn-tutorial-next">[Próximo ➔]</button>
+          <button class="btn-tutorial-skip" id="btn-tutorial-skip" title="Desativar narração permanentemente">Pular narração ✕</button>
+        </div>
       </div>
     </div>
   </div>
@@ -201,4 +302,5 @@
   <!-- Entry Script -->
   <script type="module" src="js/main.js"></script>
 </body>
+
 </html>
