@@ -16,6 +16,8 @@ export class Timeline {
 
     this.container.innerHTML = '';
     
+    const ROMAN_NUMERALS = ['', 'I', 'II', 'III', 'IV', 'V', 'VI'];
+    
     // Generate list items for each Era
     ERAS_DATA.forEach(era => {
       const item = document.createElement('div');
@@ -23,7 +25,7 @@ export class Timeline {
       item.id = `timeline-era-${era.level}`;
       
       item.innerHTML = `
-        <div class="timeline-dot">${era.level}</div>
+        <div class="timeline-dot">${ROMAN_NUMERALS[era.level] || era.level}</div>
         <div class="timeline-info">
           <span class="timeline-name" id="timeline-name-${era.level}">???</span>
           <span class="timeline-year">${era.period}</span>

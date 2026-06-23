@@ -28,9 +28,10 @@ export const ERAS_DATA = [
       correct: 1 // Charles Babbage
     },
     themeClass: "era-1",
-    color: "#FFB74D",
-    secColor: "#FF8A65",
-    bgColor: "#0B0D17"
+    color: "#C9A227",
+    secColor: "#8B4513",
+    bgColor: "#2C1810",
+    accentColor: "#E8891A"
   },
   {
     level: 2,
@@ -51,9 +52,10 @@ export const ERAS_DATA = [
       correct: 1 // Válvula a Vácuo
     },
     themeClass: "era-2",
-    color: "#4FC3F7",
-    secColor: "#29B6F6",
-    bgColor: "#0A1628"
+    color: "#E05A1A",
+    secColor: "#5A3020",
+    bgColor: "#1A1008",
+    accentColor: "#FF6B2B"
   },
   {
     level: 3,
@@ -74,9 +76,10 @@ export const ERAS_DATA = [
       correct: 1 // Guiar as naves espaciais para pousar o homem na Lua
     },
     themeClass: "era-3",
-    color: "#66BB6A",
-    secColor: "#43A047",
-    bgColor: "#0B1A0F"
+    color: "#4A9E6B",
+    secColor: "#2A5A3A",
+    bgColor: "#0D1F14",
+    accentColor: "#39D966"
   },
   {
     level: 4,
@@ -97,9 +100,10 @@ export const ERAS_DATA = [
       correct: 0 // Intel 4004
     },
     themeClass: "era-4",
-    color: "#AB47BC",
-    secColor: "#8E24AA",
-    bgColor: "#140B1E"
+    color: "#C8A878",
+    secColor: "#6B5A3A",
+    bgColor: "#1A1508",
+    accentColor: "#F0B840"
   },
   {
     level: 5,
@@ -120,9 +124,10 @@ export const ERAS_DATA = [
       correct: 0 // IBM Simon
     },
     themeClass: "era-5",
-    color: "#EF5350",
-    secColor: "#E53935",
-    bgColor: "#1A0B0B"
+    color: "#8AB4D4",
+    secColor: "#3A5A7A",
+    bgColor: "#0A1020",
+    accentColor: "#60A0E0"
   },
   {
     level: 6,
@@ -144,8 +149,9 @@ export const ERAS_DATA = [
     },
     themeClass: "era-6",
     color: "#00E5FF",
-    secColor: "#18FFFF",
-    bgColor: "#060E1A"
+    secColor: "#0050A0",
+    bgColor: "#020814",
+    accentColor: "#40FFCC"
   }
 ];
 

@@ -547,7 +547,7 @@ export class GameEngine {
 
   draw() {
     const era = getEra(this.state.maxEraUnlocked);
-    const accentHex = era ? era.color : '#FFB74D';
+    const accentHex = era ? era.accentColor : '#E8891A';
 
     // Render animated PCB background
     this.background.draw(accentHex);
