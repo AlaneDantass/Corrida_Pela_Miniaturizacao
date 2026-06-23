@@ -219,17 +219,14 @@ export class Renderer {
     const badgeText = `N${computer.level}`;
     const eraName = era.name.split('(')[0].split('/')[0].trim();
     
-    // Badge background pill
+    // Badge background pill (no slow shadowBlur)
     const badgeWidth = 60;
     const badgeHeight = 18;
     ctx.fillStyle = `${era.color}CC`;
-    ctx.shadowBlur = 8;
-    ctx.shadowColor = era.color;
     this.roundRect(ctx, computer.x - badgeWidth / 2, badgeY - badgeHeight / 2, badgeWidth, badgeHeight, 9);
     ctx.fill();
 
     // Badge text
-    ctx.shadowBlur = 0;
     ctx.fillStyle = '#0B0D17';
     ctx.font = "bold 10px 'Orbitron', monospace";
     ctx.textAlign = 'center';
@@ -255,17 +252,24 @@ export class Renderer {
       }
 
       ctx.save();
+      
+      // Draw outer soft glow ring instead of expensive shadowBlur
       ctx.strokeStyle = sw.color;
-      ctx.lineWidth = 3 * sw.alpha;
-      ctx.globalAlpha = sw.alpha * 0.6;
-      ctx.shadowBlur = 15;
-      ctx.shadowColor = sw.color;
+      ctx.lineWidth = 6 * sw.alpha;
+      ctx.globalAlpha = sw.alpha * 0.15;
       ctx.beginPath();
       ctx.arc(sw.x, sw.y, sw.radius, 0, Math.PI * 2);
       ctx.stroke();
 
-      // Inner glow ring
-      ctx.globalAlpha = sw.alpha * 0.2;
+      // Draw inner sharp ring
+      ctx.lineWidth = 2 * sw.alpha;
+      ctx.globalAlpha = sw.alpha * 0.7;
+      ctx.beginPath();
+      ctx.arc(sw.x, sw.y, sw.radius, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Inner glow solid ring
+      ctx.globalAlpha = sw.alpha * 0.15;
       ctx.fillStyle = sw.color;
       ctx.beginPath();
       ctx.arc(sw.x, sw.y, sw.radius * 0.8, 0, Math.PI * 2);

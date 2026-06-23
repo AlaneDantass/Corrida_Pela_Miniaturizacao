@@ -13,7 +13,18 @@ export class HUD {
     this.slotsUsedEl = document.getElementById('slots-used');
     this.slotsMaxEl = document.getElementById('slots-max');
 
-    this.lastCoinValue = 0;
+    // Cached values to avoid DOM writes
+    this.lastCoins = -1;
+    this.lastCps = -1;
+    this.lastClickPower = -1;
+    this.lastBuyCost = -1;
+    this.lastOccupied = -1;
+    this.lastMaxSlots = -1;
+    this.lastIsFull = null;
+    this.lastCanAfford = null;
+    this.lastMaxEraUnlocked = -1;
+    
+    this.popTimeout = null;
   }
 
   /**
@@ -47,36 +58,55 @@ export class HUD {
     const occupied = grid.getOccupiedCount ? grid.getOccupiedCount() : gridSlots.filter(s => s !== null).length;
     const maxSlots = gridSlots.length;
 
-    // Update text
-    if (this.coinsEl) {
+    // 1. Update coins text with caching
+    const roundedCoins = Math.floor(economy.coins);
+    if (this.coinsEl && roundedCoins !== this.lastCoins) {
       const newVal = this.formatNumber(economy.coins);
-      if (this.coinsEl.textContent !== newVal) {
-        this.coinsEl.textContent = newVal;
-        // Add subtle pop on change
-        if (Math.floor(economy.coins) !== this.lastCoinValue) {
-          this.coinsEl.style.transform = 'scale(1.08)';
-          setTimeout(() => {
-            if (this.coinsEl) this.coinsEl.style.transform = 'scale(1)';
-          }, 150);
-          this.lastCoinValue = Math.floor(economy.coins);
+      this.coinsEl.textContent = newVal;
+      
+      // Add subtle pop on change (only if not initial load)
+      if (this.lastCoins !== -1) {
+        this.coinsEl.style.transform = 'scale(1.08)';
+        if (this.popTimeout) {
+          clearTimeout(this.popTimeout);
         }
+        this.popTimeout = setTimeout(() => {
+          if (this.coinsEl) this.coinsEl.style.transform = 'scale(1)';
+          this.popTimeout = null;
+        }, 150);
       }
+      this.lastCoins = roundedCoins;
     }
     
-    if (this.cpsEl) this.cpsEl.textContent = this.formatNumber(cps);
-    if (this.clickPowerEl) this.clickPowerEl.textContent = this.formatNumber(clickPower);
-    if (this.buyCostEl) this.buyCostEl.textContent = this.formatNumber(buyCost);
-    if (this.slotsUsedEl) this.slotsUsedEl.textContent = occupied.toString();
-    if (this.slotsMaxEl) this.slotsMaxEl.textContent = maxSlots.toString();
+    // 2. Update stats with caching
+    if (this.cpsEl && cps !== this.lastCps) {
+      this.cpsEl.textContent = this.formatNumber(cps);
+      this.lastCps = cps;
+    }
+    if (this.clickPowerEl && clickPower !== this.lastClickPower) {
+      this.clickPowerEl.textContent = this.formatNumber(clickPower);
+      this.lastClickPower = clickPower;
+    }
+    if (this.buyCostEl && buyCost !== this.lastBuyCost) {
+      this.buyCostEl.textContent = this.formatNumber(buyCost);
+      this.lastBuyCost = buyCost;
+    }
+    if (this.slotsUsedEl && occupied !== this.lastOccupied) {
+      this.slotsUsedEl.textContent = occupied.toString();
+      this.lastOccupied = occupied;
+    }
+    if (this.slotsMaxEl && maxSlots !== this.lastMaxSlots) {
+      this.slotsMaxEl.textContent = maxSlots.toString();
+      this.lastMaxSlots = maxSlots;
+    }
 
-    // Disable buy button if full or cannot afford
-    if (this.btnBuy) {
-      const isFull = grid.isFull ? grid.isFull() : gridSlots.every(s => s !== null);
-      const canAfford = economy.canAffordBuy();
-      
+    // 3. Disable and update buy button with caching
+    const isFull = grid.isFull ? grid.isFull() : gridSlots.every(s => s !== null);
+    const canAfford = economy.canAffordBuy();
+    
+    if (this.btnBuy && (isFull !== this.lastIsFull || canAfford !== this.lastCanAfford || buyCost !== this.lastBuyCost || maxEraUnlocked !== this.lastMaxEraUnlocked)) {
       this.btnBuy.disabled = isFull || !canAfford;
 
-      // Update button visual text cues
       const mainText = this.btnBuy.querySelector('span:first-child');
       const subtextEl = this.btnBuy.querySelector('.buy-subtext');
       
@@ -99,6 +129,10 @@ export class HUD {
           this.buyCostEl = document.getElementById('buy-cost-value');
         }
       }
+
+      this.lastIsFull = isFull;
+      this.lastCanAfford = canAfford;
+      this.lastMaxEraUnlocked = maxEraUnlocked;
     }
   }
 }

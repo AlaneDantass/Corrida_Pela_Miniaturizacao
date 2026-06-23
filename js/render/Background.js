@@ -79,19 +79,42 @@ export class Background {
     this.canvas = canvas;
     this.ctx = canvas.getContext('2d');
     this.traces = [];
+    this.meshCanvas = null;
     
     this.resize();
     this.generateTraces();
     
+    let resizeTimeout;
     window.addEventListener('resize', () => {
-      this.resize();
-      this.generateTraces();
+      if (resizeTimeout) clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        this.resize();
+        this.generateTraces();
+      }, 100);
     });
   }
 
   resize() {
-    this.canvas.width = window.innerWidth;
-    this.canvas.height = window.innerHeight;
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    this.canvas.width = w;
+    this.canvas.height = h;
+
+    // Cache the mesh points to an offscreen canvas to avoid doing 1200+ fillRect calls on every frame
+    if (!this.meshCanvas) {
+      this.meshCanvas = document.createElement('canvas');
+    }
+    this.meshCanvas.width = w;
+    this.meshCanvas.height = h;
+
+    const mctx = this.meshCanvas.getContext('2d');
+    mctx.fillStyle = 'rgba(255, 255, 255, 0.015)';
+    const dotSpacing = 40;
+    for (let dx = 0; dx < w; dx += dotSpacing) {
+      for (let dy = 0; dy < h; dy += dotSpacing) {
+        mctx.fillRect(dx, dy, 2, 2);
+      }
+    }
   }
 
   generateTraces() {
@@ -115,13 +138,9 @@ export class Background {
     
     ctx.clearRect(0, 0, w, h);
     
-    // Subtle background mesh points
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.015)';
-    const dotSpacing = 40;
-    for (let dx = 0; dx < w; dx += dotSpacing) {
-      for (let dy = 0; dy < h; dy += dotSpacing) {
-        ctx.fillRect(dx, dy, 2, 2);
-      }
+    // Draw pre-rendered static background mesh points (instant, GPU accelerated)
+    if (this.meshCanvas) {
+      ctx.drawImage(this.meshCanvas, 0, 0);
     }
     
     // Draw traces
