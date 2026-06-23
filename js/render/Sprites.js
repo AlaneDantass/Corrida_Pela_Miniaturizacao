@@ -1,5 +1,35 @@
 /* 🎨 js/render/Sprites.js */
 
+const spriteImages = {};
+
+const spriteFiles = {
+  "1_1": "era1_gear.png",
+  "1_2": "era1_pascaline.png",
+  "1_3": "era1_analytical_engine.png",
+  "2_1": "era2_vacuum_tube.png",
+  "2_2": "era2_valve_panel.png",
+  "2_3": "era2_mainframe.png",
+  "3_1": "era3_ic_chip.png",
+  "3_2": "era3_logic_board.png",
+  "3_3": "era3_apollo_dsky.png",
+  "4_1": "era4_intel4004.png",
+  "4_2": "era4_motherboard.png",
+  "4_3": "era4_ibm_pc.png",
+  "5_1": "era5_compact_components.png",
+  "5_2": "era5_brick_phone.png",
+  "5_3": "era5_smartphone.png",
+  "6_1": "era6_soc.png",
+  "6_2": "era6_quantum_cells.png",
+  "6_3": "era6_quantum_computer.png"
+};
+
+// Preload images from assets/images/sprites/
+for (const [key, filename] of Object.entries(spriteFiles)) {
+  const img = new Image();
+  img.src = `assets/images/sprites/${filename}`;
+  spriteImages[key] = img;
+}
+
 export class Sprites {
   /**
    * Draws an item sprite of a specific era and level at a given coordinate.
@@ -12,6 +42,15 @@ export class Sprites {
    * @param {number} time - Current game elapsed time in seconds (for animation)
    */
   static draw(ctx, eraLevel, itemLevel, x, y, size, time) {
+    const key = `${eraLevel}_${itemLevel}`;
+    const img = spriteImages[key];
+
+    // If custom image is successfully preloaded, draw it
+    if (img && img.complete && img.naturalWidth !== 0) {
+      ctx.drawImage(img, x - size / 2, y - size / 2, size, size);
+      return;
+    }
+
     ctx.save();
     
     // Set shadow configs for glow
