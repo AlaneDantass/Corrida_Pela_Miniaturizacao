@@ -93,7 +93,13 @@ export class GameEngine {
     });
 
     // 4. Load Saved Game or Create default setup
-    this.loadGame();
+    const saved = SaveManager.load();
+    if (saved) {
+      this.state.isPaused = true;
+      this.showLoadSaveModal(saved);
+    } else {
+      this.loadGame();
+    }
 
     // 5. Connect Drag and Drop (Canvas mouse/touch) — pass renderer for shockwaves
     this.dragDrop = new DragDrop(
@@ -375,6 +381,51 @@ export class GameEngine {
         audio.playClick();
       });
     }
+  }
+
+  showLoadSaveModal(saved) {
+    const modal = document.getElementById('modal-load-save');
+    if (!modal) return;
+
+    const eraNameEl = document.getElementById('save-era-name');
+    const cyclesEl = document.getElementById('save-cycles-value');
+    const btnRestart = document.getElementById('btn-restart-fresh');
+    const btnContinue = document.getElementById('btn-continue-save');
+
+    // Update details in modal
+    if (eraNameEl) {
+      const era = getEra(saved.maxEraUnlocked || 1);
+      eraNameEl.textContent = era ? era.name : `Era ${saved.maxEraUnlocked || 1}`;
+    }
+    if (cyclesEl) {
+      cyclesEl.innerHTML = `${this.hud.formatNumber(saved.coins)} PP`;
+    }
+
+    // Event listeners
+    if (btnContinue) {
+      btnContinue.onclick = () => {
+        modal.style.display = 'none';
+        this.loadGame();
+        this.state.isPaused = false;
+        this.updateTheme();
+        this.hud.update(this.economy, this.grid, this.state.maxEraUnlocked);
+        audio.playClick();
+      };
+    }
+
+    if (btnRestart) {
+      btnRestart.onclick = () => {
+        modal.style.display = 'none';
+        this.resetGame();
+        this.loadGame(); // Since save was cleared, this sets up a new game
+        this.state.isPaused = false;
+        this.updateTheme();
+        this.hud.update(this.economy, this.grid, this.state.maxEraUnlocked);
+        audio.playClick();
+      };
+    }
+
+    modal.style.display = 'block';
   }
 
   handleQuizSuccess(eraLevel) {

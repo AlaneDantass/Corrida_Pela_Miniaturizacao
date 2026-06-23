@@ -299,8 +299,29 @@
     </div>
   </div>
 
+  <!-- 6. Game Load/Save Modal -->
+  <div class="modal-overlay fade-in" id="modal-load-save" style="display: none;">
+    <div class="modal-card zoom-in-modal" role="dialog" aria-modal="true" aria-labelledby="load-save-title">
+      <div class="modal-header">
+        <div class="modal-subtitle">Progresso Encontrado</div>
+        <h2 class="modal-title" id="load-save-title">Retomar Pesquisa?</h2>
+      </div>
+      <div class="modal-body" style="text-align: center;">
+        <p>Detectamos um progresso salvo localmente de sua jornada de miniaturização.</p>
+        <div class="save-details-box" style="border: 1px dashed var(--accent-primary); background: rgba(255, 255, 255, 0.02); border-radius: 10px; padding: 1.2rem; margin: 1rem 0; box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.01);">
+          <p style="margin: 0; font-size: 0.95rem;"><strong>Era Alcançada:</strong> <span id="save-era-name" class="currency-text">Era 1</span></p>
+          <p style="margin: 0.5rem 0 0 0; font-size: 0.95rem;"><strong>Saldo de Pontos:</strong> <span id="save-cycles-value" class="currency-text">0 PP</span></p>
+        </div>
+        <p style="font-size: 0.85rem; color: #9AA0A6;">Deseja continuar de onde parou ou iniciar uma nova pesquisa do zero?</p>
+      </div>
+      <div class="modal-footer" style="display: flex; gap: 0.8rem; width: 100%;">
+        <button class="btn-modal-secondary" id="btn-restart-fresh" style="flex: 1;">REINICIAR JOGO</button>
+        <button class="btn-modal-action" id="btn-continue-save" style="flex: 1.5;">CONTINUAR JOGO</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Entry Script -->
   <script type="module" src="js/main.js"></script>
 </body>
-
 </html>
