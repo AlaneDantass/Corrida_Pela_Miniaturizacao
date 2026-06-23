@@ -22,6 +22,7 @@ export class HUD {
     this.lastMaxSlots = -1;
     this.lastIsFull = null;
     this.lastCanAfford = null;
+    this.lastMaxEraUnlocked = -1;
     
     this.popTimeout = null;
   }
@@ -103,15 +104,15 @@ export class HUD {
     const isFull = grid.isFull ? grid.isFull() : gridSlots.every(s => s !== null);
     const canAfford = economy.canAffordBuy();
     
-    if (this.btnBuy && (isFull !== this.lastIsFull || canAfford !== this.lastCanAfford || buyCost !== this.lastBuyCost)) {
+    if (this.btnBuy && (isFull !== this.lastIsFull || canAfford !== this.lastCanAfford || buyCost !== this.lastBuyCost || maxEraUnlocked !== this.lastMaxEraUnlocked)) {
       this.btnBuy.disabled = isFull || !canAfford;
 
       const mainText = this.btnBuy.querySelector('span:first-child');
       const subtextEl = this.btnBuy.querySelector('.buy-subtext');
       
-      if (mainText && (isFull !== this.lastIsFull || buyCost !== this.lastBuyCost)) {
-        const era = getEra(1);
-        mainText.textContent = `COMPRAR ${era.name.split('(')[0].trim()} L1`;
+      if (mainText) {
+        const era = getEra(maxEraUnlocked);
+        mainText.textContent = `COMPRAR ${era.itemN1} (N1)`;
       }
 
       if (subtextEl) {
@@ -119,11 +120,11 @@ export class HUD {
           subtextEl.innerHTML = '⚠️ GRADE CHEIA';
           subtextEl.style.color = '#EF5350';
         } else if (!canAfford) {
-          subtextEl.innerHTML = `Custo: <span id="buy-cost-value">${this.formatNumber(buyCost)}</span> ⚡`;
+          subtextEl.innerHTML = `Custo: <span id="buy-cost-value">${this.formatNumber(buyCost)}</span> PP`;
           subtextEl.style.color = '#757575';
           this.buyCostEl = document.getElementById('buy-cost-value');
         } else {
-          subtextEl.innerHTML = `Custo: <span id="buy-cost-value">${this.formatNumber(buyCost)}</span> ⚡`;
+          subtextEl.innerHTML = `Custo: <span id="buy-cost-value">${this.formatNumber(buyCost)}</span> PP`;
           subtextEl.style.color = '';
           this.buyCostEl = document.getElementById('buy-cost-value');
         }
@@ -131,6 +132,7 @@ export class HUD {
 
       this.lastIsFull = isFull;
       this.lastCanAfford = canAfford;
+      this.lastMaxEraUnlocked = maxEraUnlocked;
     }
   }
 }

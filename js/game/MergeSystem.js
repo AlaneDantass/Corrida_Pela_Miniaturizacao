@@ -41,7 +41,7 @@ export class MergeSystem {
     // Slot occupied by same level - merge!
     if (computer.level === targetComputer.level) {
       const currentLevel = computer.level;
-      const maxLevel = ERAS_DATA.length;
+      const maxLevel = 3; // Max item level within the current era is 3
 
       // Already max level
       if (currentLevel >= maxLevel) {
@@ -62,23 +62,14 @@ export class MergeSystem {
 
       audio.playMerge();
 
-      // Check if this is a newly discovered era
-      let isNewEra = false;
-      if (!erasDiscovered.has(nextLevel)) {
-        isNewEra = true;
-        erasDiscovered.add(nextLevel);
-        audio.playUnlock();
-        
-        // Bonus for discovery: 50 * level^2
-        const discoveryBonus = 50 * nextLevel * nextLevel * economy.getPrestigeMultiplier();
-        economy.addCoins(discoveryBonus);
-      }
+      // Check if we created the Item Final (Level 3)
+      const isFinalItem = (nextLevel === 3);
 
       return {
         success: true,
         action: 'merge',
         level: nextLevel,
-        isNewEra,
+        isFinalItem,
         centerX: targetCoords.centerX,
         centerY: targetCoords.centerY
       };

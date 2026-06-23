@@ -10,10 +10,13 @@ import { ParticleSystem } from '../render/Particles.js';
 import { HUD } from '../ui/HUD.js';
 import { Timeline } from '../ui/Timeline.js';
 import { EraCard } from '../ui/EraCard.js';
+import { QuizSystem } from '../ui/QuizSystem.js';
+import { TutorialSystem } from '../ui/TutorialSystem.js';
 import { DragDrop } from '../input/DragDrop.js';
 import { ClickHandler } from '../input/ClickHandler.js';
 import { getEra, ERAS_DATA } from '../config.js';
 import { audio } from '../audio/SoundManager.js';
+import { ComponentGallery } from '../ui/ComponentGallery.js';
 
 export class GameEngine {
   constructor() {
@@ -24,7 +27,8 @@ export class GameEngine {
       isPaused: false,
       victoryTriggered: false,
       victoryDismissed: false,
-      startTime: Date.now()
+      startTime: Date.now(),
+      tutorialCompleted: false
     };
 
     // Core systems
@@ -56,24 +60,46 @@ export class GameEngine {
     // 3. UI controllers
     this.hud = new HUD();
     this.timeline = new Timeline('timeline-list');
+    this.componentGallery = new ComponentGallery();
     
     this.eraCard = new EraCard('modal-era', {
       onShow: () => {
         this.state.isPaused = true;
+        this.tutorialSystem?.pause();
       },
       onClose: (level) => {
         this.state.isPaused = false;
         this.updateTheme();
-        
-        // Check if level 6 unlocked -> Victory
-        if (level === ERAS_DATA.length && !this.state.victoryTriggered && !this.state.victoryDismissed) {
-          this.triggerVictory();
-        }
+        this.tutorialSystem?.resume();
+      }
+    });
+
+    this.quizSystem = new QuizSystem('modal-quiz', {
+      onSuccess: (eraLevel) => {
+        this.tutorialSystem?.resume();
+        this.handleQuizSuccess(eraLevel);
+      }
+    });
+
+    this.tutorialSystem = new TutorialSystem({
+      onComplete: () => {
+        this.state.tutorialCompleted = true;
+        this.saveGame();
+      },
+      onSkip: () => {
+        this.state.tutorialCompleted = true;
+        this.saveGame();
       }
     });
 
     // 4. Load Saved Game or Create default setup
-    this.loadGame();
+    const saved = SaveManager.load();
+    if (saved) {
+      this.state.isPaused = true;
+      this.showLoadSaveModal(saved);
+    } else {
+      this.loadGame();
+    }
 
     // 5. Connect Drag and Drop (Canvas mouse/touch) — pass renderer for shockwaves
     this.dragDrop = new DragDrop(
@@ -84,17 +110,27 @@ export class GameEngine {
       this.state.erasDiscovered,
       {
         onMerge: (nextLevel) => {
-          if (nextLevel && nextLevel > this.state.maxEraUnlocked) {
-            this.state.maxEraUnlocked = nextLevel;
-          }
           this.saveGame();
+          if (nextLevel === 2) {
+            this.tutorialSystem.checkProgress('merge_items');
+          }
         },
-        onNewEra: (level) => {
-          this.eraCard.show(level);
+        onFinalItemCreated: () => {
+          this.state.isPaused = true;
+          this.tutorialSystem.pause();
+          this.quizSystem.show(this.state.maxEraUnlocked);
         }
       },
       this.renderer
     );
+
+    // Keyboard Cheat Code listener: Press 'P' to show the Era quiz modal for testing
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'p' || e.key === 'P') {
+        this.state.isPaused = true;
+        this.quizSystem.show(this.state.maxEraUnlocked);
+      }
+    });
 
     // 6. Connect Button / controls click handler
     this.clickHandler = new ClickHandler(
@@ -103,10 +139,15 @@ export class GameEngine {
       this.particleSystem,
       this.state,
       {
-        onStateChange: () => this.hud.update(this.economy, this.grid, this.state.maxEraUnlocked),
+        onStateChange: () => {
+          this.hud.update(this.economy, this.grid, this.state.maxEraUnlocked);
+          this.tutorialSystem.checkProgress('click_research');
+          this.tutorialSystem.checkProgress('coin_change');
+        },
         onBuy: () => {
           this.hud.update(this.economy, this.grid, this.state.maxEraUnlocked);
           this.saveGame();
+          this.tutorialSystem.checkProgress('buy_item');
         },
         onReset: () => this.resetGame()
       }
@@ -126,48 +167,67 @@ export class GameEngine {
   }
 
   loadGame() {
-    const saved = SaveManager.load();
-    
-    if (saved) {
-      this.economy.coins = saved.coins;
-      this.economy.totalCoinsEarned = saved.totalCoinsEarned || saved.coins;
-      this.economy.totalPurchases = saved.totalPurchases || 0;
-      this.economy.prestigeCount = saved.prestigeCount || 0;
+    try {
+      const saved = SaveManager.load();
       
-      this.state.maxEraUnlocked = saved.maxEraUnlocked || 1;
-      this.state.erasDiscovered = saved.erasDiscovered;
-      this.state.prestigeCount = saved.prestigeCount || 0;
+      if (saved) {
+        this.economy.coins = saved.coins;
+        this.economy.totalCoinsEarned = saved.totalCoinsEarned || saved.coins;
+        this.economy.totalPurchases = saved.totalPurchases || 0;
+        this.economy.prestigeCount = saved.prestigeCount || 0;
+        
+        this.state.maxEraUnlocked = saved.maxEraUnlocked || 1;
+        this.state.erasDiscovered = saved.erasDiscovered;
+        this.state.prestigeCount = saved.prestigeCount || 0;
+        this.state.tutorialCompleted = saved.tutorialCompleted || false;
 
-      // Recreate computers in grid slots
-      if (saved.grid) {
-        saved.grid.forEach(compData => {
-          const coords = this.grid.getSlotCoordinates(compData.slot);
-          const comp = new Computer(
-            compData.level,
-            compData.slot,
-            coords.centerX,
-            coords.centerY
-          );
-          // Spawn instantly with target scale
-          comp.scale = 1.0; 
-          this.grid.placeComputer(comp, compData.slot);
-        });
-      }
+        // Recreate computers in grid slots
+        if (saved.grid) {
+          saved.grid.forEach(compData => {
+            const coords = this.grid.getSlotCoordinates(compData.slot);
+            if (!coords) return; // Safety check for slot bounds
+            const comp = new Computer(
+              compData.level,
+              compData.slot,
+              coords.centerX,
+              coords.centerY
+            );
+            // Spawn instantly with target scale
+            comp.scale = 1.0; 
+            this.grid.placeComputer(comp, compData.slot);
+          });
+        }
 
-      // Offline Earnings calculation
-      const offline = SaveManager.calculateOfflineEarnings(saved);
-      if (offline.earnings > 0) {
-        this.showOfflineModal(offline.elapsedSeconds, offline.earnings);
+        // Offline Earnings calculation
+        const offline = SaveManager.calculateOfflineEarnings(saved);
+        if (offline.earnings > 0) {
+          this.showOfflineModal(offline.elapsedSeconds, offline.earnings);
+        }
+
+        if (!this.state.tutorialCompleted && this.state.maxEraUnlocked === 1) {
+          this.tutorialSystem.start(this.economy, this.grid);
+        }
+      } else {
+        this.setupNewGame();
       }
-    } else {
-      // New Game Headstart: place level 1 computer in slot 0
-      const coords = this.grid.getSlotCoordinates(0);
-      const startComp = new Computer(1, 0, coords.centerX, coords.centerY);
-      this.grid.placeComputer(startComp, 0);
-      
-      // Auto-save initial state
-      this.saveGame();
+    } catch (e) {
+      console.error("Failed to load saved game, starting fresh:", e);
+      SaveManager.clear();
+      this.setupNewGame();
     }
+  }
+
+  setupNewGame() {
+    // New Game Headstart: place level 1 computer in slot 0
+    const coords = this.grid.getSlotCoordinates(0);
+    const startComp = new Computer(1, 0, coords.centerX, coords.centerY);
+    this.grid.placeComputer(startComp, 0);
+    
+    // Auto-save initial state
+    this.saveGame();
+
+    // Start tutorial for new game
+    this.tutorialSystem.start(this.economy, this.grid);
   }
 
   saveGame() {
@@ -178,6 +238,7 @@ export class GameEngine {
       maxEraUnlocked: this.state.maxEraUnlocked,
       erasDiscovered: this.state.erasDiscovered,
       prestigeCount: this.economy.prestigeCount,
+      tutorialCompleted: this.state.tutorialCompleted,
       grid: this.grid.slots
     });
   }
@@ -199,6 +260,7 @@ export class GameEngine {
     this.state.victoryTriggered = false;
     this.state.victoryDismissed = false;
     this.state.startTime = Date.now();
+    this.state.tutorialCompleted = false;
 
     // Add level 1 computer to slot 0
     const coords = this.grid.getSlotCoordinates(0);
@@ -211,6 +273,9 @@ export class GameEngine {
     // Close modals
     const modalVictory = document.getElementById('modal-victory');
     if (modalVictory) modalVictory.style.display = 'none';
+
+    // Start tutorial again on reset
+    this.tutorialSystem.start(this.economy, this.grid);
   }
 
   showOfflineModal(elapsedSeconds, earnings) {
@@ -272,10 +337,19 @@ export class GameEngine {
     const modal = document.getElementById('modal-victory');
     if (!modal) return;
 
+    const getSkipChecked = () => {
+      const chk = document.getElementById('chk-skip-narration');
+      return chk && chk.checked;
+    };
+
     // Prestige option
     const btnPrestige = modal.querySelector('#btn-prestige');
     if (btnPrestige) {
       btnPrestige.addEventListener('click', () => {
+        if (getSkipChecked()) {
+          this.state.tutorialCompleted = true;
+        }
+
         // Prestige: reset game, but increment prestige multiplier count
         this.economy.prestige();
         
@@ -297,6 +371,10 @@ export class GameEngine {
     const btnSandbox = modal.querySelector('#btn-sandbox');
     if (btnSandbox) {
       btnSandbox.addEventListener('click', () => {
+        if (getSkipChecked()) {
+          this.state.tutorialCompleted = true;
+          this.saveGame();
+        }
         modal.style.display = 'none';
         this.state.isPaused = false;
         this.state.victoryDismissed = true;
@@ -305,16 +383,99 @@ export class GameEngine {
     }
   }
 
+  showLoadSaveModal(saved) {
+    const modal = document.getElementById('modal-load-save');
+    if (!modal) return;
+
+    const eraNameEl = document.getElementById('save-era-name');
+    const cyclesEl = document.getElementById('save-cycles-value');
+    const btnRestart = document.getElementById('btn-restart-fresh');
+    const btnContinue = document.getElementById('btn-continue-save');
+
+    // Update details in modal
+    if (eraNameEl) {
+      const era = getEra(saved.maxEraUnlocked || 1);
+      eraNameEl.textContent = era ? era.name : `Era ${saved.maxEraUnlocked || 1}`;
+    }
+    if (cyclesEl) {
+      cyclesEl.innerHTML = `${this.hud.formatNumber(saved.coins)} PP`;
+    }
+
+    // Event listeners
+    if (btnContinue) {
+      btnContinue.onclick = () => {
+        modal.style.display = 'none';
+        this.loadGame();
+        this.state.isPaused = false;
+        this.updateTheme();
+        this.hud.update(this.economy, this.grid, this.state.maxEraUnlocked);
+        audio.playClick();
+      };
+    }
+
+    if (btnRestart) {
+      btnRestart.onclick = () => {
+        modal.style.display = 'none';
+        this.resetGame();
+        this.loadGame(); // Since save was cleared, this sets up a new game
+        this.state.isPaused = false;
+        this.updateTheme();
+        this.hud.update(this.economy, this.grid, this.state.maxEraUnlocked);
+        audio.playClick();
+      };
+    }
+
+    modal.style.display = 'block';
+  }
+
+  handleQuizSuccess(eraLevel) {
+    if (eraLevel === 6) {
+      this.triggerVictory();
+    } else {
+      const nextEraLevel = eraLevel + 1;
+      
+      // Update unlocked state
+      this.state.maxEraUnlocked = nextEraLevel;
+      this.state.erasDiscovered.add(nextEraLevel);
+
+      // Reset grid
+      this.grid.clear();
+      
+      // Give initial N1 item of the new era in slot 0 as a head start
+      const coords = this.grid.getSlotCoordinates(0);
+      const startComp = new Computer(1, 0, coords.centerX, coords.centerY);
+      this.grid.placeComputer(startComp, 0);
+
+      // Show educational card for the next era
+      this.eraCard.show(nextEraLevel);
+
+      this.updateTheme();
+      this.saveGame();
+      this.hud.update(this.economy, this.grid, this.state.maxEraUnlocked);
+    }
+  }
+
   updateTheme() {
     const era = getEra(this.state.maxEraUnlocked);
     if (!era) return;
+
+    // Preserve tutorial state classes before resetting body className
+    const hadTutorialActive = document.body.classList.contains('tutorial-active');
+    const hadTutorialLocked = document.body.classList.contains('tutorial-locked');
 
     // 1. Update body class (triggers CSS custom property transition)
     document.body.className = '';
     document.body.classList.add(era.themeClass);
 
+    // Restore tutorial classes if they were present
+    if (hadTutorialActive) document.body.classList.add('tutorial-active');
+    if (hadTutorialLocked) document.body.classList.add('tutorial-locked');
+
     // 2. Update timeline highlights
     this.timeline.update(this.state.erasDiscovered, this.state.maxEraUnlocked);
+
+    // 3. Update component gallery items names
+    this.componentGallery?.update(this.state.maxEraUnlocked);
   }
 
   loop(timestamp) {
@@ -353,10 +514,10 @@ export class GameEngine {
           if (occupied.length > 0) {
             const randSlot = occupied[Math.floor(Math.random() * occupied.length)];
             const coords = this.grid.getSlotCoordinates(randSlot);
-            const era = getEra(this.grid.getComputer(randSlot).level);
+            const era = getEra(this.state.maxEraUnlocked);
             this.particleSystem.addFloatingText(
               coords.centerX, coords.centerY - 20,
-              `+${this.hud.formatNumber(earned)} ⚡`,
+              `+${this.hud.formatNumber(earned)} PP`,
               era.color
             );
           }
@@ -386,13 +547,16 @@ export class GameEngine {
 
   draw() {
     const era = getEra(this.state.maxEraUnlocked);
-    const accentHex = era ? era.color : '#FFB74D';
+    const accentHex = era ? era.accentColor : '#E8891A';
 
     // Render animated PCB background
     this.background.draw(accentHex);
 
     // Render game board canvas (grid + computers + active drags)
     const dragState = this.dragDrop.getDragState();
-    this.renderer.render(performance.now() / 1000, dragState, accentHex);
+    this.renderer.render(performance.now() / 1000, dragState, accentHex, this.state.maxEraUnlocked);
+
+    // Render Component Gallery canvas animations
+    this.componentGallery?.draw(performance.now() / 1000);
   }
 }

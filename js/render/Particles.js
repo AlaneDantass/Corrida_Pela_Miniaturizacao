@@ -209,7 +209,7 @@ export class ParticleSystem {
   /**
    * Adds a big "LEVEL UP" text particle.
    */
-  addLevelUpText(x, y, level, color) {
+  addLevelUpText(x, y, levelText, color) {
     this.particles.push(new Particle({
       x,
       y: y - 30,
@@ -219,7 +219,7 @@ export class ParticleSystem {
       size: 20,
       decay: 0.012,
       type: 'text',
-      text: `⬆ LVL ${level}`,
+      text: `⬆ ${levelText}`,
       glow: true,
       scaleStart: 0.3,
       scaleEnd: 1.4

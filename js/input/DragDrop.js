@@ -133,11 +133,12 @@ export class DragDrop {
     if (result.success) {
       if (result.action === 'merge') {
         const nextLevel = result.level;
-        const era = getEra(nextLevel);
+        const currentEraLevel = this.erasDiscovered.size;
+        const era = getEra(currentEraLevel);
         
         // Spawn spectacular merge explosion
         this.particleSystem.addMergeExplosion(result.centerX, result.centerY, era.color, 35);
-        this.particleSystem.addLevelUpText(result.centerX, result.centerY, nextLevel, era.color);
+        this.particleSystem.addLevelUpText(result.centerX, result.centerY, `N${nextLevel}`, era.color);
 
         // Trigger shockwave on the renderer
         if (this.renderer) {
@@ -148,8 +149,8 @@ export class DragDrop {
           this.callbacks.onMerge(nextLevel);
         }
 
-        if (result.isNewEra && this.callbacks.onNewEra) {
-          this.callbacks.onNewEra(nextLevel);
+        if (result.isFinalItem && this.callbacks.onFinalItemCreated) {
+          this.callbacks.onFinalItemCreated();
         }
       } else if (result.action === 'move') {
         if (this.callbacks.onMerge) {

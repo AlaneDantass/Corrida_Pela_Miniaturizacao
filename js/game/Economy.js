@@ -53,16 +53,7 @@ export class Economy {
   }
 
   calculateCps(grid) {
-    let rawCps = 0;
-    grid.forEach(comp => {
-      if (comp) {
-        const era = getEra(comp.level);
-        if (era) {
-          rawCps += era.coinsPerSecond;
-        }
-      }
-    });
-    return Math.floor(rawCps * this.getPrestigeMultiplier());
+    return 0;
   }
 
   prestige() {

@@ -16,6 +16,7 @@ export class SaveManager {
         erasDiscovered: Array.from(state.erasDiscovered),
         grid: state.grid.map((comp, idx) => comp ? { slot: idx, level: comp.level } : null).filter(Boolean),
         prestigeCount: state.prestigeCount || 0,
+        tutorialCompleted: state.tutorialCompleted || false,
         lastSaveTime: Date.now()
       };
       localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(saveData));

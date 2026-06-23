@@ -1,90 +1,302 @@
 /* 🎨 css/themes.css */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
+
 :root {
   /* Default Theme (Era 1 Base) */
-  --accent-primary: #FFB74D;
-  --accent-secondary: #FF8A65;
-  --bg-primary: #0B0D17;
-  --bg-panel: rgba(20, 24, 40, 0.75);
-  --bg-panel-solid: #141828;
-  --text-primary: #E8EAED;
-  --text-secondary: #9AA0A6;
-  --glow-color: rgba(255, 183, 77, 0.25);
-  --glow-color-strong: rgba(255, 183, 77, 0.5);
-  --border-color: rgba(255, 183, 77, 0.2);
-  --card-overlay: rgba(11, 13, 23, 0.95);
-  
-  /* Transition timings */
-  --transition-speed: 1.5s;
+  --primary: #C9A227;
+  --secondary: #8B4513;
+  --background: #2C1810;
+  --panel: #3D2314;
+  --text: #F0C040;
+  --accent: #E8891A;
+  --glow: rgba(201, 162, 39, 0.4);
+
+  /* Timings */
+  --transition-speed: 1.2s;
 }
 
-/* Transitions for root elements when body classes change */
-body {
-  transition: background-color var(--transition-speed) ease,
-              color var(--transition-speed) ease;
+/* Smooth theme transitions */
+body,
+#circuit-bg,
+.panel,
+.panel-title,
+.stat-label,
+.stat-value,
+.currency-text,
+.btn-research,
+.btn-buy,
+.timeline-dot,
+.timeline-name,
+.gallery-item,
+.gallery-level,
+.gallery-name,
+.tutorial-card,
+.modal-card {
+  transition: background 1.2s ease,
+              background-color 1.2s ease,
+              border-color 1.2s ease,
+              color 1.2s ease,
+              box-shadow 1.2s ease;
 }
 
-/* Era 1: Válvulas (Âmbar) */
+/* ERA 1 — Máquinas Mecânicas (Latão e Madeira) */
 body.era-1 {
-  --accent-primary: #FFB74D;
-  --accent-secondary: #FF8A65;
-  --bg-primary: #0B0D17;
-  --bg-panel: rgba(20, 24, 40, 0.75);
-  --glow-color: rgba(255, 183, 77, 0.25);
-  --glow-color-strong: rgba(255, 183, 77, 0.5);
-  --border-color: rgba(255, 183, 77, 0.2);
+  --primary: #C9A227;
+  --secondary: #8B4513;
+  --background: #2C1810;
+  --panel: #3D2314;
+  --text: #F0C040;
+  --accent: #E8891A;
+  --glow: rgba(201, 162, 39, 0.4);
 }
 
-/* Era 2: Transistores (Azul claro) */
+/* ERA 2 — Computadores Eletrônicos (Ferro e Válvulas) */
 body.era-2 {
-  --accent-primary: #4FC3F7;
-  --accent-secondary: #29B6F6;
-  --bg-primary: #0A1628;
-  --bg-panel: rgba(16, 28, 48, 0.75);
-  --glow-color: rgba(79, 195, 247, 0.25);
-  --glow-color-strong: rgba(79, 195, 247, 0.5);
-  --border-color: rgba(79, 195, 247, 0.2);
+  --primary: #E05A1A;
+  --secondary: #5A3020;
+  --background: #1A1008;
+  --panel: #2A1A10;
+  --text: #F0A060;
+  --accent: #FF6B2B;
+  --glow: rgba(224, 90, 26, 0.4);
 }
 
-/* Era 3: Circuitos Integrados (Verde) */
+/* ERA 3 — Circuitos Integrados (Silício Verde) */
 body.era-3 {
-  --accent-primary: #66BB6A;
-  --accent-secondary: #43A047;
-  --bg-primary: #0B1A0F;
-  --bg-panel: rgba(16, 32, 22, 0.75);
-  --glow-color: rgba(102, 187, 106, 0.25);
-  --glow-color-strong: rgba(102, 187, 106, 0.5);
-  --border-color: rgba(102, 187, 106, 0.2);
+  --primary: #4A9E6B;
+  --secondary: #2A5A3A;
+  --background: #0D1F14;
+  --panel: #162B1E;
+  --text: #7AE89A;
+  --accent: #39D966;
+  --glow: rgba(74, 158, 107, 0.4);
 }
 
-/* Era 4: Microprocessadores (Roxo) */
+/* ERA 4 — Microprocessador (Bege e PCB Azul) */
 body.era-4 {
-  --accent-primary: #AB47BC;
-  --accent-secondary: #8E24AA;
-  --bg-primary: #140B1E;
-  --bg-panel: rgba(28, 16, 40, 0.75);
-  --glow-color: rgba(171, 71, 188, 0.25);
-  --glow-color-strong: rgba(171, 71, 188, 0.5);
-  --border-color: rgba(171, 71, 188, 0.2);
+  --primary: #C8A878;
+  --secondary: #6B5A3A;
+  --background: #1A1508;
+  --panel: #2A2010;
+  --text: #E8D0A0;
+  --accent: #F0B840;
+  --glow: rgba(200, 168, 120, 0.4);
 }
 
-/* Era 5: Smartphones/IoT (Vermelho Coral) */
+/* ERA 5 — Computação Portátil (Prata e Vidro) */
 body.era-5 {
-  --accent-primary: #EF5350;
-  --accent-secondary: #E53935;
-  --bg-primary: #1A0B0B;
-  --bg-panel: rgba(36, 16, 16, 0.75);
-  --glow-color: rgba(239, 83, 80, 0.25);
-  --glow-color-strong: rgba(239, 83, 80, 0.5);
-  --border-color: rgba(239, 83, 80, 0.2);
+  --primary: #8AB4D4;
+  --secondary: #3A5A7A;
+  --background: #0A1020;
+  --panel: #141E30;
+  --text: #C8E0F0;
+  --accent: #60A0E0;
+  --glow: rgba(138, 180, 212, 0.4);
 }
 
-/* Era 6: Quântico (Cyan brilhante) */
+/* ERA 6 — Computação Quântica (Ciano Etéreo) */
 body.era-6 {
-  --accent-primary: #00E5FF;
-  --accent-secondary: #18FFFF;
-  --bg-primary: #060E1A;
-  --bg-panel: rgba(10, 26, 42, 0.75);
-  --glow-color: rgba(0, 229, 255, 0.25);
-  --glow-color-strong: rgba(0, 229, 255, 0.5);
-  --border-color: rgba(0, 229, 255, 0.2);
+  --primary: #00E5FF;
+  --secondary: #0050A0;
+  --background: #020814;
+  --panel: #061020;
+  --text: #80F0FF;
+  --accent: #40FFCC;
+  --glow: rgba(0, 229, 255, 0.5);
+}
+
+/* ========================================================== */
+/* UI THEMING OVERRIDES (VINTAGE TRADITIONAL ART STYLE)       */
+/* ========================================================== */
+
+/* FUNDO GERAL */
+body {
+  background-color: var(--background) !important;
+}
+
+#circuit-bg {
+  background-color: var(--background) !important;
+}
+
+/* PAINÉIS (.panel e variantes) */
+.panel, 
+.game-board-container, 
+.modal-card, 
+.tutorial-card {
+  background: color-mix(in srgb, var(--panel) 85%, transparent) !important;
+  border: 2px solid var(--primary) !important;
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5) !important;
+  backdrop-filter: none !important;
+}
+
+/* Detalhes decorativos de cantos para painéis */
+.panel::before,
+.tutorial-card::before {
+  background: radial-gradient(circle at top left, var(--accent) 0%, transparent 70%) !important;
+  border-radius: 14px 0 0 0;
+}
+
+.panel::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 40px;
+  height: 40px;
+  background: radial-gradient(circle at bottom right, var(--accent) 0%, transparent 70%) !important;
+  pointer-events: none;
+}
+
+.tutorial-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 40px;
+  height: 40px;
+  background: radial-gradient(circle at bottom right, var(--accent) 0%, transparent 70%) !important;
+  pointer-events: none;
+  border-radius: 0 0 8px 0;
+}
+
+/* TÍTULOS E LABELS DE SEÇÃO */
+.panel-title,
+header h1,
+header h1 span,
+.modal-title,
+.modal-subtitle,
+.tutorial-speaker {
+  color: var(--text) !important;
+  font-family: 'Cinzel', serif !important;
+  text-shadow: 0 0 8px var(--glow) !important;
+}
+
+/* TEXTOS GERAIS E DESCRIÇÕES */
+p,
+.stat-label,
+.tutorial-text,
+.modal-body,
+.timeline-year,
+.buy-subtext,
+.slots-indicator {
+  color: color-mix(in srgb, var(--text) 85%, transparent) !important;
+  font-family: 'Crimson Text', serif !important;
+}
+
+/* NÚMEROS E STATS */
+.stat-value,
+.currency-text,
+.value,
+.victory-stat-val,
+.offline-earnings,
+.slots-indicator span {
+  color: var(--accent) !important;
+  font-family: 'Orbitron', monospace, sans-serif !important;
+  text-shadow: 0 0 6px var(--glow) !important;
+}
+
+/* BOTÃO "REALIZAR PESQUISA" */
+.btn-research {
+  background: var(--panel) !important;
+  border: 2px solid var(--primary) !important;
+  color: var(--text) !important;
+  font-family: 'Cinzel', serif !important;
+  letter-spacing: 2px !important;
+  box-shadow: none !important;
+}
+
+.btn-research:hover {
+  background: color-mix(in srgb, var(--primary) 30%, transparent) !important;
+  box-shadow: 0 0 12px var(--glow) !important;
+}
+
+/* BOTÃO "COMPRAR HARDWARE" */
+.btn-buy {
+  background: var(--panel) !important;
+  border: 2px solid var(--primary) !important;
+  color: var(--text) !important;
+  font-family: 'Cinzel', serif !important;
+  letter-spacing: 2px !important;
+  box-shadow: none !important;
+}
+
+.btn-buy:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--primary) 30%, transparent) !important;
+  box-shadow: 0 0 12px var(--glow) !important;
+}
+
+.btn-buy:disabled {
+  opacity: 0.4 !important;
+  cursor: not-allowed !important;
+  background: var(--panel) !important;
+  border-color: var(--primary) !important;
+  color: var(--text) !important;
+  box-shadow: none !important;
+  animation: none !important;
+}
+
+.btn-buy:not(:disabled) {
+  animation: buy-glow-pulse 2s infinite alternate !important;
+}
+
+@keyframes buy-glow-pulse {
+  0% {
+    box-shadow: 0 0 4px var(--glow);
+  }
+  100% {
+    box-shadow: 0 0 16px var(--glow);
+  }
+}
+
+/* TIMELINE DAS ERAS */
+.timeline-list::before {
+  border-left: 2px dashed var(--secondary) !important;
+  background: none !important;
+}
+
+.timeline-dot {
+  background: var(--secondary) !important;
+  border: 2px solid var(--primary) !important;
+  font-family: 'Cinzel', serif !important;
+  color: var(--text) !important;
+  box-shadow: none !important;
+}
+
+.timeline-item.active-era .timeline-dot {
+  background: var(--primary) !important;
+  box-shadow: 0 0 15px var(--glow), 0 0 30px var(--glow) !important;
+  color: var(--text) !important;
+}
+
+.timeline-name {
+  font-family: 'Cinzel', serif !important;
+  color: var(--text) !important;
+}
+
+.timeline-item.active-era .timeline-name {
+  color: var(--text) !important;
+  text-shadow: 0 0 8px var(--glow) !important;
+}
+
+/* GALERIA DE COMPONENTES */
+.gallery-item {
+  border: 1px solid color-mix(in srgb, var(--primary) 60%, transparent) !important;
+  background: var(--panel) !important;
+}
+
+.gallery-level {
+  color: var(--accent) !important;
+  font-family: 'Cinzel', serif !important;
+  text-shadow: 0 0 6px var(--glow) !important;
+}
+
+.gallery-name {
+  color: var(--text) !important;
+  font-family: 'Crimson Text', serif !important;
+}
+
+/* INDICADOR DE MÚSICA */
+.music-bar {
+  background: var(--accent) !important;
+  box-shadow: 0 0 4px var(--glow) !important;
 }
