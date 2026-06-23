@@ -2,7 +2,8 @@
 
 Um jogo de simulação estilo clicker/fusão (**Cow Evolution**) ambientado na história evolutiva dos computadores e microprocessadores. Comece fundindo enormes gabinetes a vácuo na década de 1940 e avance as eras tecnológicas até atingir os nano-chips quânticos e a singularidade tecnológica.
 
-https://alanedantass.github.io/Corrida_Pela_Miniaturizacao/
+👉 **[Jogue Online Aqui!](https://alanedantass.github.io/Corrida_Pela_Miniaturizacao/)**
+
 ## 🚀 Como Executar o Jogo
 
 O projeto foi construído sem dependências externas (zero-dependency). Para jogar:
@@ -10,9 +11,9 @@ O projeto foi construído sem dependências externas (zero-dependency). Para jog
 1. Clone o repositório ou navegue até o diretório do projeto.
 2. Inicie um servidor HTTP local simples no diretório raiz.
    - Usando a extensão **Live Server** no VS Code.
-   - Ou usando Python no terminal: `python3 -m http.server 8080`.
+   - Ou usando Python no terminal: `python3 -m http.server 8000`.
    - Ou usando Node.js/npx: `npx serve`.
-3. Abra `http://localhost:8080` (ou a porta correspondente) no seu navegador.
+3. Abra `http://localhost:8000` (ou a porta correspondente) no seu navegador.
 
 ---
 
