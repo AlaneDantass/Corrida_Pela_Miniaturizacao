@@ -23,6 +23,7 @@ export class HUD {
     this.lastIsFull = null;
     this.lastCanAfford = null;
     this.lastMaxEraUnlocked = -1;
+    this.lastIsAwaitingEraTransition = null;
     
     this.popTimeout = null;
   }
@@ -50,13 +51,15 @@ export class HUD {
    * @param {Grid} grid - Grid state
    * @param {number} maxEraUnlocked - Highest unlocked level
    */
-  update(economy, grid, maxEraUnlocked) {
+  update(economy, grid, maxEraUnlocked, state = {}) {
     const gridSlots = grid.slots || grid;
     const cps = economy.calculateCps(gridSlots);
     const clickPower = economy.getClickValue(maxEraUnlocked);
     const buyCost = economy.getBuyCost();
     const occupied = grid.getOccupiedCount ? grid.getOccupiedCount() : gridSlots.filter(s => s !== null).length;
     const maxSlots = gridSlots.length;
+    const isAwaitingEraTransition = !!state.isAwaitingEraTransition;
+    const isVictory = !!state.victoryTriggered;
 
     // 1. Update coins text with caching
     const roundedCoins = Math.floor(economy.coins);
@@ -100,23 +103,38 @@ export class HUD {
       this.lastMaxSlots = maxSlots;
     }
 
-    // 3. Disable and update buy button with caching
+    // 3. Hide buy button on final victory or disable/update it otherwise
     const isFull = grid.isFull ? grid.isFull() : gridSlots.every(s => s !== null);
     const canAfford = economy.canAffordBuy();
     
-    if (this.btnBuy && (isFull !== this.lastIsFull || canAfford !== this.lastCanAfford || buyCost !== this.lastBuyCost || maxEraUnlocked !== this.lastMaxEraUnlocked)) {
-      this.btnBuy.disabled = isFull || !canAfford;
+    if (this.btnBuy) {
+      if (isVictory) {
+        this.btnBuy.style.display = 'none';
+      } else {
+        this.btnBuy.style.display = '';
+      }
+    }
+
+    if (this.btnBuy && (isVictory || isFull !== this.lastIsFull || canAfford !== this.lastCanAfford || buyCost !== this.lastBuyCost || maxEraUnlocked !== this.lastMaxEraUnlocked || isAwaitingEraTransition !== this.lastIsAwaitingEraTransition)) {
+      this.btnBuy.disabled = isAwaitingEraTransition ? false : (isFull || !canAfford);
 
       const mainText = this.btnBuy.querySelector('span:first-child');
       const subtextEl = this.btnBuy.querySelector('.buy-subtext');
       
       if (mainText) {
-        const era = getEra(maxEraUnlocked);
-        mainText.textContent = `COMPRAR ${era.itemN1} (N1)`;
+        if (isAwaitingEraTransition) {
+          mainText.textContent = 'Avançar para Próxima Era';
+        } else {
+          const era = getEra(maxEraUnlocked);
+          mainText.textContent = `COMPRAR ${era.itemN1} (N1)`;
+        }
       }
 
       if (subtextEl) {
-        if (isFull) {
+        if (isAwaitingEraTransition) {
+          subtextEl.innerHTML = 'Clique para iniciar o teste de transição';
+          subtextEl.style.color = '#42A5F5';
+        } else if (isFull) {
           subtextEl.innerHTML = '⚠️ GRADE CHEIA';
           subtextEl.style.color = '#EF5350';
         } else if (!canAfford) {
@@ -133,6 +151,7 @@ export class HUD {
       this.lastIsFull = isFull;
       this.lastCanAfford = canAfford;
       this.lastMaxEraUnlocked = maxEraUnlocked;
+      this.lastIsAwaitingEraTransition = isAwaitingEraTransition;
     }
   }
 }

@@ -28,7 +28,8 @@ export class GameEngine {
       victoryTriggered: false,
       victoryDismissed: false,
       startTime: Date.now(),
-      tutorialCompleted: false
+      tutorialCompleted: false,
+      isAwaitingEraTransition: false
     };
 
     // Core systems
@@ -116,9 +117,7 @@ export class GameEngine {
           }
         },
         onFinalItemCreated: () => {
-          this.state.isPaused = true;
-          this.tutorialSystem.pause();
-          this.quizSystem.show(this.state.maxEraUnlocked);
+          this.queueEraTransition();
         }
       },
       this.renderer
@@ -140,16 +139,17 @@ export class GameEngine {
       this.state,
       {
         onStateChange: () => {
-          this.hud.update(this.economy, this.grid, this.state.maxEraUnlocked);
+          this.hud.update(this.economy, this.grid, this.state.maxEraUnlocked, this.state);
           this.tutorialSystem.checkProgress('click_research');
           this.tutorialSystem.checkProgress('coin_change');
         },
         onBuy: () => {
-          this.hud.update(this.economy, this.grid, this.state.maxEraUnlocked);
+          this.hud.update(this.economy, this.grid, this.state.maxEraUnlocked, this.state);
           this.saveGame();
           this.tutorialSystem.checkProgress('buy_item');
         },
-        onReset: () => this.resetGame()
+        onReset: () => this.resetGame(),
+        onRequestEraTransition: () => this.showEraTransitionQuiz()
       }
     );
 
@@ -243,6 +243,22 @@ export class GameEngine {
     });
   }
 
+  queueEraTransition() {
+    if (this.state.isAwaitingEraTransition) return;
+    this.state.isAwaitingEraTransition = true;
+    this.hud.update(this.economy, this.grid, this.state.maxEraUnlocked, this.state);
+    audio.playClick();
+  }
+
+  showEraTransitionQuiz() {
+    if (!this.state.isAwaitingEraTransition) return;
+    this.state.isAwaitingEraTransition = false;
+    this.state.isPaused = true;
+    this.tutorialSystem?.pause();
+    this.hud.update(this.economy, this.grid, this.state.maxEraUnlocked, this.state);
+    this.quizSystem.show(this.state.maxEraUnlocked);
+  }
+
   resetGame() {
     SaveManager.clear();
     
@@ -261,6 +277,7 @@ export class GameEngine {
     this.state.victoryDismissed = false;
     this.state.startTime = Date.now();
     this.state.tutorialCompleted = false;
+    this.state.isAwaitingEraTransition = false;
 
     // Add level 1 computer to slot 0
     const coords = this.grid.getSlotCoordinates(0);
@@ -269,6 +286,12 @@ export class GameEngine {
 
     this.updateTheme();
     this.saveGame();
+
+    const btnBuy = document.getElementById('btn-buy');
+    if (btnBuy) {
+      btnBuy.style.display = '';
+      this.setHardwareFactoryVisible(true);
+    }
     
     // Close modals
     const modalVictory = document.getElementById('modal-victory');
@@ -314,6 +337,8 @@ export class GameEngine {
     const modal = document.getElementById('modal-victory');
     if (!modal) return;
 
+    this.setHardwareFactoryVisible(false);
+
     // Calculate game stats
     const totalTimeMs = Date.now() - this.state.startTime;
     const hours = Math.floor(totalTimeMs / 3600000);
@@ -331,6 +356,22 @@ export class GameEngine {
     modal.querySelector('.victory-stat-prestige').textContent = `+${this.economy.prestigeCount * 50}%`;
 
     modal.style.display = 'block';
+
+    const btnBuy = document.getElementById('btn-buy');
+    if (btnBuy) {
+      btnBuy.style.display = 'none';
+      btnBuy.blur();
+    }
+  }
+
+  setHardwareFactoryVisible(visible) {
+    const btnBuy = document.getElementById('btn-buy');
+    if (!btnBuy) return;
+
+    const factoryPanel = btnBuy.closest('article.panel');
+    if (factoryPanel) {
+      factoryPanel.style.display = visible ? '' : 'none';
+    }
   }
 
   setupVictoryEvents() {
@@ -364,6 +405,7 @@ export class GameEngine {
         
         modal.style.display = 'none';
         this.state.isPaused = false;
+        this.setHardwareFactoryVisible(true);
       });
     }
 
@@ -378,6 +420,7 @@ export class GameEngine {
         modal.style.display = 'none';
         this.state.isPaused = false;
         this.state.victoryDismissed = true;
+        this.setHardwareFactoryVisible(true);
         audio.playClick();
       });
     }
@@ -408,7 +451,7 @@ export class GameEngine {
         this.loadGame();
         this.state.isPaused = false;
         this.updateTheme();
-        this.hud.update(this.economy, this.grid, this.state.maxEraUnlocked);
+        this.hud.update(this.economy, this.grid, this.state.maxEraUnlocked, this.state);
         audio.playClick();
       };
     }
@@ -420,7 +463,7 @@ export class GameEngine {
         this.loadGame(); // Since save was cleared, this sets up a new game
         this.state.isPaused = false;
         this.updateTheme();
-        this.hud.update(this.economy, this.grid, this.state.maxEraUnlocked);
+        this.hud.update(this.economy, this.grid, this.state.maxEraUnlocked, this.state);
         audio.playClick();
       };
     }
@@ -451,7 +494,7 @@ export class GameEngine {
 
       this.updateTheme();
       this.saveGame();
-      this.hud.update(this.economy, this.grid, this.state.maxEraUnlocked);
+      this.hud.update(this.economy, this.grid, this.state.maxEraUnlocked, this.state);
     }
   }
 
@@ -534,7 +577,7 @@ export class GameEngine {
     this.particleSystem.update();
 
     // 5. Update HUD values
-    this.hud.update(this.economy, this.grid, this.state.maxEraUnlocked);
+    this.hud.update(this.economy, this.grid, this.state.maxEraUnlocked, this.state);
 
     // 6. Check auto-save timer
     this.saveTimer += dt;

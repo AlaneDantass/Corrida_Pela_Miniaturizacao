@@ -79,6 +79,14 @@ export class ClickHandler {
   }
 
   handleBuyClick() {
+    if (this.state.isAwaitingEraTransition) {
+      audio.playClick();
+      if (this.callbacks.onRequestEraTransition) {
+        this.callbacks.onRequestEraTransition();
+      }
+      return;
+    }
+
     if (this.grid.isFull()) {
       audio.playError();
       this.shakeGameBoard();

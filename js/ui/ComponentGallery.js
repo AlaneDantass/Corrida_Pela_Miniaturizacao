@@ -6,7 +6,8 @@ import { Sprites } from '../render/Sprites.js';
 export class ComponentGallery {
   constructor() {
     this.eraLevel = 1;
-    this.items = document.querySelectorAll('.gallery-item');
+    this.items = Array.from(document.querySelectorAll('.gallery-item'));
+    this.highlightedIndex = -1;
   }
 
   /**
@@ -35,7 +36,28 @@ export class ComponentGallery {
   draw(time) {
     if (this.items.length === 0) return;
 
+    // Determine highest active item level on the board (from the grid)
+    let highestLevel = 0;
+    const engine = window.gameEngine;
+    if (engine && engine.grid && Array.isArray(engine.grid.slots)) {
+      engine.grid.slots.forEach(comp => {
+        if (comp && typeof comp.level === 'number' && comp.level > highestLevel) {
+          highestLevel = comp.level;
+        }
+      });
+    }
+
+    // Normalize to gallery index (0-based). If no items present, do not highlight.
+    const highlightIndex = (highestLevel >= 1 && highestLevel <= this.items.length) ? highestLevel - 1 : -1;
+
+    // Update DOM classes for visual highlight and draw previews
     this.items.forEach((item, index) => {
+      if (index === highlightIndex) {
+        if (!item.classList.contains('highlight')) item.classList.add('highlight');
+      } else {
+        item.classList.remove('highlight');
+      }
+
       const canvas = item.querySelector('.gallery-preview-canvas');
       if (!canvas) return;
 
