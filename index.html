@@ -13,13 +13,21 @@
     content="jogo clicker, fusão de itens, história da computação, computadores retro, computação quântica, ENIAC, smartphone">
 
   <!-- CSS Stylesheets -->
-  <link rel="stylesheet" href="css/animations.css">
-  <link rel="stylesheet" href="css/main.css">
-  <link rel="stylesheet" href="css/ui.css">
   <link rel="stylesheet" href="css/themes.css?v=2">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="styles/game.css">
+  <link rel="stylesheet" href="styles/menu.css">
+  <link rel="stylesheet" href="styles/intro.css">
 </head>
 
 <body class="era-1">
+
+  <!-- Cinematic Intro Overlay (Scene 1) -->
+  <div id="intro-container">
+    <img id="intro-valve" src="assets/images/sprites/era2_vacuum_tube.png" alt="Válvula Termiônica">
+    <div id="intro-text"></div>
+    <button id="btn-intro-skip">Pular Introdução (Espaço)</button>
+  </div>
 
   <!-- Retro CRT Scanline Effect -->
   <div class="scanlines"></div>
@@ -325,6 +333,7 @@
   </div>
 
   <!-- Entry Script -->
-  <script type="module" src="js/main.js"></script>
+  <script type="module" src="scripts/game.js"></script>
+  <script type="module" src="scripts/ui.js"></script>
 </body>
 </html>

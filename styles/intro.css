@@ -1,0 +1,105 @@
+/* 🎬 styles/intro.css - Cinematic Intro Animation (Scene 1) */
+
+#intro-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #000;
+  z-index: 10000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  opacity: 1;
+  transition: opacity 0.5s ease-in-out;
+}
+
+#intro-valve {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(1.1);
+  max-width: 50%;
+  max-height: 60%;
+  object-fit: contain;
+  opacity: 0;
+  pointer-events: none;
+  filter: drop-shadow(0 0 30px rgba(224, 90, 26, 0.0));
+  transition: opacity 2s ease-in-out, transform 3s ease-in-out, filter 3s ease-in-out;
+}
+
+#intro-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) translateY(20px);
+  text-align: center;
+  font-family: 'Cinzel', serif;
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #fff;
+  z-index: 10002;
+  opacity: 0;
+  pointer-events: none;
+  max-width: 80%;
+  transition: opacity 1.5s ease-in-out, transform 1.5s ease-in-out, text-shadow 1.5s ease-in-out;
+}
+
+#btn-intro-skip {
+  position: absolute;
+  bottom: 2rem;
+  right: 2rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.55);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+  padding: 0.6rem 1.2rem;
+  cursor: pointer;
+  z-index: 10003;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+#btn-intro-skip:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.4);
+  color: #fff;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+#btn-intro-skip:active {
+  transform: translateY(1px) scale(0.95);
+}
+
+/* ── ANIMATION CLASS OVERRIDES ── */
+#intro-valve.fade-in {
+  opacity: 0.85;
+  filter: drop-shadow(0 0 45px rgba(224, 90, 26, 0.55));
+}
+
+#intro-valve.zoom-out {
+  transform: translate(-50%, -50%) scale(0.8) !important;
+}
+
+#intro-text.fade-in {
+  opacity: 1;
+  transform: translate(-50%, -50%) translateY(0);
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.65), 0 0 40px var(--glow);
+}
+
+#intro-text.fade-out, #intro-valve.fade-out {
+  opacity: 0;
+  transition: opacity 1.2s ease-in-out;
+}
+
+/* Era 2 specific dynamic glowing overlay variable fallback if not set */
+:root {
+  --glow: rgba(224, 90, 26, 0.4);
+}
