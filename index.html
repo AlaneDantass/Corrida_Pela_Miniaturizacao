@@ -248,7 +248,8 @@
           <button class="btn-modal-secondary" id="btn-sandbox">MODO SANDBOX</button>
           <button class="btn-modal-action" id="btn-prestige" style="flex: 1.5;">PRESTIGIAR (+50% SPD)</button>
         </div>
-        <label id="label-skip-narration" style="display:flex; align-items:center; gap:0.5rem; font-size:0.8rem; color:#9AA0A6; cursor:pointer; user-select:none;">
+        <label id="label-skip-narration"
+          style="display:flex; align-items:center; gap:0.5rem; font-size:0.8rem; color:#9AA0A6; cursor:pointer; user-select:none;">
           <input type="checkbox" id="chk-skip-narration" style="accent-color:#D4AF37; width:14px; height:14px;">
           Não mostrar a narração da Amelia nos próximos jogos
         </label>
@@ -297,14 +298,16 @@
         <img src="assets/images/sprites/avatar_amelia.png" alt="Amelia Vance" onerror="this.style.display='none'">
         <span class="avatar-emoji">⚙️</span>
       </div>
-      
+
       <!-- Right side: Content with Name and dialogue text -->
       <div class="tutorial-content">
         <div class="tutorial-speaker">Amelia Vance</div>
-        <p class="tutorial-text" id="tutorial-text">Olá! Eu sou a Dra. Amelia Vance, orientadora de pesquisa. Vou guiar você em seus primeiros passos rumo à miniaturização da tecnologia.</p>
+        <p class="tutorial-text" id="tutorial-text">Olá! Eu sou a Dra. Amelia Vance, orientadora de pesquisa. Vou guiar
+          você em seus primeiros passos rumo à miniaturização da tecnologia.</p>
         <div class="tutorial-actions">
           <button class="btn-tutorial-next" id="btn-tutorial-next">[Próximo ➔]</button>
-          <button class="btn-tutorial-skip" id="btn-tutorial-skip" title="Desativar narração permanentemente">Pular narração ✕</button>
+          <button class="btn-tutorial-skip" id="btn-tutorial-skip" title="Desativar narração permanentemente">Pular
+            narração ✕</button>
         </div>
       </div>
     </div>
@@ -319,11 +322,15 @@
       </div>
       <div class="modal-body" style="text-align: center;">
         <p>Detectamos um progresso salvo localmente de sua jornada de miniaturização.</p>
-        <div class="save-details-box" style="border: 1px dashed var(--accent-primary); background: rgba(255, 255, 255, 0.02); border-radius: 10px; padding: 1.2rem; margin: 1rem 0; box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.01);">
-          <p style="margin: 0; font-size: 0.95rem;"><strong>Era Alcançada:</strong> <span id="save-era-name" class="currency-text">Era 1</span></p>
-          <p style="margin: 0.5rem 0 0 0; font-size: 0.95rem;"><strong>Saldo de Pontos:</strong> <span id="save-cycles-value" class="currency-text">0 PP</span></p>
+        <div class="save-details-box"
+          style="border: 1px dashed var(--accent-primary); background: rgba(255, 255, 255, 0.02); border-radius: 10px; padding: 1.2rem; margin: 1rem 0; box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.01);">
+          <p style="margin: 0; font-size: 0.95rem;"><strong>Era Alcançada:</strong> <span id="save-era-name"
+              class="currency-text">Era 1</span></p>
+          <p style="margin: 0.5rem 0 0 0; font-size: 0.95rem;"><strong>Saldo de Pontos:</strong> <span
+              id="save-cycles-value" class="currency-text">0 PP</span></p>
         </div>
-        <p style="font-size: 0.85rem; color: #9AA0A6;">Deseja continuar de onde parou ou iniciar uma nova pesquisa do zero?</p>
+        <p style="font-size: 0.85rem; color: #9AA0A6;">Deseja continuar de onde parou ou iniciar uma nova pesquisa do
+          zero?</p>
       </div>
       <div class="modal-footer" style="display: flex; gap: 0.8rem; width: 100%;">
         <button class="btn-modal-secondary" id="btn-restart-fresh" style="flex: 1;">REINICIAR JOGO</button>
@@ -333,7 +340,8 @@
   </div>
 
   <!-- Entry Script -->
-  <script type="module" src="scripts/game.js"></script>
-  <script type="module" src="scripts/ui.js"></script>
+  <script type="module" src="scripts/game.js?v=3"></script>
+  <script type="module" src="scripts/ui.js?v=3"></script>
 </body>
+
 </html>

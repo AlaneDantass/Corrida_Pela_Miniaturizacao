@@ -1,7 +1,7 @@
 /* 🖥️ scripts/game.js */
 
 import { GameEngine } from './game/GameEngine.js';
-import { IntroController } from './intro.js';
+import { IntroController } from './intro.js?v=3';
 
 window.addEventListener('DOMContentLoaded', () => {
   console.log("Initializing Computer Evolution Cinematic Intro...");

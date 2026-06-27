@@ -18,11 +18,11 @@
 
 #intro-valve {
   position: absolute;
-  top: 50%;
+  top: 42%;
   left: 50%;
   transform: translate(-50%, -50%) scale(1.1);
   max-width: 50%;
-  max-height: 60%;
+  max-height: 55%;
   object-fit: contain;
   opacity: 0;
   pointer-events: none;
@@ -32,18 +32,31 @@
 
 #intro-text {
   position: absolute;
-  top: 50%;
+  bottom: 15%; 
   left: 50%;
-  transform: translate(-50%, -50%) translateY(20px);
+  transform: translateX(-50%) translateY(20px);
+  width: 80%; /* Evita que o texto quebre as bordas */
   text-align: center;
   font-family: 'Cinzel', serif;
-  font-size: 2.2rem;
+  font-size: 1.8rem;
   font-weight: 700;
-  color: #fff;
   z-index: 10002;
   opacity: 0;
   pointer-events: none;
-  max-width: 80%;
+  
+  /* O truque do contraste: Fundo de vidro escuro */
+  background: rgba(0, 0, 0, 0.6); 
+  backdrop-filter: blur(8px); /* Efeito embaçado charmoso */
+  -webkit-backdrop-filter: blur(8px);
+  padding: 15px 30px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  
+  /* Sombra extra nas letras para garantir a leitura */
+  color: #ffffff;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9), 0px 0px 15px rgba(0, 0, 0, 1);
+  
+  /* Mantém a transição suave que a IA já tinha feito */
   transition: opacity 1.5s ease-in-out, transform 1.5s ease-in-out, text-shadow 1.5s ease-in-out;
 }
 
@@ -90,8 +103,8 @@
 
 #intro-text.fade-in {
   opacity: 1;
-  transform: translate(-50%, -50%) translateY(0);
-  text-shadow: 0 0 20px rgba(255, 255, 255, 0.65), 0 0 40px var(--glow);
+  transform: translateX(-50%) translateY(0);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9), 0px 0px 15px rgba(0, 0, 0, 1), 0 0 40px var(--glow);
 }
 
 #intro-text.fade-out, #intro-valve.fade-out {
