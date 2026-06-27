@@ -1,0 +1,696 @@
+/* 🎮 styles/game.css - AAA Interface & Glassmorphism Design System */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&family=Orbitron:wght@500;700;900&family=Cinzel:wght@500;700;900&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
+
+/* 1. VARIÁVEIS GLOBAIS E TIMING */
+:root {
+  --transition-speed: 1.2s;
+  --transition-fast: 0.25s;
+  --transition-click: 0.08s;
+  
+  /* Defaults */
+  --bg-primary: #0b0d17;
+  --text-primary: #f5f6f8;
+  --text-secondary: #9aa0a6;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* 2. BASE DO CORPO & BACKGROUND */
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--background) !important;
+  color: var(--text-primary);
+  overflow-x: hidden;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: background-color var(--transition-speed) cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+#circuit-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  pointer-events: none;
+  background-color: var(--background) !important;
+  transition: background-color var(--transition-speed) ease;
+}
+
+/* 3. CABEÇALHO - ESTILO AAA CINEMATOGRÁFICO */
+header {
+  padding: 1.25rem 2.5rem;
+  background: rgba(10, 8, 8, 0.45);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 10;
+  position: relative;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+header::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 10%;
+  right: 10%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--primary), transparent);
+  opacity: 0.6;
+  filter: drop-shadow(0 0 4px var(--glow));
+  transition: background var(--transition-speed) ease;
+}
+
+header h1 {
+  font-family: 'Cinzel', serif !important;
+  font-size: 1.6rem;
+  letter-spacing: 2px;
+  color: var(--text) !important;
+  text-shadow: 0 0 12px var(--glow) !important;
+  font-weight: 700;
+}
+
+header h1 span {
+  color: var(--text) !important;
+  font-family: 'Cinzel', serif !important;
+  text-shadow: 0 0 16px var(--glow) !important;
+}
+
+/* 4. LAYOUT GRID PRINCIPAL */
+.game-container {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 360px 1fr 360px;
+  gap: 1.75rem;
+  padding: 1.75rem;
+  max-width: 1650px;
+  width: 100%;
+  margin: 0 auto;
+  align-items: stretch;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* 5. PAINÉIS LATERAIS - GLASSMORPHISM DINÂMICO */
+.panel {
+  background: rgba(20, 15, 12, 0.4) !important;
+  backdrop-filter: blur(16px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-top: 1.5px solid rgba(255, 255, 255, 0.16) !important;
+  border-radius: 18px;
+  padding: 1.5rem;
+  box-shadow: 
+    0 12px 40px -10px rgba(0, 0, 0, 0.7),
+    0 0 20px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 0 25px var(--glow) !important;
+  transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1),
+              background var(--transition-speed) ease,
+              border-color var(--transition-speed) ease,
+              box-shadow var(--transition-speed) ease !important;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Cantoneira neon em degradê */
+.panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 60px;
+  height: 60px;
+  background: radial-gradient(circle at top left, var(--accent) 0%, transparent 70%) !important;
+  opacity: 0.3;
+  pointer-events: none;
+  border-radius: 18px 0 0 0;
+  transition: background var(--transition-speed) ease;
+}
+
+.panel::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 60px;
+  height: 60px;
+  background: radial-gradient(circle at bottom right, var(--accent) 0%, transparent 70%) !important;
+  opacity: 0.3;
+  pointer-events: none;
+  border-radius: 0 0 18px 0;
+  transition: background var(--transition-speed) ease;
+}
+
+.panel-title {
+  font-family: 'Cinzel', serif !important;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text) !important;
+  margin-bottom: 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 0.6rem;
+  text-shadow: 0 0 8px var(--glow) !important;
+}
+
+/* 6. STATS E CURRENCY */
+.stats-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-bottom: 1.5rem;
+}
+
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.stat-label {
+  font-family: 'Crimson Text', serif !important;
+  font-size: 1.05rem;
+  color: color-mix(in srgb, var(--text) 85%, transparent) !important;
+}
+
+.stat-value {
+  font-size: 1.8rem;
+  font-weight: bold;
+  transition: transform 0.15s ease-out;
+}
+
+.stat-value.small {
+  font-size: 1.25rem;
+}
+
+.currency-text {
+  font-family: 'Orbitron', monospace, sans-serif !important;
+  font-weight: 700;
+  color: var(--accent) !important;
+  text-shadow: 0 0 8px var(--glow) !important;
+  transition: color var(--transition-speed) ease;
+}
+
+/* 7. TABULEIRO DE FUSÃO - PROFUNDIDADE CINEMATOGRÁFICA */
+.game-board-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(10, 8, 12, 0.3) !important;
+  backdrop-filter: blur(20px) saturate(120%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(120%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  border-radius: 24px;
+  box-shadow: 
+    0 24px 60px rgba(0, 0, 0, 0.8),
+    inset 0 0 40px rgba(0, 0, 0, 0.6),
+    0 0 30px var(--glow) !important;
+  position: relative;
+  overflow: hidden;
+  min-height: 500px;
+  transition: border-color var(--transition-speed) ease,
+              box-shadow var(--transition-speed) ease;
+}
+
+.game-board-container::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at center, var(--glow) 0%, transparent 60%) !important;
+  opacity: 0.12;
+  pointer-events: none;
+  z-index: 0;
+  transition: background var(--transition-speed) ease;
+}
+
+#game-canvas {
+  display: block;
+  cursor: grab;
+  max-width: 100%;
+  max-height: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+#game-canvas:active {
+  cursor: grabbing;
+}
+
+/* 8. BOTOES INTERATIVOS (MICROINTERAÇÃO AAA) */
+
+/* Botão de Pesquisa (Panel Esquerdo) */
+.btn-research {
+  width: 100%;
+  padding: 1.25rem;
+  background: rgba(20, 15, 12, 0.6) !important;
+  border: 2px solid var(--primary) !important;
+  border-radius: 12px;
+  color: var(--text) !important;
+  font-family: 'Cinzel', serif !important;
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: 2px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  box-shadow: 
+    0 6px 20px rgba(0, 0, 0, 0.5),
+    inset 0 0 8px rgba(255, 255, 255, 0.02) !important;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1),
+              border-color var(--transition-speed) ease,
+              color var(--transition-speed) ease !important;
+  position: relative;
+  overflow: hidden;
+  transform-origin: center;
+}
+
+.btn-research:hover {
+  transform: translateY(-3px) scale(1.05) !important;
+  background: color-mix(in srgb, var(--primary) 25%, rgba(0, 0, 0, 0.4)) !important;
+  box-shadow: 
+    0 12px 30px rgba(0, 0, 0, 0.6),
+    0 0 25px var(--glow),
+    inset 0 0 15px rgba(255, 255, 255, 0.05) !important;
+  text-shadow: 0 0 8px var(--glow);
+}
+
+.btn-research:active {
+  transform: scale(0.96) translateY(1px) !important;
+  box-shadow: 
+    0 2px 10px rgba(0, 0, 0, 0.6),
+    0 0 35px var(--glow),
+    inset 0 0 20px var(--primary) !important;
+  transition: all var(--transition-click) cubic-bezier(0.25, 1, 0.2, 1) !important;
+}
+
+.btn-research .click-power {
+  font-size: 0.8rem;
+  color: color-mix(in srgb, var(--text) 70%, transparent) !important;
+  font-family: 'Crimson Text', serif !important;
+  font-weight: normal;
+}
+
+/* Botão de Compra de Componentes */
+.btn-buy {
+  width: 100%;
+  padding: 1.25rem;
+  background: var(--panel) !important;
+  border: 2px solid var(--primary) !important;
+  border-radius: 12px;
+  color: var(--text) !important;
+  font-family: 'Cinzel', serif !important;
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 2px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  box-shadow: 
+    0 6px 20px rgba(0, 0, 0, 0.5),
+    0 0 15px var(--glow) !important;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1),
+              border-color var(--transition-speed) ease,
+              color var(--transition-speed) ease !important;
+  position: relative;
+  overflow: hidden;
+  transform-origin: center;
+}
+
+.btn-buy:hover:not(:disabled) {
+  transform: translateY(-3px) scale(1.03) !important;
+  background: color-mix(in srgb, var(--primary) 25%, rgba(0, 0, 0, 0.4)) !important;
+  box-shadow: 
+    0 12px 30px rgba(0, 0, 0, 0.6),
+    0 0 25px var(--primary),
+    0 0 50px var(--glow) !important;
+}
+
+.btn-buy:active:not(:disabled) {
+  transform: scale(0.97) translateY(1px) !important;
+  transition: all var(--transition-click) ease !important;
+}
+
+.btn-buy:disabled {
+  opacity: 0.35 !important;
+  cursor: not-allowed;
+  background: var(--panel) !important;
+  border-color: var(--primary) !important;
+  color: var(--text) !important;
+  box-shadow: none !important;
+  transform: none !important;
+  animation: none !important;
+}
+
+.btn-buy:not(:disabled) {
+  animation: buy-glow-pulse 2s infinite alternate !important;
+}
+
+@keyframes buy-glow-pulse {
+  0% { box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5), 0 0 5px var(--glow); }
+  100% { box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5), 0 0 20px var(--glow); }
+}
+
+.btn-buy .buy-subtext {
+  font-size: 0.8rem;
+  font-family: 'Crimson Text', serif !important;
+  font-weight: normal;
+}
+
+.slots-indicator {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.95rem;
+  font-family: 'Crimson Text', serif !important;
+  color: color-mix(in srgb, var(--text) 80%, transparent) !important;
+  margin-top: 0.8rem;
+}
+
+.slots-indicator span {
+  color: var(--accent) !important;
+  font-family: 'Orbitron', monospace, sans-serif !important;
+  text-shadow: 0 0 6px var(--glow) !important;
+}
+
+/* 9. TIMELINE DAS ERAS */
+.timeline-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  position: relative;
+}
+
+.timeline-list::before {
+  content: '';
+  position: absolute;
+  left: 14px;
+  top: 10px;
+  bottom: 10px;
+  width: 2px;
+  border-left: 2px dashed var(--secondary) !important;
+  background: none !important;
+  z-index: 1;
+}
+
+.timeline-item {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  z-index: 2;
+  position: relative;
+  opacity: 0.35;
+  transition: opacity 0.5s ease, transform 0.3s ease;
+  padding: 6px 8px;
+  border-radius: 10px;
+}
+
+.timeline-item:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.timeline-item.active-era {
+  opacity: 1;
+  transform: translateX(6px);
+}
+
+.timeline-item.unlocked-era {
+  opacity: 0.85;
+}
+
+.timeline-dot {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--secondary) !important;
+  border: 2px solid var(--primary) !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Cinzel', serif !important;
+  font-weight: bold;
+  font-size: 0.8rem;
+  color: var(--text) !important;
+  transition: all var(--transition-speed) ease;
+  flex-shrink: 0;
+  box-shadow: none !important;
+}
+
+.timeline-item.unlocked-era .timeline-dot {
+  box-shadow: 0 0 10px var(--glow) !important;
+}
+
+.timeline-item.active-era .timeline-dot {
+  background: var(--primary) !important;
+  box-shadow: 0 0 15px var(--glow), 0 0 30px var(--glow) !important;
+}
+
+.timeline-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.timeline-name {
+  font-family: 'Cinzel', serif !important;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text) !important;
+}
+
+.timeline-item.active-era .timeline-name {
+  text-shadow: 0 0 8px var(--glow) !important;
+}
+
+.timeline-year {
+  font-family: 'Crimson Text', serif !important;
+  font-size: 0.8rem;
+  color: color-mix(in srgb, var(--text) 70%, transparent) !important;
+}
+
+/* 10. GALERIA DE COMPONENTES */
+.gallery-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  flex: 1;
+  justify-content: space-around;
+  padding: 0.5rem 0;
+}
+
+.gallery-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--panel) !important;
+  border: 1px solid color-mix(in srgb, var(--primary) 50%, transparent) !important;
+  border-radius: 14px;
+  padding: 1.2rem;
+  text-align: center;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color var(--transition-speed) ease !important;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+  position: relative;
+}
+
+.gallery-item:hover {
+  border-color: var(--primary) !important;
+  box-shadow: 
+    0 8px 25px rgba(0, 0, 0, 0.5),
+    0 0 20px var(--glow),
+    inset 0 0 15px rgba(255, 255, 255, 0.02) !important;
+  transform: translateY(-4px) scale(1.02) !important;
+  cursor: pointer;
+}
+
+.gallery-level {
+  font-family: 'Cinzel', serif !important;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--accent) !important;
+  letter-spacing: 1.5px;
+  margin-bottom: 0.8rem;
+  text-shadow: 0 0 6px var(--glow) !important;
+  text-transform: uppercase;
+}
+
+.gallery-preview {
+  width: 70px;
+  height: 70px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px dashed var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.8rem;
+  transition: transform 0.3s ease;
+  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.3);
+}
+
+.gallery-item:hover .gallery-preview {
+  transform: scale(1.05) rotate(5deg);
+  border-style: solid;
+}
+
+.gallery-item.highlight {
+  border-color: var(--primary) !important;
+  background: rgba(255, 255, 255, 0.03) !important;
+  box-shadow: 
+    0 12px 35px rgba(0,0,0,0.7),
+    0 0 15px var(--glow),
+    inset 0 0 20px rgba(255,255,255,0.02) !important;
+  transform: translateY(-6px) scale(1.03) !important;
+}
+
+.gallery-item.highlight .gallery-level {
+  text-shadow: 0 0 12px var(--glow);
+}
+
+.gallery-item.highlight .gallery-preview {
+  transform: scale(1.08) rotate(4deg);
+}
+
+.gallery-name {
+  font-family: 'Crimson Text', serif !important;
+  font-size: 0.95rem;
+  color: var(--text) !important;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.gallery-item-header-divider {
+  width: 40px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--primary), transparent);
+  margin: 0.2rem auto 0.8rem auto;
+  opacity: 0.4;
+}
+
+/* 11. CONTROLES DO TOPO E MÚSICA */
+.top-controls {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.btn-control {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  width: 38px;
+  height: 38px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: color-mix(in srgb, var(--text) 70%, transparent);
+  transition: all 0.2s ease;
+}
+
+.btn-control:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--primary);
+  box-shadow: 0 0 12px var(--glow);
+}
+
+.btn-control svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+.music-indicator {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 0.7rem;
+  color: color-mix(in srgb, var(--text) 70%, transparent);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.music-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 14px;
+}
+
+.music-bar {
+  width: 3px;
+  background: var(--accent) !important;
+  border-radius: 1px;
+  animation: music-bar-bounce 1.2s ease-in-out infinite;
+  box-shadow: 0 0 4px var(--glow) !important;
+}
+
+.music-bar:nth-child(1) { height: 40%; animation-delay: 0s; }
+.music-bar:nth-child(2) { height: 70%; animation-delay: 0.2s; }
+.music-bar:nth-child(3) { height: 50%; animation-delay: 0.4s; }
+.music-bar:nth-child(4) { height: 90%; animation-delay: 0.15s; }
+
+@keyframes music-bar-bounce {
+  0%, 100% { transform: scaleY(0.4); }
+  50% { transform: scaleY(1); }
+}
+
+/* 12. RESPONSIVIDADE E ACABAMENTOS */
+@media (max-width: 1300px) {
+  .game-container {
+    grid-template-columns: 320px 1fr;
+    max-width: 1050px;
+  }
+  .sidebar-right {
+    display: none !important;
+  }
+}
+
+@media (max-width: 768px) {
+  header {
+    padding: 1rem;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  header h1 {
+    font-size: 1.3rem;
+  }
+  .game-container {
+    grid-template-columns: 1fr;
+    padding: 1rem;
+  }
+  .game-board-container {
+    min-height: 400px;
+  }
+}

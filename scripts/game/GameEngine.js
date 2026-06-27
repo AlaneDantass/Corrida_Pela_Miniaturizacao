@@ -93,13 +93,28 @@ export class GameEngine {
       }
     });
 
-    // 4. Load Saved Game or Create default setup
-    const saved = SaveManager.load();
-    if (saved) {
+    // 4. Load Saved Game or Create default setup (with Cinematic Intro check)
+    const hasIntro = document.getElementById('intro-container') !== null;
+    if (hasIntro) {
       this.state.isPaused = true;
-      this.showLoadSaveModal(saved);
+      window.addEventListener('introFinished', () => {
+        const saved = SaveManager.load();
+        if (saved) {
+          this.state.isPaused = true;
+          this.showLoadSaveModal(saved);
+        } else {
+          this.state.isPaused = false;
+          this.loadGame();
+        }
+      });
     } else {
-      this.loadGame();
+      const saved = SaveManager.load();
+      if (saved) {
+        this.state.isPaused = true;
+        this.showLoadSaveModal(saved);
+      } else {
+        this.loadGame();
+      }
     }
 
     // 5. Connect Drag and Drop (Canvas mouse/touch) — pass renderer for shockwaves

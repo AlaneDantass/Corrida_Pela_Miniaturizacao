@@ -1,0 +1,416 @@
+/* 📋 styles/menu.css - Modals, Dialogs and Overlay Styling */
+
+/* 1. OVERLAYS DE MODAIS */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(6, 4, 4, 0.82); /* Overlay cinematográfico escuro */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 1000;
+  display: none;
+}
+
+/* 2. CARD DO MODAL - GLASSMORPHISM ELEVADO */
+.modal-card {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 560px;
+  background: rgba(22, 16, 12, 0.75) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  border: 2px solid var(--primary) !important;
+  border-radius: 20px;
+  padding: 2.2rem;
+  box-shadow: 
+    0 25px 60px rgba(0, 0, 0, 0.8),
+    0 0 30px var(--glow),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  outline: none;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  transition: background var(--transition-speed) ease, border-color var(--transition-speed) ease;
+}
+
+/* Gradiente animado em volta do modal */
+.modal-card::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 22px;
+  background: linear-gradient(135deg, var(--primary), transparent, var(--accent)) !important;
+  z-index: -1;
+  opacity: 0.3;
+}
+
+.modal-header {
+  text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 1.25rem;
+}
+
+.modal-subtitle {
+  font-family: 'Cinzel', serif !important;
+  font-size: 0.85rem;
+  letter-spacing: 2px;
+  color: var(--text) !important;
+  text-transform: uppercase;
+  margin-bottom: 0.4rem;
+  text-shadow: 0 0 8px var(--glow) !important;
+}
+
+.modal-title {
+  font-family: 'Cinzel', serif !important;
+  font-size: 1.65rem;
+  font-weight: 900;
+  color: var(--text) !important;
+  letter-spacing: 1px;
+  text-shadow: 0 0 15px var(--glow) !important;
+}
+
+.modal-body {
+  font-family: 'Crimson Text', serif !important;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: color-mix(in srgb, var(--text) 85%, transparent) !important;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.modal-body p {
+  margin: 0;
+}
+
+/* Caixa de pré-visualização de hardware no modal */
+.modal-visual-wrapper {
+  height: 140px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: inset 0 0 15px rgba(0,0,0,0.5);
+}
+
+.modal-visual-wrapper::before {
+  content: '';
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  background: radial-gradient(circle, var(--glow) 0%, transparent 70%) !important;
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.modal-canvas-preview {
+  display: block;
+  z-index: 1;
+}
+
+.modal-text-content strong {
+  font-weight: 700;
+  color: var(--accent) !important;
+  text-shadow: 0 0 5px var(--glow) !important;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: center;
+  margin-top: 0.5rem;
+}
+
+/* 3. BOTÕES DOS MODAIS */
+.btn-modal-action {
+  padding: 1rem 3rem;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  border-radius: 10px;
+  color: #0b0d17 !important;
+  font-family: 'Cinzel', serif !important;
+  font-weight: bold;
+  font-size: 0.95rem;
+  letter-spacing: 1px;
+  cursor: pointer;
+  box-shadow: 0 6px 20px var(--glow) !important;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+}
+
+.btn-modal-action:hover {
+  transform: translateY(-3px) scale(1.05) !important;
+  box-shadow: 
+    0 10px 30px var(--primary),
+    0 0 30px var(--glow) !important;
+}
+
+.btn-modal-action:active {
+  transform: translateY(1px) scale(0.97) !important;
+  transition: all var(--transition-click) ease !important;
+}
+
+.btn-modal-secondary {
+  padding: 1rem 2rem;
+  background: transparent !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  border-radius: 10px;
+  color: var(--text) !important;
+  font-family: 'Cinzel', serif !important;
+  font-weight: bold;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease !important;
+}
+
+.btn-modal-secondary:hover {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
+}
+
+.btn-modal-secondary:active {
+  transform: scale(0.97);
+}
+
+/* 4. MODAL DE VITÓRIA & PRESTÍGIO */
+.victory-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  margin: 1.25rem 0;
+}
+
+.victory-stat-item {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 1rem;
+  text-align: center;
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.3);
+}
+
+.victory-stat-lbl {
+  font-family: 'Crimson Text', serif !important;
+  font-size: 0.9rem;
+  color: color-mix(in srgb, var(--text) 60%, transparent) !important;
+  text-transform: uppercase;
+  margin-bottom: 0.3rem;
+}
+
+.victory-stat-val {
+  font-family: 'Orbitron', monospace, sans-serif !important;
+  font-weight: 700;
+  font-size: 1.3rem;
+  color: var(--accent) !important;
+  text-shadow: 0 0 8px var(--glow) !important;
+}
+
+.victory-actions {
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+}
+
+.victory-actions button {
+  flex: 1;
+}
+
+/* Caixa de detalhes de salvamento */
+.save-details-box {
+  border: 1px dashed var(--primary) !important;
+  background: rgba(255, 255, 255, 0.01) !important;
+  border-radius: 12px;
+  padding: 1.2rem;
+  margin: 1rem 0;
+  box-shadow: inset 0 0 15px rgba(0,0,0,0.2) !important;
+}
+
+.save-details-box p {
+  color: color-mix(in srgb, var(--text) 80%, transparent) !important;
+}
+
+/* 5. OPÇÕES DO QUIZ DE TRANSIÇÃO */
+.btn-quiz-option {
+  width: 100%;
+  padding: 1rem 1.4rem;
+  background: rgba(255, 255, 255, 0.02) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 10px;
+  color: var(--text) !important;
+  font-family: 'Crimson Text', serif !important;
+  font-size: 1.05rem;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+  outline: none;
+}
+
+.btn-quiz-option:hover {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 20px var(--glow) !important;
+  transform: translateX(6px) !important;
+}
+
+.btn-quiz-option.correct {
+  background: rgba(76, 175, 80, 0.15) !important;
+  border-color: #4CAF50 !important;
+  color: #81C784 !important;
+  box-shadow: 0 0 20px rgba(76, 175, 80, 0.3) !important;
+}
+
+.btn-quiz-option.incorrect {
+  background: rgba(244, 67, 54, 0.15) !important;
+  border-color: #F44336 !important;
+  color: #E57373 !important;
+  box-shadow: 0 0 20px rgba(244, 67, 54, 0.3) !important;
+}
+
+/* 6. TUTORIAL AMELIA VANCE (ESTÉTICA VITORIANA/STEAMPUK VIBRANTE) */
+.tutorial-overlay {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100vw;
+  background: transparent;
+  z-index: 9990;
+  display: none;
+  justify-content: center;
+  align-items: flex-end;
+  padding-bottom: 5vh;
+  pointer-events: none;
+}
+
+body.tutorial-locked .tutorial-overlay {
+  top: 0;
+  height: 100vh;
+  background: rgba(10, 6, 4, 0.7);
+}
+
+.tutorial-card {
+  width: 90%;
+  max-width: 720px;
+  background: rgba(35, 22, 18, 0.95) !important; /* Bronze/cobre vitoriano */
+  border: 2px solid #D4AF37 !important;
+  border-radius: 12px;
+  box-shadow: 
+    0 15px 40px rgba(0, 0, 0, 0.8),
+    0 0 20px rgba(212, 175, 55, 0.25) !important;
+  padding: 1.6rem;
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  position: relative;
+  color: #F5EBE6 !important;
+  pointer-events: auto;
+  z-index: 10002;
+}
+
+.tutorial-avatar-wrapper {
+  position: relative;
+  width: 85px;
+  height: 85px;
+  border-radius: 50%;
+  background: #5D4037;
+  border: 2px solid #D4AF37 !important;
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.6rem;
+  user-select: none;
+  overflow: hidden;
+}
+
+.tutorial-avatar-wrapper img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  z-index: 2;
+}
+
+.tutorial-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.tutorial-speaker {
+  font-family: 'Cinzel', serif !important;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #D4AF37 !important;
+  text-shadow: 0 0 6px rgba(212, 175, 55, 0.4) !important;
+}
+
+.tutorial-text {
+  font-family: 'Crimson Text', serif !important;
+  font-size: 1.05rem;
+  line-height: 1.45;
+  color: #EFEBE9 !important;
+  font-weight: 300;
+  margin: 0;
+  min-height: 2.8rem;
+}
+
+.tutorial-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.8rem;
+  margin-top: 0.4rem;
+}
+
+.btn-tutorial-next {
+  background: transparent !important;
+  border: 1px solid #CD7F32 !important;
+  color: #D4AF37 !important;
+  font-family: 'Cinzel', serif !important;
+  font-weight: bold;
+  font-size: 0.9rem;
+  padding: 8px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease !important;
+  animation: btn-blink-tutorial 1.2s infinite alternate;
+  text-decoration: none;
+  box-shadow: 0 0 5px rgba(205, 127, 50, 0.2);
+}
+
+.btn-tutorial-next:hover {
+  background: #D4AF37 !important;
+  color: #2B1B17 !important;
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.6) !important;
+}
+
+.btn-tutorial-skip {
+  background: transparent !important;
+  border: none !important;
+  color: #8D6E63 !important;
+  font-family: 'Crimson Text', serif !important;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: color 0.3s ease !important;
+}
+
+.btn-tutorial-skip:hover {
+  color: #D4AF37 !important;
+}
