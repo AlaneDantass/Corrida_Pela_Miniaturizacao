@@ -22,10 +22,28 @@
 
 <body class="era-1">
 
-  <!-- Cinematic Intro Overlay (Scene 1) -->
+  <!-- Cinematic Intro Overlay (Scene 1, 2 & 3) -->
   <div id="intro-container">
+    <!-- Scene 2: ENIAC Background & Scientist Silhouette -->
+    <div id="eniac-bg"></div>
+    <div id="scientist-silhouette"></div>
+
+    <!-- Scene 1: Valve -->
     <img id="intro-valve" src="assets/images/sprites/valvula.png" alt="Válvula Termiônica">
+    
+    <!-- Subtitle text box (shared between Scene 1 and Scene 2) -->
     <div id="intro-text"></div>
+
+    <!-- Scene 3: Timeline Container -->
+    <div id="timeline-container" class="hide">
+      <div id="timeline-year"></div>
+      <div id="timeline-image">
+        <img id="timeline-img-el" src="" alt="Evolução Tecnológica">
+      </div>
+      <div id="timeline-desc"></div>
+    </div>
+
+    <!-- Global Skip Button -->
     <button id="btn-intro-skip">Pular Introdução (Espaço)</button>
   </div>
 
