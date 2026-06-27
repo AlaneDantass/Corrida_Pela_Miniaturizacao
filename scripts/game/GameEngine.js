@@ -534,6 +534,10 @@ export class GameEngine {
 
     // 3. Update component gallery items names
     this.componentGallery?.update(this.state.maxEraUnlocked);
+
+    // 4. Update dynamic background image
+    const eraLevel = this.state.maxEraUnlocked || 1;
+    document.body.style.backgroundImage = `url('assets/images/sprites/era${eraLevel}.png')`;
   }
 
   loop(timestamp) {

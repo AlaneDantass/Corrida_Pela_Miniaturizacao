@@ -20,17 +20,29 @@
 }
 
 /* 2. BASE DO CORPO & BACKGROUND */
+html, body {
+  height: 100vh;
+  width: 100vw;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
 body {
   font-family: 'Inter', sans-serif;
   background-color: var(--background) !important;
+  background-image: url('../assets/images/sprites/era1.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   color: var(--text-primary);
-  overflow-x: hidden;
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
   user-select: none;
   -webkit-user-select: none;
-  transition: background-color var(--transition-speed) cubic-bezier(0.25, 1, 0.5, 1);
+  transition: background-color var(--transition-speed) cubic-bezier(0.25, 1, 0.5, 1),
+              background-image 0.8s ease-in-out;
 }
 
 #circuit-bg {
@@ -41,45 +53,42 @@ body {
   height: 100vh;
   z-index: -1;
   pointer-events: none;
-  background-color: var(--background) !important;
+  background-color: transparent !important;
   transition: background-color var(--transition-speed) ease;
 }
 
 /* 3. CABEÇALHO - ESTILO AAA CINEMATOGRÁFICO */
 header {
   padding: 1.25rem 2.5rem;
-  background: rgba(10, 8, 8, 0.45);
+  background: transparent;
+  backdrop-filter: none;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(16px) saturate(140%);
-  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: none;
   display: flex;
   justify-content: space-between;
   align-items: center;
   z-index: 10;
   position: relative;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  border: none;
+  box-shadow: none;
+  padding: 18px 28px;
+    
 }
 
 header::after {
-  content: '';
-  position: absolute;
-  bottom: -1px;
-  left: 10%;
-  right: 10%;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--primary), transparent);
-  opacity: 0.6;
-  filter: drop-shadow(0 0 4px var(--glow));
-  transition: background var(--transition-speed) ease;
+  display:none;
 }
 
 header h1 {
   font-family: 'Cinzel', serif !important;
-  font-size: 1.6rem;
+  font-size: 1.2rem;
   letter-spacing: 2px;
   color: var(--text) !important;
   text-shadow: 0 0 12px var(--glow) !important;
   font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 header h1 span {
@@ -91,24 +100,34 @@ header h1 span {
 /* 4. LAYOUT GRID PRINCIPAL */
 .game-container {
   flex: 1;
-  display: grid;
-  grid-template-columns: 360px 1fr 360px;
-  gap: 1.75rem;
-  padding: 1.75rem;
+  min-height: 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: stretch;
+  gap: 1.25rem;
+  padding: 1.25rem;
+  box-sizing: border-box;
   max-width: 1650px;
   width: 100%;
   margin: 0 auto;
-  align-items: stretch;
 }
 
 .sidebar {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1.25rem;
+  width: 400px;
+  flex-shrink: 0;
+  height: 100%;
+  min-height: 0;
 }
 
 /* 5. PAINÉIS LATERAIS - GLASSMORPHISM DINÂMICO */
 .panel {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
   background: rgba(20, 15, 12, 0.4) !important;
   backdrop-filter: blur(16px) saturate(180%) !important;
   -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
@@ -159,6 +178,7 @@ header h1 span {
 }
 
 .panel-title {
+  flex-shrink: 0;
   font-family: 'Cinzel', serif !important;
   font-size: 0.95rem;
   font-weight: 700;
@@ -214,7 +234,9 @@ header h1 span {
 
 /* 7. TABULEIRO DE FUSÃO - PROFUNDIDADE CINEMATOGRÁFICA */
 .game-board-container {
+  flex: 2;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   background: rgba(10, 8, 12, 0.3) !important;
@@ -227,10 +249,25 @@ header h1 span {
     inset 0 0 40px rgba(0, 0, 0, 0.6),
     0 0 30px var(--glow) !important;
   position: relative;
-  overflow: hidden;
-  min-height: 500px;
+  overflow: visible;
+  height: 100%;
+  min-height: 0;
   transition: border-color var(--transition-speed) ease,
               box-shadow var(--transition-speed) ease;
+}
+
+.game-logo {
+  position: absolute;
+  top: -100px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  max-width: 960px;
+  width: 70%;
+  object-fit: contain;
+  margin: 0;
+  flex-shrink: 0;
+  height: auto;
 }
 
 .game-board-container::before {
@@ -251,7 +288,9 @@ header h1 span {
   display: block;
   cursor: grab;
   max-width: 100%;
-  max-height: 100%;
+  max-height: calc(100% - 120px);
+  object-fit: contain;
+  aspect-ratio: 480 / 640;
   position: relative;
   z-index: 1;
 }
@@ -386,6 +425,229 @@ header h1 span {
   font-weight: normal;
 }
 
+/* ============================
+   CONTROLES SUPERIORES
+   ============================ */
+
+.top-controls {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+
+    padding: 10px 14px;
+
+    border-radius: 22px;
+
+    background: rgba(15, 12, 10, 0.28);
+
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+
+    border: 1px solid rgba(255,255,255,.05);
+
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.05),
+        0 8px 18px rgba(0,0,0,.35);
+}
+
+
+/* ============================
+   BOTÕES
+   ============================ */
+
+.btn-control {
+
+    position: relative;
+
+    width: 56px;
+    height: 56px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    border: none;
+    outline: none;
+
+    cursor: pointer;
+
+    border-radius: 18px;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255,255,255,.12) 0%,
+            rgba(255,255,255,.04) 100%
+        );
+
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+
+    transition:
+        transform .25s,
+        box-shadow .25s,
+        background .25s;
+}
+
+
+/* ============================
+   BORDA DOURADA
+   ============================ */
+
+.btn-control::before {
+
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    border-radius: inherit;
+
+    padding: 2px;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--primary) 0%,
+            var(--accent) 50%,
+            var(--secondary) 100%
+        );
+
+    -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+
+    -webkit-mask-composite: xor;
+
+    mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+
+    mask-composite: exclude;
+
+    pointer-events: none;
+}
+
+
+/* ============================
+   REFLEXO DO VIDRO
+   ============================ */
+
+.btn-control::after {
+
+    content: "";
+
+    position: absolute;
+
+    left: 10%;
+    right: 10%;
+
+    top: 10px;
+
+    height: 14px;
+
+    border-radius: 10px;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255,255,255,.22),
+            rgba(255,255,255,0)
+        );
+
+    opacity: .8;
+
+    pointer-events: none;
+}
+
+
+/* ============================
+   ÍCONES
+   ============================ */
+
+.btn-control svg {
+
+    width: 24px;
+    height: 24px;
+
+    fill: var(--accent);
+
+    filter:
+        drop-shadow(0 0 6px var(--glow));
+
+    transition: .25s;
+}
+
+
+/* ============================
+   HOVER
+   ============================ */
+
+.btn-control:hover {
+
+    transform:
+        translateY(-2px)
+        scale(1.05);
+
+    box-shadow:
+
+        0 0 18px var(--glow),
+
+        inset 0 1px 0 rgba(255,255,255,.18);
+
+    background:
+
+        linear-gradient(
+            180deg,
+            rgba(255,255,255,.18),
+            rgba(255,255,255,.06)
+        );
+}
+
+
+.btn-control:hover svg{
+
+    filter:
+        drop-shadow(0 0 12px var(--glow));
+
+}
+
+
+/* ============================
+   CLIQUE
+   ============================ */
+
+.btn-control:active{
+
+    transform:
+        scale(.94);
+
+    box-shadow:
+
+        inset 0 0 15px rgba(0,0,0,.35),
+
+        0 0 10px var(--glow);
+
+}
+
+
+/* ============================
+   DESABILITADO
+   ============================ */
+
+.btn-control:disabled{
+
+    opacity:.45;
+
+    cursor:not-allowed;
+
+    transform:none;
+
+    box-shadow:none;
+
+}
+
 .slots-indicator {
   display: flex;
   justify-content: space-between;
@@ -407,6 +669,30 @@ header h1 span {
   flex-direction: column;
   gap: 0.75rem;
   position: relative;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+  padding-right: 6px;
+}
+
+/* Custom Scrollbar for Timeline List */
+.timeline-list::-webkit-scrollbar {
+  width: 6px;
+}
+.timeline-list::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 3px;
+}
+.timeline-list::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 3px;
+}
+.timeline-list::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
+.timeline-list {
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary) rgba(255, 255, 255, 0.02);
 }
 
 .timeline-list::before {
@@ -501,8 +787,30 @@ header h1 span {
   flex-direction: column;
   gap: 1.25rem;
   flex: 1;
-  justify-content: space-around;
-  padding: 0.5rem 0;
+  justify-content: flex-start;
+  padding: 0.5rem 6px 0.5rem 0;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+/* Custom Scrollbar for Gallery Container */
+.gallery-container::-webkit-scrollbar {
+  width: 6px;
+}
+.gallery-container::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 3px;
+}
+.gallery-container::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 3px;
+}
+.gallery-container::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
+.gallery-container {
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary) rgba(255, 255, 255, 0.02);
 }
 
 .gallery-item {
@@ -529,6 +837,7 @@ header h1 span {
     inset 0 0 15px rgba(255, 255, 255, 0.02) !important;
   transform: translateY(-4px) scale(1.02) !important;
   cursor: pointer;
+  z-index: 3;
 }
 
 .gallery-level {
@@ -569,6 +878,7 @@ header h1 span {
     0 0 15px var(--glow),
     inset 0 0 20px rgba(255,255,255,0.02) !important;
   transform: translateY(-6px) scale(1.03) !important;
+  z-index: 2;
 }
 
 .gallery-item.highlight .gallery-level {
@@ -668,16 +978,16 @@ header h1 span {
 
 /* 12. RESPONSIVIDADE E ACABAMENTOS */
 @media (max-width: 1300px) {
-  .game-container {
-    grid-template-columns: 320px 1fr;
-    max-width: 1050px;
-  }
   .sidebar-right {
     display: none !important;
   }
 }
 
 @media (max-width: 768px) {
+  html, body {
+    overflow-y: auto;
+    height: auto;
+  }
   header {
     padding: 1rem;
     flex-direction: column;
@@ -687,10 +997,17 @@ header h1 span {
     font-size: 1.3rem;
   }
   .game-container {
-    grid-template-columns: 1fr;
+    flex-direction: column;
     padding: 1rem;
+    height: auto;
+    overflow-y: visible;
+  }
+  .sidebar {
+    width: 100%;
+    height: auto;
   }
   .game-board-container {
     min-height: 400px;
+    height: 500px;
   }
 }
