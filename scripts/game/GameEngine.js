@@ -69,9 +69,16 @@ export class GameEngine {
         this.tutorialSystem?.pause();
       },
       onClose: (level) => {
-        this.state.isPaused = false;
         this.updateTheme();
-        this.tutorialSystem?.resume();
+        if (level === 3) {
+          this.state.isPaused = true;
+          this.tutorialSystem.showBugsyFrustration(() => {
+            this.state.isPaused = false;
+          });
+        } else {
+          this.state.isPaused = false;
+          this.tutorialSystem?.resume();
+        }
       }
     });
 
@@ -89,6 +96,9 @@ export class GameEngine {
       },
       onSkip: () => {
         this.state.tutorialCompleted = true;
+        this.saveGame();
+      },
+      onStateSave: () => {
         this.saveGame();
       }
     });
@@ -475,7 +485,6 @@ export class GameEngine {
       btnRestart.onclick = () => {
         modal.style.display = 'none';
         this.resetGame();
-        this.loadGame(); // Since save was cleared, this sets up a new game
         this.state.isPaused = false;
         this.updateTheme();
         this.hud.update(this.economy, this.grid, this.state.maxEraUnlocked, this.state);

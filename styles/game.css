@@ -1011,3 +1011,181 @@ header h1 span {
     height: 500px;
   }
 }
+
+/* ========================================== */
+/* BUGSY DIALOGUE OVERLAY (VISUAL NOVEL STYLE) */
+/* ========================================== */
+.bugsy-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(10, 6, 4, 0.75);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 15000;
+}
+
+.bugsy-dialog {
+  display: flex;
+  width: 90%;
+  max-width: 750px;
+  background: rgba(45, 28, 20, 0.95) !important;
+  backdrop-filter: blur(20px) saturate(120%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(120%) !important;
+  border: 3px solid var(--accent-color, #c47a1e) !important;
+  border-radius: 12px;
+  padding: 1.8rem;
+  gap: 1.5rem;
+  box-shadow: 
+    0 15px 40px rgba(0, 0, 0, 0.9),
+    0 0 25px rgba(196, 122, 30, 0.4),
+    inset 0 0 20px rgba(0, 0, 0, 0.7) !important;
+  position: relative;
+  align-items: flex-start;
+  animation: bugsy-dialog-popup 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.bugsy-avatar-container {
+  width: 140px;
+  height: 140px;
+  border: 3px solid var(--accent-color, #c47a1e) !important;
+  border-radius: 8px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: #1a0f05;
+  box-shadow: 0 0 15px rgba(196, 122, 30, 0.3);
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.bugsy-avatar-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Angry expression overlay for Bugsy */
+.bugsy-avatar-container.angry {
+  border-color: #ef5350 !important;
+  box-shadow: 0 0 20px rgba(239, 83, 80, 0.7);
+}
+
+.bugsy-avatar-container.angry img {
+  filter: saturate(1.8) sepia(0.1) hue-rotate(-30deg) contrast(1.1);
+  animation: bugsy-shake 0.35s infinite;
+}
+
+.bugsy-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  justify-content: space-between;
+  min-height: 140px;
+}
+
+.bugsy-speaker {
+  font-family: 'Cinzel', serif !important;
+  font-weight: 900;
+  font-size: 1.4rem;
+  color: var(--accent-color, #c47a1e) !important;
+  text-shadow: 0 0 8px rgba(196, 122, 30, 0.4);
+  margin: 0;
+  letter-spacing: 1px;
+}
+
+.bugsy-text {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: var(--text-color, #f0d89a) !important;
+  margin: 0;
+  font-weight: 400;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.bugsy-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: auto;
+}
+
+.btn-bugsy-next {
+  background: #6b4510 !important;
+  border: 1px solid var(--accent-color, #c47a1e) !important;
+  color: var(--text-color, #f0d89a) !important;
+  padding: 0.7rem 1.6rem;
+  font-family: 'Cinzel', serif !important;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.5);
+}
+
+.btn-bugsy-next:hover {
+  background: var(--accent-color, #c47a1e) !important;
+  color: #0b0704 !important;
+  box-shadow: 0 0 12px rgba(196, 122, 30, 0.6);
+  transform: translateY(-1px);
+}
+
+.btn-bugsy-next:active {
+  transform: translateY(1px);
+}
+
+/* Animations */
+@keyframes bugsy-dialog-popup {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes bugsy-shake {
+  0% { transform: translate(1px, 1px) rotate(0deg); }
+  10% { transform: translate(-1px, -2px) rotate(-1deg); }
+  20% { transform: translate(-3px, 0px) rotate(1deg); }
+  30% { transform: translate(0px, 2px) rotate(0deg); }
+  40% { transform: translate(1px, -1px) rotate(1deg); }
+  50% { transform: translate(-1px, 2px) rotate(-1deg); }
+  60% { transform: translate(-3px, 1px) rotate(0deg); }
+  70% { transform: translate(2px, 1px) rotate(-1deg); }
+  80% { transform: translate(-1px, -1px) rotate(1deg); }
+  90% { transform: translate(2px, 2px) rotate(0deg); }
+  100% { transform: translate(1px, -2px) rotate(-1deg); }
+}
+
+/* Tutorial highlights and lifting */
+.tutorial-highlight {
+  position: relative !important;
+  z-index: 16000 !important;
+  box-shadow: 0 0 20px #D4AF37, 0 0 40px #D4AF37 !important;
+  animation: pulse-highlight 1.5s infinite alternate !important;
+  pointer-events: auto !important;
+}
+
+.tutorial-panel-lift {
+  position: relative !important;
+  z-index: 15900 !important;
+  box-shadow: 0 0 25px rgba(212, 175, 55, 0.4) !important;
+}
+
+@keyframes pulse-highlight {
+  from {
+    box-shadow: 0 0 10px #D4AF37, 0 0 15px rgba(212, 175, 55, 0.4);
+  }
+  to {
+    box-shadow: 0 0 25px #D4AF37, 0 0 35px rgba(212, 175, 55, 0.8);
+  }
+}
+
