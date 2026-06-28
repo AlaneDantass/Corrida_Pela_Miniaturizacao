@@ -1,4 +1,4 @@
-/* 🎓 js/ui/TutorialSystem.js */
+/* 🎓 scripts/ui/TutorialSystem.js - Bugsy Tutorial & Narrative System */
 
 import { Computer } from '../game/Computer.js';
 import { audio } from '../audio/SoundManager.js';
@@ -8,87 +8,51 @@ export class TutorialSystem {
     this.callbacks = callbacks;
     this.currentStage = 0;
     this.active = false;
+    this.isFrustrationActive = false;
 
     // DOM Elements
-    this.overlay  = document.getElementById('tutorial-overlay');
-    this.textEl   = document.getElementById('tutorial-text');
-    this.btnNext  = document.getElementById('btn-tutorial-next');
-    this.btnSkip  = document.getElementById('btn-tutorial-skip');
+    this.bugsyOverlay = document.getElementById('bugsy-overlay');
+    this.bugsyText = document.getElementById('bugsy-text');
+    this.btnBugsyNext = document.getElementById('btn-bugsy-next');
+    this.avatarContainer = document.getElementById('avatar-bugsy-container');
 
     // Game refs
     this.economy = null;
-    this.grid    = null;
+    this.grid = null;
 
     // Highlight tracking
     this.highlightedEl = null;
-    this.liftedPanel   = null;
+    this.liftedPanel = null;
 
-    /*
-     * ROTEIRO (Tarefa 2) — cada stage tem:
-     *  text          : fala da Amelia
-     *  highlightId   : id do elemento a destacar (null = nenhum)
-     *  showNext      : exibe botão [Próximo ➔]
-     *  locks         : true → bloqueia o jogo até a ação; false → jogo livre, card é só dica
-     *  trigger       : qual checkProgress() dispara este stage ('auto'|'click_research'|'buy_item'|'merge_items')
-     *  autoDismiss   : se true, após renderizar aguarda a ação e o card some sozinho; sem botão Próximo
-     */
+    // ROTEIRO DO TUTORIAL INICIAL (Tarefa 2)
     this.tutorialScript = [
       {
         id: 0,
-        text: "Ah, finalmente você chegou! Achei que a fumaça das fábricas tivesse te cegado no caminho. Entre, entre!",
-        highlightId: null,
+        text: "Hehehe... Olá, assistente! Olhe para todas essas máquinas brilhantes e cheias de engrenagens... Elas são tão atraentes. Eu adoro entrar no meio delas!",
         showNext: true,
-        locks: false,
+        locks: true,
         trigger: 'auto'
       },
       {
         id: 1,
-        text: "Está vendo aquele monstro de metal ali? É a Máquina Analítica. Ela leva duas horas só para somar coordenadas. Eu tentei fazê-la ir mais rápido e... bem, eu quebrei tudo.",
-        highlightId: null,
+        text: "Mas essa mesa está muito bagunçada. Para a tecnologia evoluir e ficar ainda mais... apetitosa, preciso que você junte essas peças.",
         showNext: true,
-        locks: false,
+        locks: true,
         trigger: 'auto'
       },
       {
         id: 2,
-        text: "Nossa mesa está uma bagunça. Para consertar, precisamos de peças melhores. O metal tem um limite, mas podemos otimizá-lo!",
-        highlightId: null,
-        showNext: true,
-        locks: false,
-        trigger: 'auto'
+        text: "Clique no botão [Realizar Pesquisa] ali na esquerda para gerar dois itens base na grade.",
+        showNext: false,
+        locks: true,
+        trigger: 'click_research'
       },
       {
         id: 3,
-        text: "Clique no botão [Realizar Pesquisa] na Estação de Pesquisa ao lado. Isso vai nos dar algumas ideias e peças básicas.",
-        highlightId: 'btn-research',
+        text: "Isso! Agora arraste uma engrenagem em cima da outra para fundi-las e criar algo maior. Vá em frente!",
         showNext: false,
-        locks: true,           // Só esse estágio trava o jogo
-        trigger: 'auto'
-      },
-      // ── Abaixo: stages reativos — card aparece como dica, jogo livre ──
-      {
-        id: 4,
-        text: "Brilhante! Agora compre um componente na Fábrica de Hardware. O botão fica disponível assim que você tiver PP suficientes!",
-        highlightId: 'btn-buy',
-        showNext: false,
-        locks: false,
-        trigger: 'click_research'   // aparece após o primeiro clique em Pesquisa
-      },
-      {
-        id: 5,
-        text: "Ótimo! Agora arraste um componente sobre outro igual para fundi-los. Dois Nível 1 viram um Nível 2!",
-        highlightId: 'game-canvas',
-        showNext: false,
-        locks: false,
-        trigger: 'buy_item'         // aparece após a primeira compra
-      },
-      {
-        id: 6,
-        text: "Perfeito! Continue fundindo para criar o item final da era. Quando atingir o topo, um desafio vai desbloqueá-la!",
-        highlightId: null,
-        showNext: true,
-        locks: false,
-        trigger: 'merge_items'      // aparece após o primeiro merge
+        locks: true,
+        trigger: 'merge_items'
       }
     ];
 
@@ -96,16 +60,14 @@ export class TutorialSystem {
   }
 
   bindEvents() {
-    if (this.btnNext) {
-      this.btnNext.addEventListener('click', () => {
+    if (this.btnBugsyNext) {
+      this.btnBugsyNext.addEventListener('click', () => {
         audio.playClick();
-        this.nextStep();
-      });
-    }
-    if (this.btnSkip) {
-      this.btnSkip.addEventListener('click', () => {
-        audio.playClick();
-        this.skipPermanently();
+        if (this.isFrustrationActive) {
+          this.closeBugsyFrustration();
+        } else {
+          this.nextStep();
+        }
       });
     }
   }
@@ -113,21 +75,32 @@ export class TutorialSystem {
   /* ── Inicia o tutorial ── */
   start(economy, grid) {
     this.economy = economy;
-    this.grid    = grid;
+    this.grid = grid;
     this.currentStage = 0;
-    this.active  = true;
+    this.active = true;
+    this.isFrustrationActive = false;
+
+    if (this.avatarContainer) {
+      this.avatarContainer.classList.remove('angry');
+    }
+    if (this.btnBugsyNext) {
+      this.btnBugsyNext.textContent = "[Próximo ➔]";
+    }
 
     this.showOverlay();
     this.renderStage();
   }
 
-  /* ── Mostra o overlay sem escurecer (não-bloqueante por padrão) ── */
   showOverlay() {
-    if (this.overlay) this.overlay.style.display = 'flex';
+    if (this.bugsyOverlay) {
+      this.bugsyOverlay.style.display = 'flex';
+    }
   }
 
   hideOverlay() {
-    if (this.overlay) this.overlay.style.display = 'none';
+    if (this.bugsyOverlay) {
+      this.bugsyOverlay.style.display = 'none';
+    }
   }
 
   /* ── Renderiza o stage atual ── */
@@ -136,45 +109,41 @@ export class TutorialSystem {
     if (!stage) return;
 
     // Texto
-    if (this.textEl) this.textEl.textContent = stage.text;
+    if (this.bugsyText) {
+      this.bugsyText.textContent = stage.text;
+    }
 
     // Botão Próximo
-    if (this.btnNext) {
-      this.btnNext.style.display = stage.showNext ? 'inline-block' : 'none';
+    if (this.btnBugsyNext) {
+      this.btnBugsyNext.style.display = stage.showNext ? 'inline-block' : 'none';
+      this.btnBugsyNext.textContent = "[Próximo ➔]";
     }
 
     // Trava o jogo se necessário
     this.updateLock(stage.locks);
 
-    // Highlight
+    // Destaques / Highlights visuais
     this.clearHighlight();
-    if (stage.highlightId) {
-      const el = document.getElementById(stage.highlightId);
+    if (stage.id === 2) {
+      const el = document.getElementById('btn-research');
+      if (el) this.applyHighlight(el);
+    } else if (stage.id === 3) {
+      const el = document.getElementById('game-board-container') || document.getElementById('game-canvas');
       if (el) this.applyHighlight(el);
     }
-    // Mostra o overlay
+
     this.showOverlay();
-
-    // Se a fase for apenas informativa (não trava) a caixa desaparece imediatamente,
-    // permitindo que o jogador continue livremente.
-    if (!stage.locks) {
-      this.hideOverlay();
-    }
-
-    if (this.callbacks.onNextStep) this.callbacks.onNextStep(stage.id);
   }
 
   /* ── Gerencia a classe de trava no body ── */
-    updateLock(shouldLock) {
-      if (shouldLock) {
-        document.body.classList.add('tutorial-active', 'tutorial-locked');
-      } else {
-        document.body.classList.add('tutorial-active');
-        document.body.classList.remove('tutorial-locked');
-        // Quando a trava é removida, o overlay pode ficar visível; ocultamos para que o jogo continue livremente.
-        this.hideOverlay();
-      }
+  updateLock(shouldLock) {
+    if (shouldLock) {
+      document.body.classList.add('tutorial-active', 'tutorial-locked');
+    } else {
+      document.body.classList.add('tutorial-active');
+      document.body.classList.remove('tutorial-locked');
     }
+  }
 
   applyHighlight(element) {
     this.highlightedEl = element;
@@ -208,50 +177,44 @@ export class TutorialSystem {
 
   /*
    * checkProgress — chamado pelo GameEngine quando o jogador age
-   * Avança para o próximo stage cujo trigger bate com a ação
    */
   checkProgress(actionType) {
-    if (!this.active) return;
+    if (!this.active || this.isFrustrationActive) return;
 
-    // Estágio 3 (locks=true): só avança via click_research
     const cur = this.tutorialScript[this.currentStage];
     if (!cur) return;
 
-    if (cur.trigger !== 'auto' && cur.trigger !== actionType) return;
+    if (cur.id === 2 && actionType === 'click_research') {
+      // Tarefa 2: Gera dois itens base na grade
+      if (this.grid) {
+        this.grid.clear();
+        
+        // Coloca item N1 no slot 0
+        const coords0 = this.grid.getSlotCoordinates(0);
+        const comp0 = new Computer(1, 0, coords0.centerX, coords0.centerY);
+        this.grid.placeComputer(comp0, 0);
 
-    // Encontra o próximo stage que é disparado por essa ação
-    const nextIdx = this.tutorialScript.findIndex(
-      (s, i) => i > this.currentStage && s.trigger === actionType
-    );
+        // Coloca item N1 no slot 1
+        const coords1 = this.grid.getSlotCoordinates(1);
+        const comp1 = new Computer(1, 1, coords1.centerX, coords1.centerY);
+        this.grid.placeComputer(comp1, 1);
 
-    if (nextIdx !== -1) {
-      this.currentStage = nextIdx;
+        // Salva o estado atual
+        if (this.callbacks.onStateSave) {
+          this.callbacks.onStateSave();
+        }
+      }
+
+      // Avança para a fala 4
+      this.currentStage = 3;
       this.renderStage();
-    } else if (cur.id === 3 && actionType === 'click_research') {
-      // Stage 3 aguardava o clique em Pesquisa → avança para stage 4
-      this.currentStage = 4;
-      this.renderStage();
-    } else if (cur.id === 4 && actionType === 'buy_item') {
-      this.currentStage = 5;
-      this.renderStage();
-    } else if (cur.id === 5 && actionType === 'merge_items') {
-      this.currentStage = 6;
-      this.renderStage();
-    } else if (cur.id === 6 && actionType === 'merge_items') {
-      // Stage 6 já mostrado; nada a fazer até o jogador clicar Próximo
+    } else if (cur.id === 3 && actionType === 'merge_items') {
+      // Quando o primeiro merge acontece, a caixa some e o jogo roda normalmente
+      this.complete();
     }
   }
 
-  /* ── Pular narração permanentemente ── */
-  skipPermanently() {
-    this.active = false;
-    this.clearHighlight();
-    document.body.classList.remove('tutorial-active', 'tutorial-locked');
-    this.hideOverlay();
-    if (this.callbacks.onSkip) this.callbacks.onSkip();
-  }
-
-  /* ── Pausa o tutorial temporariamente (quando um modal externo abre) ── */
+  /* ── Pausa e retoma ── */
   pause() {
     if (!this.active) return;
     this.clearHighlight();
@@ -259,19 +222,62 @@ export class TutorialSystem {
     this.hideOverlay();
   }
 
-  /* ── Retoma o tutorial após o modal externo fechar ── */
   resume() {
     if (!this.active) return;
     this.showOverlay();
     this.renderStage();
   }
 
-  /* ── Completa o tutorial (último Próximo clicado) ── */
   complete() {
     this.active = false;
     this.clearHighlight();
     document.body.classList.remove('tutorial-active', 'tutorial-locked');
     this.hideOverlay();
     if (this.callbacks.onComplete) this.callbacks.onComplete();
+  }
+
+  /* ======================================================== */
+  /* TAREFA 3: O GATILHO DE FRUSTRAÇÃO NA ERA 3               */
+  /* ======================================================== */
+  showBugsyFrustration(onFinishCallback) {
+    this.active = true;
+    this.isFrustrationActive = true;
+    this.frustrationCallback = onFinishCallback;
+
+    // Atualiza texto e botão
+    if (this.bugsyText) {
+      this.bugsyText.textContent = "Ei, espera aí... O que você fez?! Um Circuito Integrado?! Droga, agora os espaços estão ficando menores para mim! Onde eu vou me esconder se tudo virar um chip minúsculo de silício? Pare com isso!";
+    }
+
+    if (this.btnBugsyNext) {
+      this.btnBugsyNext.style.display = 'inline-block';
+      this.btnBugsyNext.textContent = "[Entendi]";
+    }
+
+    // Expressão irritada / irada (efeito visual e vibração por CSS)
+    if (this.avatarContainer) {
+      this.avatarContainer.classList.add('angry');
+    }
+
+    // Trava interações com o jogo
+    this.updateLock(true);
+    this.showOverlay();
+  }
+
+  closeBugsyFrustration() {
+    this.isFrustrationActive = false;
+    this.active = false;
+    
+    if (this.avatarContainer) {
+      this.avatarContainer.classList.remove('angry');
+    }
+    
+    this.updateLock(false);
+    this.hideOverlay();
+
+    if (this.frustrationCallback) {
+      this.frustrationCallback();
+      this.frustrationCallback = null;
+    }
   }
 }
