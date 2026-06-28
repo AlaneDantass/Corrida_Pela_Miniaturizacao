@@ -22,6 +22,14 @@
   transform: translate(-50%, -50%);
   width: 90%;
   max-width: 560px;
+  box-sizing: border-box;
+  height: auto;
+  min-height: 280px;
+  max-height: 80vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
   background: rgba(22, 16, 12, 0.75) !important;
   backdrop-filter: blur(20px) saturate(180%) !important;
   -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
@@ -36,10 +44,12 @@
   flex-direction: column;
   gap: 1.5rem;
   outline: none;
-  max-height: 90vh;
-  overflow-y: auto;
   position: relative;
   transition: background var(--transition-speed) ease, border-color var(--transition-speed) ease;
+}
+
+.modal-card::-webkit-scrollbar {
+  display: none;
 }
 
 /* Gradiente animado em volta do modal */
