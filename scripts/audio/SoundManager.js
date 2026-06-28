@@ -5,7 +5,7 @@ class SoundManager {
     this.ctx = null;
     this.muted = localStorage.getItem("game_muted") === "true";
     this.bgmPlaying = false;
-    this.bgmNodes = null;
+    this.bgmAudio = null;
     this.bgmStarted = false;
   }
 
@@ -54,180 +54,26 @@ class SoundManager {
   // ═══════════════════════════════════════════
 
   startBGM() {
-    if (this.bgmPlaying || !this.ctx || this.muted) return;
+    if (this.bgmPlaying || this.muted) return;
     this.bgmPlaying = true;
 
-    const ctx = this.ctx;
+    if (!this.bgmAudio) {
+      this.bgmAudio = new Audio('scripts/audio/BullyTheme.mp3');
+      this.bgmAudio.loop = true;
+      this.bgmAudio.volume = 0.15; // Suave background volume
+    }
 
-    // Master gain for BGM
-    const masterGain = ctx.createGain();
-    masterGain.gain.setValueAtTime(0, ctx.currentTime);
-    masterGain.gain.linearRampToValueAtTime(0.12, ctx.currentTime + 2);
-    masterGain.connect(ctx.destination);
-
-    // ── Bass Drone ──
-    const bassOsc = ctx.createOscillator();
-    const bassGain = ctx.createGain();
-    bassOsc.type = 'triangle';
-    bassOsc.frequency.setValueAtTime(55, ctx.currentTime); // A1
-    bassGain.gain.setValueAtTime(0.3, ctx.currentTime);
-    bassOsc.connect(bassGain);
-    bassGain.connect(masterGain);
-    bassOsc.start();
-
-    // ── Pad (warm chord) ──
-    const padNotes = [130.81, 164.81, 196.00]; // C3, E3, G3
-    const padOscs = padNotes.map(freq => {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(freq, ctx.currentTime);
-      gain.gain.setValueAtTime(0.06, ctx.currentTime);
-      osc.connect(gain);
-      gain.connect(masterGain);
-      osc.start();
-      return { osc, gain };
+    // Play BGM and handle autoplay limits
+    this.bgmAudio.play().catch(err => {
+      console.warn("Autoplay blocked or audio error:", err);
+      this.bgmPlaying = false;
     });
-
-    // ── Melody Sequencer ──
-    // Pentatonic scale notes (C4 pentatonic): C4, D4, E4, G4, A4, C5, D5, E5
-    const melodyNotes = [
-      261.63, 293.66, 329.63, 392.00, 440.00,
-      523.25, 587.33, 659.25
-    ];
-
-    // Musical patterns (index into melodyNotes)
-    const patterns = [
-      [0, 2, 4, 3, 2, 0, 1, 3],
-      [4, 3, 2, 0, 1, 2, 4, 5],
-      [2, 4, 6, 5, 4, 2, 3, 1],
-      [0, 1, 3, 5, 7, 5, 3, 1],
-      [5, 4, 2, 3, 1, 0, 2, 4],
-      [3, 5, 7, 6, 5, 3, 4, 2],
-    ];
-
-    let currentPattern = 0;
-    let noteIndex = 0;
-    const bpm = 75;
-    const noteInterval = 60 / bpm;
-
-    // Melody oscillator setup
-    const melodyOsc = ctx.createOscillator();
-    const melodyGain = ctx.createGain();
-    const melodyFilter = ctx.createBiquadFilter();
-    
-    melodyOsc.type = 'square';
-    melodyFilter.type = 'lowpass';
-    melodyFilter.frequency.setValueAtTime(1200, ctx.currentTime);
-    melodyFilter.Q.setValueAtTime(2, ctx.currentTime);
-    melodyGain.gain.setValueAtTime(0, ctx.currentTime);
-    
-    melodyOsc.connect(melodyFilter);
-    melodyFilter.connect(melodyGain);
-    melodyGain.connect(masterGain);
-    melodyOsc.start();
-
-    // Arpeggio oscillator
-    const arpOsc = ctx.createOscillator();
-    const arpGain = ctx.createGain();
-    const arpFilter = ctx.createBiquadFilter();
-    
-    arpOsc.type = 'sine';
-    arpFilter.type = 'lowpass';
-    arpFilter.frequency.setValueAtTime(2000, ctx.currentTime);
-    arpGain.gain.setValueAtTime(0, ctx.currentTime);
-    
-    arpOsc.connect(arpFilter);
-    arpFilter.connect(arpGain);
-    arpGain.connect(masterGain);
-    arpOsc.start();
-
-    // Sequencer loop
-    const scheduleNote = () => {
-      if (!this.bgmPlaying) return;
-
-      const pattern = patterns[currentPattern];
-      const noteIdx = pattern[noteIndex % pattern.length];
-      const freq = melodyNotes[noteIdx];
-      const now = ctx.currentTime;
-
-      // Melody envelope
-      melodyOsc.frequency.setValueAtTime(freq, now);
-      melodyGain.gain.cancelScheduledValues(now);
-      melodyGain.gain.setValueAtTime(0.15, now);
-      melodyGain.gain.exponentialRampToValueAtTime(0.01, now + noteInterval * 0.8);
-
-      // Arpeggio (plays octave above at half time)
-      const arpFreq = freq * 2;
-      setTimeout(() => {
-        if (!this.bgmPlaying) return;
-        const t = ctx.currentTime;
-        arpOsc.frequency.setValueAtTime(arpFreq, t);
-        arpGain.gain.cancelScheduledValues(t);
-        arpGain.gain.setValueAtTime(0.05, t);
-        arpGain.gain.exponentialRampToValueAtTime(0.001, t + noteInterval * 0.3);
-      }, (noteInterval * 500));
-
-      // Bass changes every 8 notes
-      if (noteIndex % 8 === 0) {
-        const bassNotes = [55, 65.41, 73.42, 49]; // A1, C2, D2, G1
-        const bassIdx = Math.floor(currentPattern) % bassNotes.length;
-        bassOsc.frequency.setValueAtTime(bassNotes[bassIdx], now);
-      }
-
-      noteIndex++;
-      if (noteIndex >= pattern.length) {
-        noteIndex = 0;
-        currentPattern = (currentPattern + 1) % patterns.length;
-      }
-    };
-
-    const intervalId = setInterval(scheduleNote, noteInterval * 1000);
-    scheduleNote(); // play immediately
-
-    // Store references for cleanup
-    this.bgmNodes = {
-      masterGain,
-      bassOsc,
-      bassGain,
-      padOscs,
-      melodyOsc,
-      melodyGain,
-      melodyFilter,
-      arpOsc,
-      arpGain,
-      arpFilter,
-      intervalId
-    };
   }
 
   stopBGM() {
     this.bgmPlaying = false;
-
-    if (this.bgmNodes) {
-      clearInterval(this.bgmNodes.intervalId);
-
-      const now = this.ctx ? this.ctx.currentTime : 0;
-      
-      try {
-        // Fade out master
-        this.bgmNodes.masterGain.gain.cancelScheduledValues(now);
-        this.bgmNodes.masterGain.gain.setValueAtTime(this.bgmNodes.masterGain.gain.value, now);
-        this.bgmNodes.masterGain.gain.linearRampToValueAtTime(0, now + 0.5);
-
-        // Stop oscillators after fade
-        setTimeout(() => {
-          try {
-            this.bgmNodes.bassOsc.stop();
-            this.bgmNodes.melodyOsc.stop();
-            this.bgmNodes.arpOsc.stop();
-            this.bgmNodes.padOscs.forEach(p => p.osc.stop());
-          } catch (e) { /* already stopped */ }
-          this.bgmNodes = null;
-        }, 600);
-      } catch (e) {
-        this.bgmNodes = null;
-      }
+    if (this.bgmAudio) {
+      this.bgmAudio.pause();
     }
   }
 
