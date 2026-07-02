@@ -50,7 +50,7 @@ export class EraCard {
       this.titleEl.textContent = era.name;
     }
     if (this.descEl) {
-      this.descEl.innerHTML = era.description;
+      this.descEl.innerHTML = era.intro || era.description;
     }
 
     // Render computer preview on the modal canvas

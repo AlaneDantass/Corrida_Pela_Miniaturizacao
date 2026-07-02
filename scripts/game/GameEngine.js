@@ -57,12 +57,12 @@ export class GameEngine {
     // 2. Visual rendering setups
     this.background = new Background(bgCanvas);
     this.renderer = new Renderer(canvas, this.grid, this.particleSystem);
-    
+
     // 3. UI controllers
     this.hud = new HUD();
     this.timeline = new Timeline('timeline-list');
     this.componentGallery = new ComponentGallery();
-    
+
     this.eraCard = new EraCard('modal-era', {
       onShow: () => {
         this.state.isPaused = true;
@@ -194,13 +194,13 @@ export class GameEngine {
   loadGame() {
     try {
       const saved = SaveManager.load();
-      
+
       if (saved) {
         this.economy.coins = saved.coins;
         this.economy.totalCoinsEarned = saved.totalCoinsEarned || saved.coins;
         this.economy.totalPurchases = saved.totalPurchases || 0;
         this.economy.prestigeCount = saved.prestigeCount || 0;
-        
+
         this.state.maxEraUnlocked = saved.maxEraUnlocked || 1;
         this.state.erasDiscovered = saved.erasDiscovered;
         this.state.prestigeCount = saved.prestigeCount || 0;
@@ -218,7 +218,7 @@ export class GameEngine {
               coords.centerY
             );
             // Spawn instantly with target scale
-            comp.scale = 1.0; 
+            comp.scale = 1.0;
             this.grid.placeComputer(comp, compData.slot);
           });
         }
@@ -247,7 +247,7 @@ export class GameEngine {
     const coords = this.grid.getSlotCoordinates(0);
     const startComp = new Computer(1, 0, coords.centerX, coords.centerY);
     this.grid.placeComputer(startComp, 0);
-    
+
     // Auto-save initial state
     this.saveGame();
 
@@ -286,11 +286,11 @@ export class GameEngine {
 
   resetGame() {
     SaveManager.clear();
-    
+
     // Clear state
     this.grid.clear();
     this.particleSystem.clear();
-    
+
     this.economy.coins = 0;
     this.economy.totalCoinsEarned = 0;
     this.economy.totalPurchases = 0;
@@ -317,7 +317,7 @@ export class GameEngine {
       btnBuy.style.display = '';
       this.setHardwareFactoryVisible(true);
     }
-    
+
     // Close modals
     const modalVictory = document.getElementById('modal-victory');
     if (modalVictory) modalVictory.style.display = 'none';
@@ -334,7 +334,7 @@ export class GameEngine {
     const hrs = Math.floor(elapsedSeconds / 3600);
     const mins = Math.floor((elapsedSeconds % 3600) / 60);
     const secs = elapsedSeconds % 60;
-    
+
     let timeStr = '';
     if (hrs > 0) timeStr += `${hrs}h `;
     if (mins > 0 || hrs > 0) timeStr += `${mins}m `;
@@ -342,10 +342,10 @@ export class GameEngine {
 
     modal.querySelector('.offline-time').textContent = timeStr;
     modal.querySelector('.offline-earnings').textContent = this.hud.formatNumber(earnings);
-    
+
     this.economy.addCoins(earnings);
     modal.style.display = 'block';
-    
+
     this.state.isPaused = true;
 
     modal.querySelector('.btn-modal-action').onclick = () => {
@@ -369,7 +369,7 @@ export class GameEngine {
     const hours = Math.floor(totalTimeMs / 3600000);
     const minutes = Math.floor((totalTimeMs % 3600000) / 60000);
     const seconds = Math.floor((totalTimeMs % 60000) / 1000);
-    
+
     let timeText = '';
     if (hours > 0) timeText += `${hours}h `;
     if (minutes > 0) timeText += `${minutes}m `;
@@ -418,16 +418,16 @@ export class GameEngine {
 
         // Prestige: reset game, but increment prestige multiplier count
         this.economy.prestige();
-        
+
         // Reset grid but preserve prestige multiplier
         const savedPrestigeCount = this.economy.prestigeCount;
         this.resetGame();
-        
+
         // Apply back the prestige count increment
         this.economy.prestigeCount = savedPrestigeCount;
         this.state.prestigeCount = savedPrestigeCount;
         this.saveGame();
-        
+
         modal.style.display = 'none';
         this.state.isPaused = false;
         this.setHardwareFactoryVisible(true);
@@ -496,18 +496,21 @@ export class GameEngine {
   }
 
   handleQuizSuccess(eraLevel) {
+    this.economy.addCoins(15);
+    this.saveGame();
+
     if (eraLevel === 6) {
       this.triggerVictory();
     } else {
       const nextEraLevel = eraLevel + 1;
-      
+
       // Update unlocked state
       this.state.maxEraUnlocked = nextEraLevel;
       this.state.erasDiscovered.add(nextEraLevel);
 
       // Reset grid
       this.grid.clear();
-      
+
       // Give initial N1 item of the new era in slot 0 as a head start
       const coords = this.grid.getSlotCoordinates(0);
       const startComp = new Computer(1, 0, coords.centerX, coords.centerY);
@@ -552,7 +555,7 @@ export class GameEngine {
   loop(timestamp) {
     const elapsedMs = timestamp - this.lastFrameTime;
     this.lastFrameTime = timestamp;
-    
+
     // Scale deltaTime to seconds
     const dt = Math.min(0.1, elapsedMs / 1000);
 

@@ -13,6 +13,7 @@ export const ERAS_DATA = [
     level: 1,
     name: "Máquinas Mecânicas",
     period: "Séc. XVII–XIX",
+    intro: "Sua jornada começa em uma época em que computadores ainda eram apenas sonhos movidos por engrenagens. Inventores visionários buscam maneiras de automatizar cálculos usando mecanismos mecânicos. Explore essa era pioneira e descubra como as primeiras ideias deram origem ao conceito de computador.",
     itemN1: "Engrenagens",
     itemN2: "Calculadora de Pascal",
     itemN3: "Máquina Analítica",
@@ -25,7 +26,7 @@ export const ERAS_DATA = [
         "Bill Gates",
         "Blaise Pascal"
       ],
-      correct: 1 // Charles Babbage
+      correct: 1
     },
     themeClass: "era-1",
     color: "#C9A227",
@@ -37,6 +38,7 @@ export const ERAS_DATA = [
     level: 2,
     name: "Computadores Eletrônicos",
     period: "1930–1950",
+    intro: "As engrenagens ficaram para trás. Agora enormes máquinas eletrônicas ocupam salas inteiras, consumindo energia e calor para realizar cálculos nunca antes possíveis. Seu desafio é testemunhar o nascimento da computação eletrônica e entender como a miniaturização começou a ganhar velocidade.",
     itemN1: "Válvula a Vácuo",
     itemN2: "Painel de Distribuição",
     itemN3: "Mainframe Transistorizado",
@@ -49,7 +51,7 @@ export const ERAS_DATA = [
         "Resistor",
         "Circuito Integrado"
       ],
-      correct: 1 // Válvula a Vácuo
+      correct: 1
     },
     themeClass: "era-2",
     color: "#E05A1A",
@@ -61,6 +63,7 @@ export const ERAS_DATA = [
     level: 3,
     name: "Circuitos Integrados",
     period: "1960–1970",
+    intro: "A revolução acontece dentro de pequenos pedaços de silício. Componentes que antes ocupavam armários inteiros agora podem ser reunidos em um único chip. Essa inovação permitirá missões espaciais e abrirá caminho para computadores cada vez menores e mais poderosos.",
     itemN1: "Circuito Integrado",
     itemN2: "Placa Lógica de Silício",
     itemN3: "Computador de Navegação Apollo",
@@ -73,7 +76,7 @@ export const ERAS_DATA = [
         "Simular testes nucleares",
         "Conectar a primeira rede mundial de computadores"
       ],
-      correct: 1 // Guiar as naves espaciais para pousar o homem na Lua
+      correct: 1
     },
     themeClass: "era-3",
     color: "#4A9E6B",
@@ -85,6 +88,7 @@ export const ERAS_DATA = [
     level: 4,
     name: "Revolução do Microprocessador",
     period: "1970–1990",
+    intro: "Agora toda a capacidade de processamento cabe em um único microchip. Essa inovação transforma computadores de equipamentos industriais em ferramentas acessíveis para empresas e lares. A corrida pela miniaturização entra em uma nova fase, impulsionando a era dos computadores pessoais.",
     itemN1: "Intel 4004",
     itemN2: "Placa-Mãe Antiga",
     itemN3: "IBM PC",
@@ -97,7 +101,7 @@ export const ERAS_DATA = [
         "Intel Pentium",
         "Zilog Z80"
       ],
-      correct: 0 // Intel 4004
+      correct: 0
     },
     themeClass: "era-4",
     color: "#C8A878",
@@ -109,6 +113,7 @@ export const ERAS_DATA = [
     level: 5,
     name: "Computação Pessoal Portátil",
     period: "1990–2010",
+    intro: "Os computadores deixam as mesas e passam a acompanhar as pessoas em qualquer lugar. Celulares evoluem rapidamente até se tornarem smartphones, concentrando em um pequeno dispositivo capacidades que antes exigiam máquinas gigantescas.",
     itemN1: "Componentes Compactos",
     itemN2: "Telefone Celular",
     itemN3: "Primeiro Smartphone",
@@ -121,7 +126,7 @@ export const ERAS_DATA = [
         "Blackberry Bold",
         "Motorola StarTAC"
       ],
-      correct: 0 // IBM Simon
+      correct: 0
     },
     themeClass: "era-5",
     color: "#8AB4D4",
@@ -133,6 +138,7 @@ export const ERAS_DATA = [
     level: 6,
     name: "Computação Ubíqua e Futuro",
     period: "2010+",
+    intro: "Você chegou ao presente, onde bilhões de transistores cabem em um único chip e novas tecnologias desafiam os limites da física. A próxima fronteira é a computação quântica, capaz de resolver problemas antes considerados impossíveis. A corrida pela miniaturização continua, e o futuro ainda está sendo construído.",
     itemN1: "SoC Avançado",
     itemN2: "Células Lógicas Quânticas",
     itemN3: "Computador Quântico",
@@ -145,7 +151,7 @@ export const ERAS_DATA = [
         "Qubit",
         "Transistor"
       ],
-      correct: 2 // Qubit
+      correct: 2
     },
     themeClass: "era-6",
     color: "#00E5FF",

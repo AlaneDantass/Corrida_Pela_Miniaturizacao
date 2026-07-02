@@ -88,7 +88,7 @@ export class QuizSystem {
       if (this.feedbackTextEl) {
         this.feedbackTextEl.style.color = '#66BB6A';
         this.feedbackTextEl.style.textShadow = '0 0 8px rgba(102, 187, 106, 0.4)';
-        this.feedbackTextEl.textContent = 'Resposta Correta! Transição de Era Autorizada...';
+        this.feedbackTextEl.textContent = 'Resposta Correta! Você ganhou +15 créditos. Transição de Era Autorizada...';
         this.feedbackTextEl.style.display = 'block';
       }
 
