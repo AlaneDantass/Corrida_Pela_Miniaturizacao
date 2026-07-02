@@ -9,6 +9,8 @@ tmp/
 out/
 build/
 .cache/
+test-results/
+playwright-report/
 
 # Logs
 *.log

@@ -2,7 +2,12 @@
 
 import { Computer } from './Computer.js';
 import { audio } from '../audio/SoundManager.js';
-import { ERAS_DATA } from '../config.js';
+import {
+  ERA_START_LEVELS,
+  MAX_GLOBAL_LEVEL,
+  getComponentByLevel,
+  getEraLevelForGlobalLevel
+} from '../config.js';
 
 export class MergeSystem {
   /**
@@ -41,10 +46,15 @@ export class MergeSystem {
     // Slot occupied by same level - merge!
     if (computer.level === targetComputer.level) {
       const currentLevel = computer.level;
-      const maxLevel = 3; // Max item level within the current era is 3
+      const component = getComponentByLevel(currentLevel);
+      if (!component) {
+        grid.placeComputer(computer, dragIndex);
+        audio.playError();
+        return { success: false, action: 'invalid_level' };
+      }
 
       // Already max level
-      if (currentLevel >= maxLevel) {
+      if (currentLevel >= MAX_GLOBAL_LEVEL) {
         grid.placeComputer(computer, dragIndex); // Put back
         audio.playError();
         return { success: false, action: 'max_level' };
@@ -62,14 +72,23 @@ export class MergeSystem {
 
       audio.playMerge();
 
-      // Check if we created the Item Final (Level 3)
-      const isFinalItem = (nextLevel === 3);
+      const mergedComponent = getComponentByLevel(nextLevel);
+      const newEraLevel = ERA_START_LEVELS.includes(nextLevel) && nextLevel !== ERA_START_LEVELS[0]
+        ? getEraLevelForGlobalLevel(nextLevel)
+        : null;
+      const isNewEra = !!newEraLevel && !erasDiscovered?.has(newEraLevel);
+      const isFinalComponent = nextLevel === MAX_GLOBAL_LEVEL;
 
       return {
         success: true,
         action: 'merge',
         level: nextLevel,
-        isFinalItem,
+        component: mergedComponent,
+        isNewComponent: true,
+        isNewEra,
+        newEraLevel,
+        isFinalComponent,
+        isFinalItem: isFinalComponent,
         centerX: targetCoords.centerX,
         centerY: targetCoords.centerY
       };

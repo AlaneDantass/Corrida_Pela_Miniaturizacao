@@ -1,0 +1,17 @@
+{
+  "name": "corrida-pela-miniaturizacao",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "serve": "python3 -m http.server 8080 --bind 127.0.0.1",
+    "install:browsers": "playwright install chromium",
+    "test": "node --test tests/unit/*.test.js",
+    "test:coverage": "node --experimental-test-coverage --test-coverage-lines=80 --test tests/unit/*.test.js",
+    "test:smoke": "playwright test",
+    "validate": "npm run test:coverage && npm run test:smoke"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.61.1"
+  }
+}

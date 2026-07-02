@@ -60,10 +60,10 @@ body {
 /* 3. CABEÇALHO - ESTILO AAA CINEMATOGRÁFICO */
 header {
   padding: 1.25rem 2.5rem;
-  background: transparent;
-  backdrop-filter: none;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  -webkit-backdrop-filter: none;
+  background: rgba(10, 10, 10, 0.75);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  -webkit-backdrop-filter: blur(12px);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -95,6 +95,211 @@ header h1 span {
   color: var(--text) !important;
   font-family: 'Cinzel', serif !important;
   text-shadow: 0 0 16px var(--glow) !important;
+}
+
+/* 3b. TOP REGION: PP + TIMELINE HORIZONTAL SUPERIOR */
+.top-bar {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  width: 100%;
+  min-width: 0;
+}
+
+.pp-display {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  flex-shrink: 0;
+  padding-right: 1rem;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.pp-main {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.pp-label {
+  font-family: 'Cinzel', serif !important;
+  font-size: 0.7rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--text) 70%, transparent) !important;
+}
+
+.pp-display .stat-value {
+  font-size: 1.7rem;
+  line-height: 1;
+}
+
+.pp-rate {
+  font-family: 'Crimson Text', serif !important;
+  font-size: 0.85rem;
+  color: color-mix(in srgb, var(--text) 70%, transparent) !important;
+}
+
+/* Horizontal timeline with active marker and progressed trail */
+.timeline-bar {
+  --timeline-progress: 0;
+  flex: 1;
+  min-width: 0;
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.4rem 0.75rem 0.15rem;
+}
+
+/* Base track + lit trail sit behind the era nodes */
+.timeline-bar::before,
+.timeline-bar::after {
+  content: '';
+  position: absolute;
+  top: 20px;
+  left: 24px;
+  height: 3px;
+  border-radius: 3px;
+  z-index: 0;
+}
+
+.timeline-bar::before {
+  right: 24px;
+  background: color-mix(in srgb, var(--text) 15%, transparent);
+}
+
+.timeline-bar::after {
+  width: calc((100% - 48px) * var(--timeline-progress));
+  background: linear-gradient(90deg, var(--secondary), var(--primary), var(--accent));
+  box-shadow: 0 0 10px var(--glow);
+  transition: width var(--transition-speed) cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.era-node {
+  position: relative;
+  z-index: 1;
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  opacity: 0.4;
+  transition: opacity 0.4s ease, transform 0.3s ease;
+}
+
+.era-node.unlocked-era {
+  opacity: 0.85;
+}
+
+.era-node.active-era {
+  opacity: 1;
+  transform: translateY(-2px);
+}
+
+.era-dot {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--secondary) !important;
+  border: 2px solid var(--primary) !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Cinzel', serif !important;
+  font-weight: bold;
+  font-size: 0.8rem;
+  color: var(--text) !important;
+  flex-shrink: 0;
+  transition: all var(--transition-speed) ease;
+}
+
+.era-node.unlocked-era .era-dot {
+  box-shadow: 0 0 10px var(--glow) !important;
+}
+
+.era-node.active-era .era-dot {
+  background: var(--primary) !important;
+  box-shadow: 0 0 15px var(--glow), 0 0 30px var(--glow) !important;
+}
+
+.era-label {
+  font-family: 'Crimson Text', serif !important;
+  font-size: 0.68rem;
+  line-height: 1.15;
+  text-align: center;
+  max-width: 100px;
+  color: color-mix(in srgb, var(--text) 80%, transparent) !important;
+}
+
+.era-node.active-era .era-label {
+  color: var(--text) !important;
+  text-shadow: 0 0 8px var(--glow) !important;
+}
+
+/* Unlocked eras are clickable to replay their story */
+.era-node.unlocked-era {
+  cursor: pointer;
+}
+.era-node.unlocked-era:hover .era-dot {
+  transform: scale(1.12);
+}
+
+/* Left action column: stacked buttons, no dead space */
+.sidebar-left {
+  width: 320px;
+}
+
+.actions-panel {
+  gap: 1rem;
+}
+
+/* Corner anchors reserved for later tasks (Bugsy help + telefone) */
+.corner-anchor {
+  position: fixed;
+  z-index: 9000;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+.corner-anchor-bl { left: 20px; bottom: 20px; }
+.corner-anchor-br { right: 20px; bottom: 20px; }
+
+/* Non-blocking quiz reward invite (does not cover the board) */
+.quiz-invite {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  z-index: 900;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.7rem 1.2rem;
+  border-radius: 999px;
+  cursor: pointer;
+  font-family: 'Cinzel', serif !important;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text) !important;
+  background: color-mix(in srgb, var(--panel) 85%, transparent) !important;
+  border: 1.5px solid var(--accent) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 0 18px var(--glow) !important;
+  animation: quiz-invite-bob 2s ease-in-out infinite;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.quiz-invite:hover {
+  transform: translateX(-50%) translateY(-3px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6), 0 0 26px var(--glow) !important;
+}
+.quiz-invite-icon {
+  font-size: 1.2rem;
+}
+@keyframes quiz-invite-bob {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(-4px); }
 }
 
 /* 4. LAYOUT GRID PRINCIPAL */
@@ -258,12 +463,12 @@ header h1 span {
 
 .game-logo {
   position: absolute;
-  top: -100px;
+  top: 4px;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 10;
-  max-width: 960px;
-  width: 75%;
+  z-index: 2;
+  max-width: 360px;
+  width: 45%;
   object-fit: contain;
   margin: 0;
   flex-shrink: 0;
@@ -543,7 +748,7 @@ header h1 span {
     left: 10%;
     right: 10%;
 
-    top: 10px;
+  top: -50px;
 
     height: 14px;
 
@@ -905,6 +1110,85 @@ header h1 span {
   opacity: 0.4;
 }
 
+/* Collection: era group headers + discovered/locked states */
+.gallery-era-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin: 0.4rem 0 0.1rem;
+  padding-bottom: 0.3rem;
+  border-bottom: 1px dashed color-mix(in srgb, var(--primary) 45%, transparent);
+}
+.gallery-era-header:first-child {
+  margin-top: 0;
+}
+.gallery-era-name {
+  font-family: 'Cinzel', serif !important;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--accent) !important;
+  text-shadow: 0 0 6px var(--glow) !important;
+}
+.gallery-era-period {
+  font-family: 'Crimson Text', serif !important;
+  font-size: 0.7rem;
+  color: color-mix(in srgb, var(--text) 60%, transparent) !important;
+}
+
+/* The preview holds a sprite canvas (discovered) or a ? lock (locked) */
+.gallery-preview {
+  position: relative;
+}
+.gallery-lock {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Cinzel', serif !important;
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: color-mix(in srgb, var(--text) 45%, transparent) !important;
+}
+
+.gallery-item.locked {
+  opacity: 0.55;
+  cursor: default;
+  filter: grayscale(0.4);
+}
+.gallery-item.locked .gallery-name {
+  color: color-mix(in srgb, var(--text) 45%, transparent) !important;
+  letter-spacing: 2px;
+}
+.gallery-item.locked .gallery-preview-canvas {
+  display: none;
+}
+.gallery-item.locked:hover {
+  transform: none !important;
+  border-color: color-mix(in srgb, var(--primary) 50%, transparent) !important;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5) !important;
+}
+
+.gallery-item.discovered {
+  cursor: pointer;
+}
+.gallery-item.discovered .gallery-lock {
+  display: none;
+}
+
+/* First-discovery pulse (SHOULD: highlight on first creation) */
+.gallery-item.just-discovered {
+  animation: gallery-discover-pop 0.9s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes gallery-discover-pop {
+  0% { transform: scale(0.82); }
+  40% { transform: scale(1.12); box-shadow: 0 0 25px var(--glow), 0 0 45px var(--glow); }
+  100% { transform: scale(1); }
+}
+
 /* 11. CONTROLES DO TOPO E MÚSICA */
 .top-controls {
   display: flex;
@@ -983,6 +1267,25 @@ header h1 span {
   }
 }
 
+/* Tablet / narrow desktop: keep the six-era timeline readable via horizontal
+   scroll instead of squashing labels into each other. */
+@media (max-width: 1100px) {
+  .timeline-bar {
+    overflow-x: auto;
+    overflow-y: hidden;
+    justify-content: flex-start;
+    gap: 1rem;
+  }
+  .era-node {
+    flex: 0 0 auto;
+    min-width: 60px;
+  }
+  .timeline-bar::before,
+  .timeline-bar::after {
+    display: none;
+  }
+}
+
 @media (max-width: 768px) {
   html, body {
     overflow-y: auto;
@@ -996,13 +1299,31 @@ header h1 span {
   header h1 {
     font-size: 1.3rem;
   }
+  .top-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+  .pp-display {
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: space-between;
+    padding-right: 0;
+    padding-bottom: 0.5rem;
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .timeline-bar {
+    width: 100%;
+  }
   .game-container {
     flex-direction: column;
     padding: 1rem;
     height: auto;
     overflow-y: visible;
   }
-  .sidebar {
+  .sidebar,
+  .sidebar-left {
     width: 100%;
     height: auto;
   }

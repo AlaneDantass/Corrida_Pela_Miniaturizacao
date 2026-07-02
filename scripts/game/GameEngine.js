@@ -3,18 +3,19 @@
 import { Grid } from './Grid.js';
 import { Economy } from './Economy.js';
 import { Computer } from './Computer.js';
-import { SaveManager } from '../storage/SaveManager.js';
+import { SaveManager, createDefaultBugzeState } from '../storage/SaveManager.js';
 import { Renderer } from '../render/Renderer.js';
 import { Background } from '../render/Background.js';
 import { ParticleSystem } from '../render/Particles.js';
 import { HUD } from '../ui/HUD.js';
 import { Timeline } from '../ui/Timeline.js';
-import { EraCard } from '../ui/EraCard.js';
+import { StorySystem } from '../ui/StorySystem.js';
 import { QuizSystem } from '../ui/QuizSystem.js';
+import { QuizScheduler } from './QuizScheduler.js';
 import { TutorialSystem } from '../ui/TutorialSystem.js';
 import { DragDrop } from '../input/DragDrop.js';
 import { ClickHandler } from '../input/ClickHandler.js';
-import { getEra, ERAS_DATA } from '../config.js';
+import { getComponentByLevel, getEra, getEraStartLevel } from '../config.js';
 import { audio } from '../audio/SoundManager.js';
 import { ComponentGallery } from '../ui/ComponentGallery.js';
 
@@ -22,7 +23,10 @@ export class GameEngine {
   constructor() {
     this.state = {
       maxEraUnlocked: 1,
+      maxGlobalLevel: 1,
       erasDiscovered: new Set([1]),
+      discoveredComponents: new Set([1]),
+      bugzeState: createDefaultBugzeState(),
       prestigeCount: 0,
       isPaused: false,
       victoryTriggered: false,
@@ -60,17 +64,18 @@ export class GameEngine {
     
     // 3. UI controllers
     this.hud = new HUD();
-    this.timeline = new Timeline('timeline-list');
+    this.timeline = new Timeline('timeline-list', (eraLevel) => this.replayEraStory(eraLevel));
     this.componentGallery = new ComponentGallery();
-    
-    this.eraCard = new EraCard('modal-era', {
-      onShow: () => {
+
+    this.storySystem = new StorySystem('modal-story', {
+      onOpen: () => {
         this.state.isPaused = true;
         this.tutorialSystem?.pause();
       },
-      onClose: (level) => {
+      onClose: (level, wasReplay) => {
+        this.quizScheduler?.markSeen(level);
         this.updateTheme();
-        if (level === 3) {
+        if (!wasReplay && level === 3) {
           this.state.isPaused = true;
           this.tutorialSystem.showBugsyFrustration(() => {
             this.state.isPaused = false;
@@ -82,11 +87,15 @@ export class GameEngine {
       }
     });
 
+    this.quizScheduler = new QuizScheduler();
+    this.quizInviteEl = document.getElementById('quiz-invite');
+    if (this.quizInviteEl) {
+      this.quizInviteEl.addEventListener('click', () => this.openQuiz());
+    }
+
     this.quizSystem = new QuizSystem('modal-quiz', {
-      onSuccess: (eraLevel) => {
-        this.tutorialSystem?.resume();
-        this.handleQuizSuccess(eraLevel);
-      }
+      // Reward-only: awards PP on correct answers, never gates era progress.
+      onAnswer: (eraLevel, selectedIndex) => this.handleQuizAnswer(eraLevel, selectedIndex)
     });
 
     this.tutorialSystem = new TutorialSystem({
@@ -136,23 +145,25 @@ export class GameEngine {
       this.state.erasDiscovered,
       {
         onMerge: (nextLevel) => {
+          if (nextLevel) {
+            this.registerComponentDiscovery(nextLevel);
+          }
           this.saveGame();
+          this.quizScheduler?.notifyMerge();
           if (nextLevel === 2) {
             this.tutorialSystem.checkProgress('merge_items');
           }
         },
-        onFinalItemCreated: () => {
-          this.queueEraTransition();
-        }
+        onNewEra: (eraLevel, result) => this.handleNewEraUnlocked(eraLevel, result),
+        onFinalComponentCreated: (result) => this.handleFinalComponentCreated(result)
       },
       this.renderer
     );
 
-    // Keyboard Cheat Code listener: Press 'P' to show the Era quiz modal for testing
+    // Keyboard Cheat Code listener: Press 'P' to open a review quiz (non-blocking)
     window.addEventListener('keydown', (e) => {
       if (e.key === 'p' || e.key === 'P') {
-        this.state.isPaused = true;
-        this.quizSystem.show(this.state.maxEraUnlocked);
+        this.openQuiz();
       }
     });
 
@@ -165,6 +176,7 @@ export class GameEngine {
       {
         onStateChange: () => {
           this.hud.update(this.economy, this.grid, this.state.maxEraUnlocked, this.state);
+          this.saveGame();
           this.tutorialSystem.checkProgress('click_research');
           this.tutorialSystem.checkProgress('coin_change');
         },
@@ -173,8 +185,7 @@ export class GameEngine {
           this.saveGame();
           this.tutorialSystem.checkProgress('buy_item');
         },
-        onReset: () => this.resetGame(),
-        onRequestEraTransition: () => this.showEraTransitionQuiz()
+        onReset: () => this.resetGame()
       }
     );
 
@@ -202,7 +213,10 @@ export class GameEngine {
         this.economy.prestigeCount = saved.prestigeCount || 0;
         
         this.state.maxEraUnlocked = saved.maxEraUnlocked || 1;
+        this.state.maxGlobalLevel = saved.maxGlobalLevel || 1;
         this.state.erasDiscovered = saved.erasDiscovered;
+        this.state.discoveredComponents = saved.discoveredComponents || new Set([1]);
+        this.state.bugzeState = saved.bugzeState || createDefaultBugzeState();
         this.state.prestigeCount = saved.prestigeCount || 0;
         this.state.tutorialCompleted = saved.tutorialCompleted || false;
 
@@ -220,6 +234,7 @@ export class GameEngine {
             // Spawn instantly with target scale
             comp.scale = 1.0; 
             this.grid.placeComputer(comp, compData.slot);
+            this.registerComponentDiscovery(compData.level);
           });
         }
 
@@ -245,8 +260,9 @@ export class GameEngine {
   setupNewGame() {
     // New Game Headstart: place level 1 computer in slot 0
     const coords = this.grid.getSlotCoordinates(0);
-    const startComp = new Computer(1, 0, coords.centerX, coords.centerY);
+    const startComp = new Computer(getEraStartLevel(1) ?? 1, 0, coords.centerX, coords.centerY);
     this.grid.placeComputer(startComp, 0);
+    this.registerComponentDiscovery(startComp.level);
     
     // Auto-save initial state
     this.saveGame();
@@ -261,27 +277,56 @@ export class GameEngine {
       totalCoinsEarned: this.economy.totalCoinsEarned,
       totalPurchases: this.economy.totalPurchases,
       maxEraUnlocked: this.state.maxEraUnlocked,
+      maxGlobalLevel: this.state.maxGlobalLevel,
       erasDiscovered: this.state.erasDiscovered,
+      discoveredComponents: this.state.discoveredComponents,
       prestigeCount: this.economy.prestigeCount,
       tutorialCompleted: this.state.tutorialCompleted,
+      bugzeState: this.state.bugzeState,
       grid: this.grid.slots
     });
   }
 
-  queueEraTransition() {
-    if (this.state.isAwaitingEraTransition) return;
-    this.state.isAwaitingEraTransition = true;
-    this.hud.update(this.economy, this.grid, this.state.maxEraUnlocked, this.state);
-    audio.playClick();
+  registerComponentDiscovery(level) {
+    const component = getComponentByLevel(level);
+    if (!component) return;
+
+    this.state.maxGlobalLevel = Math.max(this.state.maxGlobalLevel || 1, component.globalLevel);
+    this.state.discoveredComponents.add(component.globalLevel);
+
+    // Reflect the newly discovered component in the collection immediately
+    // (plays the discovery pulse for the freshly unlocked slot).
+    this.componentGallery?.update(this.state.discoveredComponents);
   }
 
-  showEraTransitionQuiz() {
-    if (!this.state.isAwaitingEraTransition) return;
+  handleNewEraUnlocked(eraLevel) {
+    if (!eraLevel || this.state.erasDiscovered.has(eraLevel)) return;
+
+    this.state.maxEraUnlocked = Math.max(this.state.maxEraUnlocked, eraLevel);
+    this.state.erasDiscovered.add(eraLevel);
     this.state.isAwaitingEraTransition = false;
-    this.state.isPaused = true;
-    this.tutorialSystem?.pause();
+
+    this.updateTheme();
+    this.storySystem.show(eraLevel);
+    this.saveGame();
     this.hud.update(this.economy, this.grid, this.state.maxEraUnlocked, this.state);
-    this.quizSystem.show(this.state.maxEraUnlocked);
+  }
+
+  /**
+   * Reopens an already-unlocked era's story from the timeline. Read-only:
+   * never mutates grid, economy, or discovery state.
+   * @param {number} eraLevel
+   */
+  replayEraStory(eraLevel) {
+    if (!eraLevel || eraLevel > this.state.maxEraUnlocked) return;
+    this.storySystem.show(eraLevel, { replay: true });
+  }
+
+  handleFinalComponentCreated() {
+    if (this.state.victoryTriggered) return;
+
+    this.saveGame();
+    this.triggerVictory();
   }
 
   resetGame() {
@@ -297,7 +342,10 @@ export class GameEngine {
     this.economy.prestigeCount = 0;
 
     this.state.maxEraUnlocked = 1;
+    this.state.maxGlobalLevel = 1;
     this.state.erasDiscovered = new Set([1]);
+    this.state.discoveredComponents = new Set([1]);
+    this.state.bugzeState = createDefaultBugzeState();
     this.state.victoryTriggered = false;
     this.state.victoryDismissed = false;
     this.state.startTime = Date.now();
@@ -306,8 +354,9 @@ export class GameEngine {
 
     // Add level 1 computer to slot 0
     const coords = this.grid.getSlotCoordinates(0);
-    const startComp = new Computer(1, 0, coords.centerX, coords.centerY);
+    const startComp = new Computer(getEraStartLevel(1) ?? 1, 0, coords.centerX, coords.centerY);
     this.grid.placeComputer(startComp, 0);
+    this.registerComponentDiscovery(startComp.level);
 
     this.updateTheme();
     this.saveGame();
@@ -352,6 +401,7 @@ export class GameEngine {
       modal.style.display = 'none';
       audio.playClick();
       this.state.isPaused = false;
+      this.saveGame();
     };
   }
 
@@ -463,7 +513,9 @@ export class GameEngine {
     // Update details in modal
     if (eraNameEl) {
       const era = getEra(saved.maxEraUnlocked || 1);
-      eraNameEl.textContent = era ? era.name : `Era ${saved.maxEraUnlocked || 1}`;
+      const component = getComponentByLevel(saved.maxGlobalLevel || 1);
+      const componentText = component ? ` · N${component.globalLevel} ${component.name}` : '';
+      eraNameEl.textContent = era ? `${era.name}${componentText}` : `Era ${saved.maxEraUnlocked || 1}${componentText}`;
     }
     if (cyclesEl) {
       cyclesEl.innerHTML = `${this.hud.formatNumber(saved.coins)} PP`;
@@ -495,31 +547,39 @@ export class GameEngine {
     modal.style.display = 'block';
   }
 
-  handleQuizSuccess(eraLevel) {
-    if (eraLevel === 6) {
-      this.triggerVictory();
-    } else {
-      const nextEraLevel = eraLevel + 1;
-      
-      // Update unlocked state
-      this.state.maxEraUnlocked = nextEraLevel;
-      this.state.erasDiscovered.add(nextEraLevel);
-
-      // Reset grid
-      this.grid.clear();
-      
-      // Give initial N1 item of the new era in slot 0 as a head start
-      const coords = this.grid.getSlotCoordinates(0);
-      const startComp = new Computer(1, 0, coords.centerX, coords.centerY);
-      this.grid.placeComputer(startComp, 0);
-
-      // Show educational card for the next era
-      this.eraCard.show(nextEraLevel);
-
-      this.updateTheme();
-      this.saveGame();
+  /**
+   * Deposits the quiz reward for a correct answer. Wrong answers pay nothing
+   * and are rescheduled by the scheduler; no era progress is affected.
+   */
+  handleQuizAnswer(eraLevel, selectedIndex) {
+    const result = this.quizScheduler.recordAnswer(
+      eraLevel,
+      selectedIndex,
+      this.economy.getPrestigeMultiplier()
+    );
+    if (result.correct && result.reward > 0) {
+      this.economy.addCoins(result.reward);
       this.hud.update(this.economy, this.grid, this.state.maxEraUnlocked, this.state);
+      this.saveGame();
     }
+    return result;
+  }
+
+  /** Opens a review quiz if one is eligible. Never pauses the game. */
+  openQuiz() {
+    const question = this.quizScheduler.selectQuestion();
+    if (!question) return;
+    this.hideQuizInvite();
+    this.quizSystem.show(question);
+  }
+
+  showQuizInvite() {
+    if (this.quizInviteEl) this.quizInviteEl.style.display = 'flex';
+  }
+
+  hideQuizInvite() {
+    this.quizScheduler.dismissInvite();
+    if (this.quizInviteEl) this.quizInviteEl.style.display = 'none';
   }
 
   updateTheme() {
@@ -541,12 +601,15 @@ export class GameEngine {
     // 2. Update timeline highlights
     this.timeline.update(this.state.erasDiscovered, this.state.maxEraUnlocked);
 
-    // 3. Update component gallery items names
-    this.componentGallery?.update(this.state.maxEraUnlocked);
+    // 3. Refresh the 18-component collection against discovered levels
+    this.componentGallery?.update(this.state.discoveredComponents);
 
     // 4. Update dynamic background image
     const eraLevel = this.state.maxEraUnlocked || 1;
     document.body.style.backgroundImage = `url('assets/images/sprites/era${eraLevel}.png')`;
+
+    // Quiz eligibility follows reached eras (their stories were shown on arrival).
+    this.quizScheduler?.setSeenEras(this.state.erasDiscovered);
   }
 
   loop(timestamp) {
@@ -606,6 +669,12 @@ export class GameEngine {
 
     // 5. Update HUD values
     this.hud.update(this.economy, this.grid, this.state.maxEraUnlocked, this.state);
+
+    // 5b. Quiz reward scheduler — surface a non-blocking invite when eligible
+    this.quizScheduler.tick(dt);
+    if (this.quizScheduler.isInvitePending()) {
+      this.showQuizInvite();
+    }
 
     // 6. Check auto-save timer
     this.saveTimer += dt;

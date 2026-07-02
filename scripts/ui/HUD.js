@@ -1,6 +1,6 @@
 /* 🎛️ js/ui/HUD.js */
 
-import { getEra } from '../config.js';
+import { getAdaptivePurchaseLevel, getComponentByLevel } from '../config.js';
 
 export class HUD {
   constructor() {
@@ -23,7 +23,7 @@ export class HUD {
     this.lastIsFull = null;
     this.lastCanAfford = null;
     this.lastMaxEraUnlocked = -1;
-    this.lastIsAwaitingEraTransition = null;
+    this.lastAdaptiveBuyLevel = -1;
     
     this.popTimeout = null;
   }
@@ -58,8 +58,12 @@ export class HUD {
     const buyCost = economy.getBuyCost();
     const occupied = grid.getOccupiedCount ? grid.getOccupiedCount() : gridSlots.filter(s => s !== null).length;
     const maxSlots = gridSlots.length;
-    const isAwaitingEraTransition = !!state.isAwaitingEraTransition;
     const isVictory = !!state.victoryTriggered;
+    const highestGridLevel = gridSlots.reduce((highestLevel, computer) => (
+      computer ? Math.max(highestLevel, computer.level) : highestLevel
+    ), 1);
+    const adaptiveBuyLevel = getAdaptivePurchaseLevel(highestGridLevel);
+    const buyCostChanged = buyCost !== this.lastBuyCost;
 
     // 1. Update coins text with caching
     const roundedCoins = Math.floor(economy.coins);
@@ -90,9 +94,8 @@ export class HUD {
       this.clickPowerEl.textContent = this.formatNumber(clickPower);
       this.lastClickPower = clickPower;
     }
-    if (this.buyCostEl && buyCost !== this.lastBuyCost) {
+    if (this.buyCostEl && buyCostChanged) {
       this.buyCostEl.textContent = this.formatNumber(buyCost);
-      this.lastBuyCost = buyCost;
     }
     if (this.slotsUsedEl && occupied !== this.lastOccupied) {
       this.slotsUsedEl.textContent = occupied.toString();
@@ -115,26 +118,19 @@ export class HUD {
       }
     }
 
-    if (this.btnBuy && (isVictory || isFull !== this.lastIsFull || canAfford !== this.lastCanAfford || buyCost !== this.lastBuyCost || maxEraUnlocked !== this.lastMaxEraUnlocked || isAwaitingEraTransition !== this.lastIsAwaitingEraTransition)) {
-      this.btnBuy.disabled = isAwaitingEraTransition ? false : (isFull || !canAfford);
+    if (this.btnBuy && (isVictory || isFull !== this.lastIsFull || canAfford !== this.lastCanAfford || buyCostChanged || maxEraUnlocked !== this.lastMaxEraUnlocked || adaptiveBuyLevel !== this.lastAdaptiveBuyLevel)) {
+      this.btnBuy.disabled = isFull || !canAfford;
 
       const mainText = this.btnBuy.querySelector('span:first-child');
       const subtextEl = this.btnBuy.querySelector('.buy-subtext');
       
       if (mainText) {
-        if (isAwaitingEraTransition) {
-          mainText.textContent = 'Avançar para Próxima Era';
-        } else {
-          const era = getEra(maxEraUnlocked);
-          mainText.textContent = `COMPRAR ${era.itemN1} (N1)`;
-        }
+        const baseComponent = getComponentByLevel(adaptiveBuyLevel);
+        mainText.textContent = `COMPRAR ${baseComponent?.name ?? 'PEÇA'} (N${baseComponent?.globalLevel ?? adaptiveBuyLevel})`;
       }
 
       if (subtextEl) {
-        if (isAwaitingEraTransition) {
-          subtextEl.innerHTML = 'Clique para iniciar o teste de transição';
-          subtextEl.style.color = '#42A5F5';
-        } else if (isFull) {
+        if (isFull) {
           subtextEl.innerHTML = '⚠️ GRADE CHEIA';
           subtextEl.style.color = '#EF5350';
         } else if (!canAfford) {
@@ -151,7 +147,9 @@ export class HUD {
       this.lastIsFull = isFull;
       this.lastCanAfford = canAfford;
       this.lastMaxEraUnlocked = maxEraUnlocked;
-      this.lastIsAwaitingEraTransition = isAwaitingEraTransition;
+      this.lastAdaptiveBuyLevel = adaptiveBuyLevel;
     }
+
+    this.lastBuyCost = buyCost;
   }
 }

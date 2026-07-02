@@ -1,18 +1,43 @@
 # 🖥️ Corrida pela Miniaturização (Computer Evolution)
 
-Um jogo de simulação estilo clicker/fusão (**Cow Evolution**) ambientado na história evolutiva dos computadores e microprocessadores. Comece fundindo enormes gabinetes a vácuo na década de 1940 e avance as eras tecnológicas até atingir os nano-chips quânticos e a singularidade tecnológica.
+Um jogo de simulação estilo clicker/fusão (**Cow Evolution**) ambientado na história evolutiva dos computadores e microprocessadores. Comece fundindo componentes históricos e avance pelas eras tecnológicas até atingir a computação quântica.
 
 https://alanedantass.github.io/Corrida_Pela_Miniaturizacao/
 ## 🚀 Como Executar o Jogo
 
-O projeto foi construído sem dependências externas (zero-dependency). Para jogar:
+O jogo continua sendo uma aplicação estática sem etapa de build para deploy. Para jogar localmente:
 
 1. Clone o repositório ou navegue até o diretório do projeto.
 2. Inicie um servidor HTTP local simples no diretório raiz.
-   - Usando a extensão **Live Server** no VS Code.
-   - Ou usando Python no terminal: `python3 -m http.server 8080`.
-   - Ou usando Node.js/npx: `npx serve`.
+   - Usando npm: `npm run serve`.
+   - Ou usando Python no terminal: `python3 -m http.server 8080 --bind 127.0.0.1`.
+   - Ou usando a extensão **Live Server** no VS Code.
 3. Abra `http://localhost:8080` (ou a porta correspondente) no seu navegador.
+
+> O npm é usado apenas para validação local e automação de testes. A publicação do jogo segue o modelo estático: HTML, CSS, JavaScript e assets servidos diretamente.
+
+---
+
+## ✅ Validação Local
+
+Instale as dependências de desenvolvimento antes de rodar os testes:
+
+```bash
+npm install
+npm run install:browsers
+```
+
+Comandos disponíveis na raiz do repositório:
+
+```bash
+npm test              # testes unitários ES modules com node:test
+npm run test:coverage # testes unitários com meta mínima de 80% de cobertura
+npm run test:smoke    # smoke test em browser carregando game.html via HTTP
+npm run validate      # cobertura + smoke test
+npm run serve         # servidor local em http://127.0.0.1:8080
+```
+
+O smoke test usa Playwright e sobe `game.html` por HTTP em `http://127.0.0.1:4173`, evitando validação por `file://`.
 
 ---
 
@@ -38,17 +63,28 @@ O projeto foi construído sem dependências externas (zero-dependency). Para jog
 
 - **Estrutura**: HTML5 semântico com overlays interativos.
 - **Lógica e Loop**: Vanilla JavaScript utilizando ES Modules.
-- **Renderização Gráfica**: HTML5 Canvas (2D) para animações de sprites, partículas e linhas de circuitos. Os sprites dos computadores são desenhados inteiramente via código (linhas, círculos, matrizes).
+- **Renderização Gráfica**: HTML5 Canvas (2D) para sprites, partículas e linhas de circuitos.
 - **Estilos**: CSS3 moderno, usando Glassmorphism, CSS Custom Properties para temas de cores e animações de CRT scanlines e flicker.
 - **Arquitetura de Diretórios**:
-  - `css/`: Gerencia layouts gerais, temas por era, e animações visuais.
-  - `js/config.js`: Centraliza dados históricos, taxas de geração e constantes da grade.
-  - `js/audio/`: Módulo de sintetizador da Web Audio API.
-  - `js/storage/`: Salvamento automático e processamento de tempo offline.
-  - `js/game/`: Controla a economia, a grade física dos slots, a inicialização (`GameEngine.js`) e as regras de fusão.
-  - `js/render/`: Desenha as linhas do circuito de fundo, sprites e partículas no Canvas.
-  - `js/ui/`: Sincroniza dados com o DOM (HUD, timeline e modais).
-  - `js/input/`: Captura e normaliza interações do mouse e eventos touch (mobile).
+  - `game.html`: Tela principal do jogo e alvo do smoke test.
+  - `index.html`: Entrada/menu inicial.
+  - `css/`: Temas por era e animações compartilhadas.
+  - `styles/`: Estilos de tela, menu, intro e layout principal.
+  - `scripts/config.js`: Dados históricos, taxas de geração e constantes da grade.
+  - `scripts/game.js`: Bootstrap do jogo e da intro cinematográfica.
+  - `scripts/intro.js`: Controle da sequência de introdução.
+  - `scripts/audio/`: Módulo de áudio/Web Audio API.
+  - `scripts/storage/`: Salvamento automático e processamento de tempo offline.
+  - `scripts/game/`: Economia, grade, motor principal, computador e regras de fusão.
+  - `scripts/render/`: Fundo, sprites, partículas e renderização Canvas.
+  - `scripts/ui/`: HUD, timeline, galeria, quiz, tutorial e modais.
+  - `scripts/input/`: Mouse, touch, drag-and-drop e ações de clique.
+  - `tests/unit/`: Testes unitários de módulos JavaScript puros.
+  - `tests/smoke/`: Testes de boot em browser com Playwright.
+
+## 📌 Contexto v2
+
+As tarefas v2 em `.compozy/tasks/corrida-pela-miniaturizacao-v2/` derivam do PRD local. Este diretório não possui `_techspec.md`; implementações devem consultar o PRD, a tarefa ativa e o código existente, registrando lacunas técnicas em vez de inventar detalhes fora do escopo.
 
 ## 🤝 Contribuição e Colaboração
 Para entender as regras de nomenclatura de branches, convenções de commits, e como colaborar com o time neste repositório de forma profissional, leia o nosso [Guia de Contribuição (CONTRIBUTING.md)](CONTRIBUTING.md).

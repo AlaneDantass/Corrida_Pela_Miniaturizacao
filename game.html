@@ -53,12 +53,26 @@
   <!-- Background PCB Canvas -->
   <canvas id="circuit-bg"></canvas>
 
-  <!-- Game Header -->
+  <!-- Game Header / Top Region: Timeline + PP + Utility Controls -->
   <header>
+    <div class="top-bar">
 
+      <!-- Current Research Points (PP) integrated into the top region -->
+      <div class="pp-display" id="pp-display">
+        <div class="pp-main">
+          <span class="pp-label">PP Atuais</span>
+          <span class="stat-value currency-text" id="currency-value">0</span>
+        </div>
+        <div class="pp-rate"><span class="currency-text" id="cps-value">0</span> PP/s</div>
+      </div>
 
-    <!-- Top Bar Controls -->
-    <div class="top-controls">
+      <!-- Six-Era Timeline with active marker and progressed trail -->
+      <div class="timeline-bar" id="timeline-list">
+        <!-- Populated by Timeline.js -->
+      </div>
+
+      <!-- Top Bar Controls (non-competing utility area) -->
+      <div class="top-controls">
       <!-- Music Indicator -->
       <div class="music-indicator" id="music-indicator">
         <div class="music-bars">
@@ -91,42 +105,27 @@
             d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" />
         </svg>
       </button>
+      </div>
     </div>
   </header>
 
   <!-- Game Body Layout -->
   <main class="game-container">
 
-    <!-- Sidebar Controls -->
-    <section class="sidebar">
-
-      <!-- Current Research Cycle stats -->
-      <article class="panel float-ui">
-        <h2 class="panel-title">Estação de Pesquisa</h2>
-        <div class="stats-container">
-          <div class="stat-row">
-            <span class="stat-label">Pontos de Pesquisa (PP):</span>
-            <span class="stat-value currency-text" id="currency-value">0</span>
-          </div>
-          <div class="stat-row">
-            <span class="stat-label">Geração Passiva:</span>
-            <span class="stat-value small currency-text"><span id="cps-value">0</span> PP/s</span>
-          </div>
-        </div>
+    <!-- Left: stacked research actions (no dead space) -->
+    <section class="sidebar sidebar-left">
+      <article class="panel actions-panel">
+        <h2 class="panel-title">Ações de Pesquisa</h2>
 
         <!-- Active Click Button -->
         <button class="btn-research" id="btn-research">
           <span>REALIZAR PESQUISA</span>
           <span class="click-power">+<span id="click-power-value">1</span> PP por clique</span>
         </button>
-      </article>
 
-      <!-- Buy Computer Section -->
-      <article class="panel">
-        <h2 class="panel-title">Fábrica de Hardware</h2>
-
+        <!-- Buy Component Button -->
         <button class="btn-buy" id="btn-buy" disabled>
-          <span>COMPRAR ENIAC L1</span>
+          <span>COMPRAR Engrenagens (N1)</span>
           <span class="buy-subtext">Custo: <span id="buy-cost-value">10</span> PP</span>
         </button>
 
@@ -135,18 +134,9 @@
           <span><span id="slots-used">0</span> / <span id="slots-max">12</span></span>
         </div>
       </article>
-
-      <!-- Timeline of Eras -->
-      <article class="panel" style="flex: 1;">
-        <h2 class="panel-title">Eras da Miniaturização</h2>
-        <div class="timeline-list" id="timeline-list">
-          <!-- Populated by Timeline.js -->
-        </div>
-      </article>
-
     </section>
 
-    <!-- Canvas Grid Area -->
+    <!-- Center: merge grid (protagonist) -->
     <section class="game-board-container crt-flicker-screen">
       <img id="game-logo" src="assets/images/sprites/titulo.png" alt="Computer Evolution Logo" class="game-logo">
       <canvas id="game-canvas"></canvas>
@@ -155,36 +145,24 @@
     <!-- Sidebar Right: Component Gallery -->
     <section class="sidebar sidebar-right">
       <article class="panel" style="flex: 1; display: flex; flex-direction: column;">
-        <h2 class="panel-title">Galeria de Componentes</h2>
-        <div class="gallery-container">
-          <div class="gallery-item">
-            <div class="gallery-level">Nível 1</div>
-            <div class="gallery-preview">
-              <canvas class="gallery-preview-canvas" width="70" height="70"></canvas>
-            </div>
-            <div class="gallery-name">Peça N1</div>
-          </div>
-          <div class="gallery-item">
-            <div class="gallery-item-header-divider"></div>
-            <div class="gallery-level">Nível 2</div>
-            <div class="gallery-preview">
-              <canvas class="gallery-preview-canvas" width="70" height="70"></canvas>
-            </div>
-            <div class="gallery-name">Peça N2</div>
-          </div>
-          <div class="gallery-item">
-            <div class="gallery-item-header-divider"></div>
-            <div class="gallery-level">Nível 3</div>
-            <div class="gallery-preview">
-              <canvas class="gallery-preview-canvas" width="70" height="70"></canvas>
-            </div>
-            <div class="gallery-name">Peça N3</div>
-          </div>
+        <h2 class="panel-title">Coleção de Componentes</h2>
+        <div class="gallery-container" id="gallery-collection">
+          <!-- 18-component collection grouped by era, built by ComponentGallery.js -->
         </div>
       </article>
     </section>
 
   </main>
+
+  <!-- Corner anchors reserved for later tasks (Task 09: Bugsy help + telefone) -->
+  <div id="bugsy-help-anchor" class="corner-anchor corner-anchor-bl" aria-hidden="true"></div>
+  <div id="phone-anchor" class="corner-anchor corner-anchor-br" aria-hidden="true"></div>
+
+  <!-- Non-blocking quiz reward invite (click to answer, ignore to keep playing) -->
+  <button id="quiz-invite" class="quiz-invite" style="display: none;" aria-label="Abrir quiz de revisão">
+    <span class="quiz-invite-icon">🧠</span>
+    <span class="quiz-invite-text">Quiz de revisão disponível — ganhe PP!</span>
+  </button>
 
   <!-- ================= MODALS OVERLAYS ================= -->
 
@@ -280,9 +258,8 @@
   <div class="modal-overlay fade-in" id="modal-quiz">
     <div class="modal-card zoom-in-modal" role="dialog" aria-modal="true" aria-labelledby="quiz-title">
       <div class="modal-header">
-        <div class="modal-subtitle" id="quiz-subtitle"
-          style="color: #FF5252; text-shadow: 0 0 10px rgba(255,82,82,0.4);">Limite Tecnológico Atingido</div>
-        <h2 class="modal-title" id="quiz-title" style="color: #fff;">Quiz de Transição</h2>
+        <div class="modal-subtitle" id="quiz-subtitle">Quiz de Revisão</div>
+        <h2 class="modal-title" id="quiz-title" style="color: #fff;">Ganhe Pontos de Pesquisa</h2>
       </div>
       <div class="modal-body">
         <!-- New Tech Announcement Box -->
@@ -372,6 +349,49 @@
       <div class="modal-footer" style="display: flex; gap: 0.8rem; width: 100%;">
         <button class="btn-modal-secondary" id="btn-restart-fresh" style="flex: 1;">REINICIAR JOGO</button>
         <button class="btn-modal-action" id="btn-continue-save" style="flex: 1.5;">CONTINUAR JOGO</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Era Story Overlay (multi-frame, auto transition + timeline replay) -->
+  <div class="modal-overlay fade-in" id="modal-story">
+    <div class="modal-card story-card zoom-in-modal" role="dialog" aria-modal="true" aria-labelledby="story-title">
+      <div class="modal-header">
+        <div class="modal-subtitle">História da Era</div>
+        <h2 class="modal-title story-title" id="story-title">Era</h2>
+      </div>
+      <div class="modal-body" style="text-align: center;">
+        <div class="modal-visual-wrapper">
+          <img class="story-image" src="" alt=""
+            style="max-width: 100%; max-height: 180px; object-fit: cover; border-radius: 10px;">
+        </div>
+        <p class="story-text modal-text-content"></p>
+        <div class="story-frame-indicator currency-text" style="font-size: 0.85rem; margin-top: 0.4rem;"></div>
+      </div>
+      <div class="modal-footer" style="display: flex; gap: 0.8rem; width: 100%;">
+        <button class="btn-modal-secondary btn-story-skip">Pular ✕</button>
+        <button class="btn-modal-action btn-story-next" style="flex: 1.5;">Próximo ➔</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Component Collection Detail Modal (discovered items only) -->
+  <div class="modal-overlay fade-in" id="modal-component">
+    <div class="modal-card zoom-in-modal" role="dialog" aria-modal="true" aria-labelledby="component-detail-title">
+      <div class="modal-header">
+        <div class="modal-subtitle component-detail-era">Era</div>
+        <h2 class="modal-title component-detail-name" id="component-detail-title">Componente</h2>
+      </div>
+      <div class="modal-body" style="text-align: center;">
+        <div class="modal-visual-wrapper">
+          <img class="component-detail-img" src="" alt=""
+            style="max-width: 150px; max-height: 150px; object-fit: contain;">
+        </div>
+        <div class="component-detail-level currency-text" style="margin: 0.5rem 0; font-size: 1rem;"></div>
+        <p class="component-detail-desc modal-text-content"></p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-modal-action" data-close-component>FECHAR</button>
       </div>
     </div>
   </div>

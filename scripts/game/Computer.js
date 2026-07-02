@@ -1,6 +1,6 @@
 /* 💻 js/game/Computer.js */
 
-import { getEra } from '../config.js';
+import { getComponentByLevel, getEraByGlobalLevel } from '../config.js';
 
 export class Computer {
   constructor(level, slotIndex, startX = 0, startY = 0) {
@@ -26,12 +26,16 @@ export class Computer {
   }
 
   getEraData() {
-    return getEra(this.level);
+    return getEraByGlobalLevel(this.level);
+  }
+
+  getComponentData() {
+    return getComponentByLevel(this.level);
   }
 
   getCoinsPerSecond() {
-    const era = this.getEraData();
-    return era ? era.coinsPerSecond : 0;
+    const component = this.getComponentData();
+    return component?.coinsPerSecond ?? 0;
   }
 
   setTargetPosition(tx, ty, instant = false) {

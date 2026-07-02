@@ -2,7 +2,7 @@
 
 import { Computer } from '../game/Computer.js';
 import { audio } from '../audio/SoundManager.js';
-import { getEra } from '../config.js';
+import { getAdaptivePurchaseLevel, getEra } from '../config.js';
 
 export class ClickHandler {
   /**
@@ -78,15 +78,13 @@ export class ClickHandler {
     }
   }
 
-  handleBuyClick() {
-    if (this.state.isAwaitingEraTransition) {
-      audio.playClick();
-      if (this.callbacks.onRequestEraTransition) {
-        this.callbacks.onRequestEraTransition();
-      }
-      return;
-    }
+  getHighestGridLevel() {
+    return this.grid.slots.reduce((highestLevel, computer) => (
+      computer ? Math.max(highestLevel, computer.level) : highestLevel
+    ), 1);
+  }
 
+  handleBuyClick() {
     if (this.grid.isFull()) {
       audio.playError();
       this.shakeGameBoard();
@@ -101,8 +99,8 @@ export class ClickHandler {
         if (slotIdx !== -1) {
           const coords = this.grid.getSlotCoordinates(slotIdx);
           
-          // Spawn Computer level 1
-          const newComp = new Computer(1, slotIdx, coords.centerX, coords.centerY);
+          const baseLevel = getAdaptivePurchaseLevel(this.getHighestGridLevel());
+          const newComp = new Computer(baseLevel, slotIdx, coords.centerX, coords.centerY);
           this.grid.placeComputer(newComp, slotIdx);
 
           audio.playBuy();

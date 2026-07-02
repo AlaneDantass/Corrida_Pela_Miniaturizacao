@@ -1,6 +1,18 @@
 /* ⚡ js/game/Economy.js */
 
-import { BASE_BUY_COST, BUY_INFLATION, getEra } from '../config.js';
+import { BASE_BUY_COST, BUY_INFLATION, getComponentProduction } from '../config.js';
+
+export function calculateGridProduction(gridEntries = [], prestigeMultiplier = 1) {
+  const entries = Array.isArray(gridEntries) ? gridEntries : gridEntries?.slots;
+  if (!Array.isArray(entries)) return 0;
+
+  const baseProduction = entries.reduce((total, entry) => {
+    if (!entry) return total;
+    return total + getComponentProduction(entry.level);
+  }, 0);
+
+  return baseProduction * Math.max(0, prestigeMultiplier || 0);
+}
 
 export class Economy {
   constructor(savedState = null) {
@@ -53,7 +65,7 @@ export class Economy {
   }
 
   calculateCps(grid) {
-    return 0;
+    return calculateGridProduction(grid, this.getPrestigeMultiplier());
   }
 
   prestige() {

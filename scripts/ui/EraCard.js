@@ -1,6 +1,6 @@
 /* 🎛️ js/ui/EraCard.js */
 
-import { getEra } from '../config.js';
+import { getComponentsForEra, getEra } from '../config.js';
 import { Sprites } from '../render/Sprites.js';
 import { audio } from '../audio/SoundManager.js';
 
@@ -67,8 +67,10 @@ export class EraCard {
       ctx.arc(60, 60, 60, 0, Math.PI * 2);
       ctx.fill();
 
-      // Draw sprite in center
-      Sprites.draw(ctx, level, 3, 60, 60, 90, 0); // static draw with time = 0
+      const previewComponent = getComponentsForEra(level).at(-1);
+      if (previewComponent) {
+        Sprites.draw(ctx, previewComponent.eraLevel, previewComponent.localItemIndex, 60, 60, 90, 0);
+      }
     }
 
     // Display overlay

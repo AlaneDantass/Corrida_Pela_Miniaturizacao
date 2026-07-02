@@ -1,7 +1,7 @@
 /* 🎨 js/render/Renderer.js */
 
 import { Sprites } from './Sprites.js';
-import { getEra, ERAS_DATA } from '../config.js';
+import { getComponentByLevel, getEra } from '../config.js';
 
 export class Renderer {
   /**
@@ -127,11 +127,14 @@ export class Renderer {
       const computer = this.grid.getComputer(i);
       if (computer && (!dragInfo || dragInfo.computer !== computer)) {
         const coords = this.grid.getSlotCoordinates(i);
-        const era = getEra(currentEraLevel);
+        const component = getComponentByLevel(computer.level);
+        const era = (component ? getEra(component.eraLevel) : getEra(currentEraLevel)) ?? { color: accentColorHex, name: '' };
+        const spriteEraLevel = component?.eraLevel ?? currentEraLevel;
+        const localItemIndex = component?.localItemIndex ?? computer.level;
         const baseSize = Math.min(coords.width, coords.height);
         
         // Item sizes: N1 is smaller, N2 is medium, N3 is large
-        const sizeMultiplier = computer.level === 1 ? 0.60 : (computer.level === 2 ? 0.72 : 0.85);
+        const sizeMultiplier = localItemIndex === 1 ? 0.60 : (localItemIndex === 2 ? 0.72 : 0.85);
         const spriteSize = baseSize * sizeMultiplier * computer.scale;
         
         // Subtle idle bounce animation
@@ -141,7 +144,7 @@ export class Renderer {
         this.drawShadow(ctx, computer.x, computer.y + spriteSize * 0.4 + bounceOffset, spriteSize * 0.5, era.color);
         
         // Draw the sprite
-        Sprites.draw(ctx, currentEraLevel, computer.level, computer.x, computer.y + bounceOffset, spriteSize, time);
+        Sprites.draw(ctx, spriteEraLevel, localItemIndex, computer.x, computer.y + bounceOffset, spriteSize, time);
         
         // Draw level badge
         this.drawLevelBadge(ctx, computer, coords, era, spriteSize, bounceOffset);
@@ -158,10 +161,13 @@ export class Renderer {
     if (dragInfo && dragInfo.computer) {
       const computer = dragInfo.computer;
       const coords = this.grid.getSlotCoordinates(computer.slotIndex);
-      const era = getEra(currentEraLevel);
+      const component = getComponentByLevel(computer.level);
+      const era = (component ? getEra(component.eraLevel) : getEra(currentEraLevel)) ?? { color: accentColorHex, name: '' };
+      const spriteEraLevel = component?.eraLevel ?? currentEraLevel;
+      const localItemIndex = component?.localItemIndex ?? computer.level;
       const baseSize = Math.min(coords.width, coords.height);
       
-      const sizeMultiplier = computer.level === 1 ? 0.60 : (computer.level === 2 ? 0.72 : 0.85);
+      const sizeMultiplier = localItemIndex === 1 ? 0.60 : (localItemIndex === 2 ? 0.72 : 0.85);
       const spriteSize = baseSize * sizeMultiplier * 1.15; // Scale up slightly while dragging
       
       // Drop shadow under dragged item
@@ -171,7 +177,7 @@ export class Renderer {
       ctx.save();
       ctx.shadowBlur = 30;
       ctx.shadowColor = era.color;
-      Sprites.draw(ctx, currentEraLevel, computer.level, computer.x, computer.y, spriteSize, time);
+      Sprites.draw(ctx, spriteEraLevel, localItemIndex, computer.x, computer.y, spriteSize, time);
       ctx.restore();
 
       // Level badge while dragging

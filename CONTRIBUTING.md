@@ -155,7 +155,7 @@ Para garantir que ninguém apague arquivos ou quebre o jogo por acidente na bran
 ## 🛠️ 6. Práticas Recomendadas de Código
 
 Para garantir que o código escrito por diferentes pessoas continue funcionando de forma harmônica:
-*   **Modularização**: Mantenha as responsabilidades separadas. Se for mexer em áudio, mexa em `js/audio/`. Se for mexer na renderização, use `js/render/`.
+*   **Modularização**: Mantenha as responsabilidades separadas. Se for mexer em áudio, mexa em `scripts/audio/`. Se for mexer na renderização, use `scripts/render/`. Estilos ficam em `css/` e `styles/`.
 *   **Comentários Úteis**: Explique o *porquê* de soluções complexas (como fórmulas matemáticas de escalabilidade financeira do jogo), não apenas o *como*.
 *   **Nomes Semânticos**: Use variáveis e funções em inglês (seguindo o padrão atual do código, ex: `GameEngine`, `updateProgress`, `coins`) ou português de forma consistente. Como o código atual está em inglês, continue utilizando **inglês para variáveis, classes e funções** e **português para a interface visível ao usuário**.
 

@@ -1,7 +1,7 @@
 /* 🖱️ js/input/DragDrop.js */
 
 import { MergeSystem } from '../game/MergeSystem.js';
-import { getEra } from '../config.js';
+import { getEra, getEraByGlobalLevel } from '../config.js';
 
 export class DragDrop {
   /**
@@ -10,7 +10,7 @@ export class DragDrop {
    * @param {Economy} economy - Economy object
    * @param {ParticleSystem} particleSystem - Particle manager
    * @param {Set<number>} erasDiscovered - Unlocked eras levels
-   * @param {Object} callbacks - callbacks: { onMerge, onNewEra }
+   * @param {Object} callbacks - callbacks: { onMerge, onComponentCreated, onNewEra, onFinalComponentCreated }
    * @param {Renderer} renderer - Renderer reference for shockwaves
    */
   constructor(canvas, grid, economy, particleSystem, erasDiscovered, callbacks, renderer = null) {
@@ -134,7 +134,7 @@ export class DragDrop {
       if (result.action === 'merge') {
         const nextLevel = result.level;
         const currentEraLevel = this.erasDiscovered.size;
-        const era = getEra(currentEraLevel);
+        const era = getEraByGlobalLevel(nextLevel) ?? getEra(currentEraLevel);
         
         // Spawn spectacular merge explosion
         this.particleSystem.addMergeExplosion(result.centerX, result.centerY, era.color, 35);
@@ -146,15 +146,23 @@ export class DragDrop {
         }
 
         if (this.callbacks.onMerge) {
-          this.callbacks.onMerge(nextLevel);
+          this.callbacks.onMerge(nextLevel, result);
         }
 
-        if (result.isFinalItem && this.callbacks.onFinalItemCreated) {
-          this.callbacks.onFinalItemCreated();
+        if (result.isNewComponent && this.callbacks.onComponentCreated) {
+          this.callbacks.onComponentCreated(result.component, result);
+        }
+
+        if (result.isNewEra && this.callbacks.onNewEra) {
+          this.callbacks.onNewEra(result.newEraLevel, result);
+        }
+
+        if (result.isFinalComponent && this.callbacks.onFinalComponentCreated) {
+          this.callbacks.onFinalComponentCreated(result);
         }
       } else if (result.action === 'move') {
         if (this.callbacks.onMerge) {
-          this.callbacks.onMerge();
+          this.callbacks.onMerge(undefined, result);
         }
       }
     } else {
